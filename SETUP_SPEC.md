@@ -76,7 +76,7 @@ Write these tasks as `claude-lead` would (IDs `X001`…), then watch for the res
 
 | Test | Task | Pass when |
 |---|---|---|
-| X001–X003 | For codex-vivek, codex-f1, codex-f2 on `gpt-6-luna` / `low`: write `results/<id>/hello.json` with the machine name, footage file count and total duration read from the local footage, the first line of `ffmpeg -version`, and a 1-second 360p ffmpeg test pattern rendered to `local/renders/` (report its local path). | All three REPORTs `done`. Footage counts match across machines. |
+| X001–X003 | For codex-vivek, codex-f1, codex-f2 on `gpt-6-luna` / `low`: write `results/<id>/hello.json` with the machine name, footage file count and total duration read from the local footage, the first line of `ffmpeg -version`, and a 1-second 360p ffmpeg test pattern rendered to `local/renders/` (report it as `RENDERS:<file name>`, never an absolute path, because this repo is public). | All three REPORTs `done`. Footage counts match across machines. |
 | X004 | codex-f1, `gpt-6-sol` / `medium`: a 3-second HyperFrames composition (text fading in on dark), with a `snapshot` PNG at 1.5 s committed as a preview. | PNG is present and looks right when you open it. |
 | X005 | Same as X004 but `model: gpt-6-astra`. | The listener refuses it, with `status: refused`. |
 | X006 | claude-second, consult: open `discussion/setup-test/001-claude-lead.md` asking "Name one risk in this setup." | `002-claude-second.md` appears with a sensible answer. |

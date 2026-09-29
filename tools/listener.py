@@ -263,7 +263,7 @@ def enforce_sizes(rid: str, roots: list[Path]) -> list[str]:
                 dest = RENDERS_DIR / rid / (f.relative_to(results_dir) if inside else f.relative_to(REPO_ROOT))
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 shutil.move(str(f), str(dest))
-                notes.append(f"- `{f.relative_to(REPO_ROOT).as_posix()}` ({mb:.1f} MB) was too big for git. Moved to local path: `{dest}`")
+                notes.append(f"- `{f.relative_to(REPO_ROOT).as_posix()}` ({mb:.1f} MB) was too big for git. Moved to local path: `RENDERS:{dest.relative_to(RENDERS_DIR).as_posix()}` (inside renders_dir on {MACHINE})")
                 log(f"moved oversize file {f.name} ({mb:.1f} MB) to {dest}")
     return notes
 
@@ -358,6 +358,32 @@ def build_prompt(worker: str, cli: str, rid: str) -> str:
     return (f"You are worker {worker} on machine {MACHINE}. Your machine config is machine.local.json. "
             f"Read {guide}, PROTOCOL.md and brief/decisions.md, then do the task in queue/{worker}/{rid}.md exactly. "
             f"Finish by writing results/{rid}/REPORT.md.")
+
+
+# ---------------------------------------------------------------- keep private paths out of the (public) repo
+TEXT_EXT = {'.md', '.txt', '.json', '.jsonl', '.html', '.css', '.js', '.mjs', '.py', '.csv', '.srt', '.vtt', '.log', '.xml', '.yml', '.yaml'}
+_HOME = str(Path.home())
+HOME_RE = re.compile("|".join(re.escape(v) for v in {_HOME, _HOME.replace(chr(92), "/"), _HOME.replace(chr(92), chr(92) * 2)}), re.I)
+
+
+def redact_home_paths(roots: list[Path]) -> int:
+    """Replace this PC's user-profile path with <HOME> in text files that are about to be committed."""
+    n = 0
+    for root in roots:
+        files = [root] if root.is_file() else ([p for p in root.rglob('*') if p.is_file()] if root.exists() else [])
+        for f in files:
+            if f.suffix.lower() not in TEXT_EXT or f.stat().st_size > 5 * 1024 * 1024:
+                continue
+            try:
+                raw = f.read_bytes()
+                text = raw.decode('utf-8')
+            except (OSError, UnicodeDecodeError):
+                continue
+            new, k = HOME_RE.subn('<HOME>', text)
+            if k:
+                f.write_bytes(new.encode('utf-8'))
+                n += k
+    return n
 
 
 # ---------------------------------------------------------------- safety net for wide sandboxes
@@ -555,6 +581,9 @@ def run_task(worker: str, task_file: Path) -> None:
                         f"Details are kept on that machine only (local/guard/{rid}.txt) because this repo is public.\n")
 
     roots = [REPO_ROOT / p for p in write_paths]
+    scrubbed = redact_home_paths(roots + [rdir])
+    if scrubbed:
+        log(f"{rid}: replaced {scrubbed} private home-folder path(s) with <HOME> before committing")
     notes = enforce_sizes(rid, roots + [rdir])
     if notes:
         with open(report, "a", encoding="utf-8", newline="\n") as f:
