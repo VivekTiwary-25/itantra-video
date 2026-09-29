@@ -1,0 +1,10 @@
+{
+  "id": "X011",
+  "machine": "utkarsh-pc",
+  "worker": "codex-f2",
+  "time": "2026-09-29T19:15:46Z",
+  "model": "gpt-6-luna",
+  "effort": "low",
+  "pid": 14480,
+  "timeout_min": 20
+}
