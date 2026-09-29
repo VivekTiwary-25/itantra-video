@@ -43,6 +43,7 @@ FOOTAGE_ROOT = CFG["footage_root"]
 RENDERS_DIR = Path(CFG["renders_dir"])
 GUARD_REPOS: list[str] = CFG.get("guard_repos", [])  # other repos that no task may change
 LOG_DIR = REPO_ROOT / "local" / "logs"
+TASK_TMP = REPO_ROOT / "local" / "tmp"  # workers get this as TEMP/TMP: inside the repo, so workspace-write allows it
 OFFLINE = False
 
 rate_until: dict[str, dt.datetime] = {}
@@ -51,6 +52,43 @@ last_codex_rate_limits: dict | None = None
 current_task: str | None = None
 last_heartbeat = 0.0
 warned_blocked: set[str] = set()
+restarting = False
+RESTART_CODE = 75
+
+
+def source_stamp() -> str:
+    """Fingerprint of the tool code. When a git pull changes it, the listener restarts itself between tasks."""
+    h = hashlib.sha256()
+    for f in sorted((REPO_ROOT / "tools").glob("*.py")):
+        try:
+            h.update(f.name.encode() + f.read_bytes())
+        except OSError:
+            pass
+    return h.hexdigest()
+
+
+START_STAMP = source_stamp()
+
+
+def check_for_update() -> None:
+    global restarting
+    if source_stamp() != START_STAMP:
+        restarting = True
+        log("tool code changed after git pull: restarting to load it (start-listener.cmd restarts automatically)")
+        sys.exit(RESTART_CODE)
+
+
+def clean_tmp(days: int = 2) -> None:
+    """Delete week-old scratch files so local/tmp cannot grow without limit."""
+    cutoff = time.time() - days * 86400
+    if not TASK_TMP.is_dir():
+        return
+    for child in TASK_TMP.iterdir():
+        try:
+            if child.stat().st_mtime < cutoff:
+                shutil.rmtree(child, ignore_errors=True) if child.is_dir() else child.unlink()
+        except OSError:
+            pass
 
 
 # ---------------------------------------------------------------- logging
@@ -529,6 +567,8 @@ def run_task(worker: str, task_file: Path) -> None:
                    WORKER=worker, TASK_ID=rid, HYPERFRAMES_NO_TELEMETRY="1", DO_NOT_TRACK="1")
         if CFG.get("path_prepend"):
             env["PATH"] = os.pathsep.join(CFG["path_prepend"]) + os.pathsep + env.get("PATH", "")
+        TASK_TMP.mkdir(parents=True, exist_ok=True)
+        env.update(TEMP=str(TASK_TMP), TMP=str(TASK_TMP), TMPDIR=str(TASK_TMP))
         RENDERS_DIR.mkdir(parents=True, exist_ok=True)
         with open(out_log, "w", encoding="utf-8", errors="replace") as fh:
             proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=fh, stderr=subprocess.STDOUT, cwd=str(REPO_ROOT),
@@ -676,6 +716,7 @@ def main() -> None:
     lock = acquire_lock()
     log(f"listener started: machine={MACHINE} workers={MY_WORKERS} offline={OFFLINE} pid={os.getpid()}")
     try:
+        clean_tmp()
         sync()
         recover_orphans()
         write_heartbeat("idle")
@@ -696,6 +737,7 @@ def main() -> None:
                 break
             if ran:
                 sync()
+                check_for_update()
                 continue
             wait = SYNC_EVERY_S + random.uniform(0, 8)
             end = time.time() + wait
@@ -704,12 +746,13 @@ def main() -> None:
                 if heartbeat_due():
                     write_heartbeat()
             sync()
+            check_for_update()
     except KeyboardInterrupt:
         log("Ctrl+C: stopping")
     finally:
         current_task = None
         try:
-            write_heartbeat("stopped")
+            write_heartbeat("restarting" if restarting else "stopped")
         except Exception as e:  # noqa: BLE001
             log(f"final heartbeat failed: {e}")
         try:

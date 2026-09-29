@@ -26,6 +26,8 @@ The canonical list lives in `machines/registry.json`. Each machine also has a lo
 }
 ```
 
+Workers run with `TEMP`, `TMP` and `TMPDIR` set to `<repo>/local/tmp` (inside the repo, so the workspace-write sandbox allows it; the normal Windows temp folder is blocked). The listener restarts itself between tasks when a `git pull` changes the code in `tools/` (`tools/start-listener.cmd` loops on exit code 75), so tool fixes reach every machine without anyone restarting by hand.
+
 Tasks never contain absolute paths. Footage is referred to as `FOOTAGE:Video/<name>` or `FOOTAGE:Audio/<name>` and resolved using `footage_root`.
 
 Footage layout (the same on every machine): `footage_root` contains exactly two folders, `Video/` (the 10 .mp4 clips) and `Audio/` (the 6 .mp3 files), with the original file names and no other folders (the Drive zips may sit beside them but are never used). Clip paths are always `FOOTAGE:Video/<name>` or `FOOTAGE:Audio/<name>`, for example `FOOTAGE:Video/normalpart1.mp4`. Video and audio names are matched ignoring case (`Audio/Normalpart6.mp3` belongs to `Video/normalpart6.mp4`). Machines are compared by these paths plus sha256 (`python tools/compare_manifests.py`), not by how the files arrived.
