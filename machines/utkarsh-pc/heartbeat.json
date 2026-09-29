@@ -1,14 +1,14 @@
 {
   "machine": "utkarsh-pc",
-  "time": "2026-09-29T20:15:23Z",
-  "status": "restarting",
+  "time": "2026-09-29T20:16:01Z",
+  "status": "idle",
   "current_task": null,
   "workers": [
     "codex-f2"
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 1968,
+  "listener_pid": 33896,
   "last_task_usage": null,
   "codex_rate_limits": null
 }
