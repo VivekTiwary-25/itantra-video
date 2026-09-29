@@ -1,0 +1,1 @@
+Completed X009. `hello.json` records 16 footage files totaling 425.072 seconds and the FFmpeg version. The 1-second test pattern was rendered to `RENDERS:X009-testpattern.mp4`, and [REPORT.md](/<REPO>/results/X009/REPORT.md) is written with status `done`.
