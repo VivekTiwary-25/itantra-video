@@ -1,0 +1,433 @@
+{
+  "machine": "yojitth-pc",
+  "generated_at": "2026-09-29T19:00:22Z",
+  "layout": "footage_root/Video/<name> and footage_root/Audio/<name>; compare machines by path + sha256",
+  "summary": {
+    "file_count": 16,
+    "video_files": 10,
+    "audio_files": 6,
+    "total_duration_s": 425.073,
+    "hdr_files": [],
+    "errors": [],
+    "video_without_audio": [
+      "normalpart2",
+      "normalpart3",
+      "normalpart4",
+      "normalpart5"
+    ],
+    "audio_without_video": [],
+    "layout_warnings": []
+  },
+  "pairs": {
+    "normalpart1": {
+      "video": "Video/normalpart1.mp4",
+      "audio": "Audio/normalpart1.mp3"
+    },
+    "normalpart2": {
+      "video": "Video/normalpart2.mp4",
+      "audio": null
+    },
+    "normalpart3": {
+      "video": "Video/normalpart3.mp4",
+      "audio": null
+    },
+    "normalpart4": {
+      "video": "Video/normalpart4.mp4",
+      "audio": null
+    },
+    "normalpart5": {
+      "video": "Video/normalpart5.mp4",
+      "audio": null
+    },
+    "normalpart6": {
+      "video": "Video/normalpart6.mp4",
+      "audio": "Audio/Normalpart6.mp3"
+    },
+    "sospart1": {
+      "video": "Video/sospart1.mp4",
+      "audio": "Audio/sospart1.mp3"
+    },
+    "sospart2": {
+      "video": "Video/sospart2.mp4",
+      "audio": "Audio/sospart2.mp3"
+    },
+    "vachna part1": {
+      "video": "Video/vachna part1.mp4",
+      "audio": "Audio/vachna part1.mp3"
+    },
+    "vachna part2": {
+      "video": "Video/vachna part2.mp4",
+      "audio": "Audio/vachna part2.mp3"
+    }
+  },
+  "files": [
+    {
+      "path": "Video/normalpart1.mp4",
+      "kind": "video",
+      "size": 22937983,
+      "sha256": "cc57f487d6d19a1fb9aa0af3af7c69392489c8fb7ddecad8429cf07ef8749ed8",
+      "duration_s": 10.833,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "5850000/194993",
+          "pix_fmt": "yuv420p",
+          "color_transfer": "bt709",
+          "color_primaries": "bt709",
+          "color_space": "bt709"
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Video/normalpart2.mp4",
+      "kind": "video",
+      "size": 436580164,
+      "sha256": "bb99117bcee215f842f99cd1650b5406c656d08ba9eb13de37b12eeb61ad90d1",
+      "duration_s": 202.381,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "2276625/75893",
+          "pix_fmt": "yuv420p",
+          "color_transfer": "bt709",
+          "color_primaries": "bt709",
+          "color_space": "bt709"
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Video/normalpart3.mp4",
+      "kind": "video",
+      "size": 8147085,
+      "sha256": "29855cac5f5ef9e1ee5db8b6d464dfdc3bde3a3aea778d88d49be38696a23816",
+      "duration_s": 9.283,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "25020000/835439",
+          "pix_fmt": "yuv420p",
+          "color_transfer": "bt709",
+          "color_primaries": "bt709",
+          "color_space": "bt709"
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Video/normalpart4.mp4",
+      "kind": "video",
+      "size": 2945471,
+      "sha256": "c036e471cf98757bca3fab9848aee4613b948e999c0d6ca16b668f38a0c6db02",
+      "duration_s": 3.773,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "10170000/339557",
+          "pix_fmt": "yuv420p",
+          "color_transfer": "bt709",
+          "color_primaries": "bt709",
+          "color_space": "bt709"
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Video/normalpart5.mp4",
+      "kind": "video",
+      "size": 3794112,
+      "sha256": "39f8a7bf8d957a222126128385443029bfa280cc158b66c6df2a4b6299022756",
+      "duration_s": 3.869,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "139200/4643",
+          "pix_fmt": "yuv420p",
+          "color_transfer": "bt709",
+          "color_primaries": "bt709",
+          "color_space": "bt709"
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Video/normalpart6.mp4",
+      "kind": "video",
+      "size": 19351482,
+      "sha256": "ce05837890c9129949851751f9c6c0ca6c3fde27381a5ea7cc5d3ce020df3e12",
+      "duration_s": 12.647,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "34020000/1138201",
+          "pix_fmt": "yuv420p",
+          "color_transfer": "bt709",
+          "color_primaries": "bt709",
+          "color_space": "bt709"
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Video/sospart1.mp4",
+      "kind": "video",
+      "size": 21477470,
+      "sha256": "26603df1b301a3dcd3abb69a617ae76ad21b40d86b9b666f30dacde05ec91f18",
+      "duration_s": 10.64,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "9570000/319207",
+          "pix_fmt": "yuv420p",
+          "color_transfer": "bt709",
+          "color_primaries": "bt709",
+          "color_space": "bt709"
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Video/sospart2.mp4",
+      "kind": "video",
+      "size": 14012745,
+      "sha256": "13e7845431f4e483a249b24b3383dd1cc0276f950b7e8199929b3fe377b5c243",
+      "duration_s": 10.701,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "28890000/963049",
+          "pix_fmt": "yuv420p",
+          "color_transfer": "bt709",
+          "color_primaries": "bt709",
+          "color_space": "bt709"
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Video/vachna part1.mp4",
+      "kind": "video",
+      "size": 15791741,
+      "sha256": "c638b770e1f339a638d8315075ff46a51373fd139acfa7b1defca3445bb1b12b",
+      "duration_s": 19.668,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "2950000/98339",
+          "pix_fmt": "yuv420p",
+          "color_transfer": "bt709",
+          "color_primaries": "bt709",
+          "color_space": "bt709"
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Video/vachna part2.mp4",
+      "kind": "video",
+      "size": 41733985,
+      "sha256": "c65f4695b726de0ad54db437e449cc84184eba848b25beda09914812556df8ef",
+      "duration_s": 37.122,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "19980000/668191",
+          "pix_fmt": "yuv420p",
+          "color_transfer": "bt709",
+          "color_primaries": "bt709",
+          "color_space": "bt709"
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Audio/normalpart1.mp3",
+      "kind": "audio",
+      "size": 469753,
+      "sha256": "fe6dd42106a7c6d599805ed3227f854d47d66db9bceeae5bcbbcdca2f4ef2d61",
+      "duration_s": 11.744,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Audio/Normalpart6.mp3",
+      "kind": "audio",
+      "size": 480386,
+      "sha256": "2ad0b101774b7f112848183bdf85d9c7ad01d57f91c27b2f8bbade0362a963c2",
+      "duration_s": 12.01,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Audio/sospart1.mp3",
+      "kind": "audio",
+      "size": 219805,
+      "sha256": "5215f2216deac053782eba9de31abf105fcb3e1dcce1f8ca793a255e76f20cc3",
+      "duration_s": 5.495,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Audio/sospart2.mp3",
+      "kind": "audio",
+      "size": 665014,
+      "sha256": "6da4115603943aaf1a18256827641d373e21d2aaaf13d24c98889bb0a7f618e5",
+      "duration_s": 16.625,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Audio/vachna part1.mp3",
+      "kind": "audio",
+      "size": 826688,
+      "sha256": "790134e6a51ea39307f143f23be0c8be99a51ce07176627992f1528446e9389f",
+      "duration_s": 20.667,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Audio/vachna part2.mp3",
+      "kind": "audio",
+      "size": 1504605,
+      "sha256": "888b3bf8844d191ef51386c2d183af160b3a965fecb91ac7c75b85d9b9694707",
+      "duration_s": 37.615,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    }
+  ],
+  "archives_info_only": [],
+  "extraction_log": []
+}
