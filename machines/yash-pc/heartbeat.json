@@ -1,8 +1,8 @@
 {
   "machine": "yash-pc",
-  "time": "2026-09-29T22:00:52Z",
-  "status": "idle",
-  "current_task": null,
+  "time": "2026-09-29T22:04:48Z",
+  "status": "busy",
+  "current_task": "T0001",
   "workers": [
     "codex-f1"
   ],
