@@ -1,8 +1,8 @@
 {
   "machine": "utkarsh-pc",
-  "time": "2026-09-29T22:01:16Z",
-  "status": "idle",
-  "current_task": null,
+  "time": "2026-09-29T22:05:00Z",
+  "status": "busy",
+  "current_task": "T0002",
   "workers": [
     "codex-f2"
   ],
