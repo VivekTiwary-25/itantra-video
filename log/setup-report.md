@@ -1,6 +1,6 @@
 # Setup report: FINAL HANDOVER (30 Sept 2026)
 
-**Status: setup is done.** The task system works end to end on all four machines: tasks go out through git, workers run them, results come back, reviews and redos work, and a silent machine is detected. Three small things still need a person (section 10). No film work has been started.
+**Status: setup is done.** The task system works end to end on all four machines: tasks go out through git, workers run them, results come back, reviews and redos work, and a silent machine is detected. Two small things still need a person (section 10). No film work has been started.
 
 ## 1. Machines and workers
 | Machine | Owner (GitHub) | Workers | Hardware | CLIs |
@@ -25,13 +25,13 @@ Repo: `VivekTiwary-25/itantra-video`, **public**, branch `main`, a normal clone 
 | X009 silent machine | PASSED (section 8) |
 | X011 then X013 sandbox diagnostic on utkarsh-pc | PASSED: ffmpeg, temp folder and HyperFrames healthy after the fix |
 | X015 / X016 HyperFrames on utkarsh-pc / vivek-pc | PASSED both (Chrome reachable inside the sandbox) |
-| X017 / X018 second foreman remembers its earlier answer | FAILED both, found a real bug (section 7). Fixed in code. **Live proof still pending**: needs yojitth-pc's listener restarted, then a new task (X019) |
+| X017 / X018 second foreman remembers its earlier answer | FAILED both: X017 found a real bug (duplicate session names, section 7); X018 ran on a listener that had not yet been restarted. Redo **X019 PASSED**: the resumed session remembered its X006 answer before opening any file |
 
 Failures were honest reports from workers or bugs of mine, and each one led to a fix that is now in the code or the rules.
 
 ## 3. Exact commands that worked
 - **Codex worker** (built by the listener): `codex exec -m <model> -c model_reasoning_effort="<effort>" --sandbox workspace-write --cd <repo> --json -o <file> -` with the prompt sent on stdin (no Windows quoting problems). Models used: `gpt-6-luna` (low) and `gpt-6-sol` (medium). `gpt-6-astra` is refused by the listener before anything runs.
-- **Second foreman**: `claude -p --model opus --effort high --permission-mode auto --add-dir <footage_root>` plus `--session-id <uuid>` on the first task and `--resume <uuid>` afterwards, prompt on stdin. The ID form was checked against the real CLI on vivek-pc. On yojitth-pc only the older name-based first task (X006) has run live.
+- **Second foreman**: `claude -p --model opus --effort high --permission-mode auto --add-dir <footage_root>` plus `--session-id <uuid>` on the first task and `--resume <uuid>` afterwards, prompt on stdin. The ID form was checked against the real CLI on vivek-pc. On yojitth-pc it is proven live (X019): two sessions were named `claude-second`, the listener repaired it by adopting the newest by ID and retried once (two `start X019` commits show this), and the session remembered its earlier answer. The older duplicate does not need deleting.
 - **HyperFrames**: `hyperframes.cmd init project --non-interactive --skip-transcribe`, `hyperframes.cmd check`, `hyperframes.cmd snapshot --at 0.2,1.5 --no-end -o snaps`, with `HYPERFRAMES_NO_TELEMETRY=1` and `HYPERFRAMES_SKIP_SKILLS=1`.
 - **Git**: `git pull --rebase --autostash origin main`, `git push origin HEAD` with up to 5 retries. Heartbeats every 5 minutes; `tools/status.py`, `tools/swarm_status.py` and `tools/find_stuck_tasks.py` read them.
 
@@ -75,14 +75,14 @@ utkarsh-pc's listener was stopped and left no "stopped" heartbeat. Timeline from
 `listener.py` (the worker daemon), `doctor.py` (what a machine has; installs nothing), `manifest.py` (footage layout and manifest), `compare_manifests.py`, `status.py`, `swarm_status.py` (the banner; the lead runs it with `--as-lead`), `find_stuck_tasks.py`, `sandbox_check.py` (what a Codex worker really sees), `fix_ffmpeg_path.py`, `statusline_usage.py`, `start-listener.cmd`.
 
 ## 10. Open items (each needs a person, none blocks starting the lead)
-1. **Restart Vivek's listener once.** It is still the first version, started 29 Sept 23:48, so it lacks every fix. After one restart it updates itself. (`tools\start-listener.cmd`)
-2. **Yojitth's agent: run `git pull` and restart the listener once** (same reason). Then queue X019 (redo of X018) to prove the second foreman's session memory live. Until then the second foreman's follow-up tasks will fail.
-3. **Yash's agent: set the repo's git identity to his no-reply address** (`245989214+MATHUR-Yash@users.noreply.github.com`, name `MATHUR-Yash`, run inside the repo and check `git log -1 --format=%ae` after the next heartbeat). His newest commit still used his college email. Yash accepted the college email on his older commits.
-4. Windows power settings: the PCs must not sleep while listeners run. Not checked.
-5. Film info still missing (ask Vivek): team ID for the title card, the exact official problem-statement text, music track (if any), SIH deadline and length limit.
+1. ~~Restart Vivek's listener~~ done. ~~Restart Yojitth's listener~~ done (30 Sept): both now update themselves.
+2. Windows power settings: the PCs must not sleep while listeners run. Not checked.
+3. Film info still missing (ask Vivek): team ID for the title card, the exact official problem-statement text, music track (if any), SIH deadline and length limit.
+4. Decided, no action: Yash keeps his college email on his commits (he is fine with it), so his newest commits still show it.
+5. Optional tidy-up: the old duplicate Claude session on yojitth-pc, the parked Codex staging folder on vivek-pc, and the local-only `pre-public-backup` branch can be deleted whenever convenient. Nothing depends on them.
 
 ## 11. State of the public repo (privacy)
-Checked on 30 Sept over everything pushed to GitHub: no tokens, no Gmail address, no Drive link, no Windows account names except Yash's in 6 old revisions of one file (`results/X002/REPORT.md`, scrubbed at the tip), and Yash's college email on his older commits (his choice). The history was squashed once, before the repo went public, to remove an account name and an email. A local-only branch `pre-public-backup` on vivek-pc still holds those old commits: never push it, delete it when no longer needed. Everyone else uses GitHub no-reply addresses.
+Checked on 30 Sept over everything pushed to GitHub: no tokens, no Gmail address, no Drive link, no Windows account names except Yash's in 6 old revisions of one file (`results/X002/REPORT.md`, scrubbed at the tip), and Yash's college email on his older commits (his choice). The history was squashed once, before the repo went public, to remove an account name and an email. A local-only branch `pre-public-backup` on vivek-pc still holds those old commits: never push it, delete it when no longer needed. Vivek, Utkarsh and Yojitth use GitHub no-reply addresses; Yash's newer commits still use his college email, by his choice.
 
 ## 12. Next step
 Start the lead foreman on vivek-pc, in the repo folder: `claude --model opus --effort high --permission-mode auto`, then paste `prompts/2-lead-foreman-opus.md`. Its first action is `git pull` and `python tools/swarm_status.py --as-lead`, shown to Vivek in a code block. Then it asks Vivek for the missing film information and waits for a go for batch 1 (footage inventory and shot list, no editing).
