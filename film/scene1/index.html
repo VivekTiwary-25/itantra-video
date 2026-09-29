@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<script src="./gsap.min.js"></script>
+<style>
+  @font-face { font-family: 'SceneSans'; src: local('Segoe UI Variable Display'), local('Segoe UI Variable'), local('Segoe UI'); font-weight: 100 900; }
+  :root {
+    --ink: #f3f5f8;
+    --ink-2: #c1c8d2;
+    --ink-3: #6f7886;
+    --accent: #8fe3d4;      /* draft accent, soft teal (red is kept for SOS later) */
+    --panel: rgba(9, 12, 17, 0.86);
+    --line: rgba(255, 255, 255, 0.11);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+  body { font-family: 'SceneSans', sans-serif; color: var(--ink); }
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  .clip { position: absolute; }
+
+  /* footage */
+  #stage { position: absolute; inset: 0; transform-origin: 66% 50%; }
+  #stage video { position: absolute; inset: 0; width: 1920px; height: 1080px; object-fit: cover; }
+  #dim { position: absolute; inset: 0; background: #05070a; opacity: 0; }
+
+  /* panel */
+  #float { position: absolute; inset: 0; perspective: 1600px; }
+  #panel {
+    position: absolute; left: 1238px; top: 250px; width: 600px; height: 580px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    box-shadow: 0 40px 90px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px) saturate(115%);
+    overflow: hidden;
+    opacity: 0;
+  }
+  #panel::before { /* faint glass sheen along the top edge */
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 140px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
+    pointer-events: none;
+  }
+  .card { position: absolute; inset: 0; padding: 50px 50px; opacity: 0; }
+  .eyebrow { font-size: 24px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+  .big { font-size: 50px; font-weight: 650; line-height: 1.08; letter-spacing: -0.01em; }
+  .mid { font-size: 38px; font-weight: 500; line-height: 1.15; color: var(--ink); }
+  .small { font-size: 26px; font-weight: 500; color: var(--ink-2); line-height: 1.25; }
+
+  /* card A: decoding the title */
+  #cardA .psid { margin-top: 14px; font-size: 44px; font-weight: 650; letter-spacing: 0.01em; }
+  #cardA .psid span { color: var(--ink-2); font-weight: 500; }
+  .def { margin-top: 30px; opacity: 0; }
+  .def .k { font-size: 24px; font-weight: 700; letter-spacing: 0.12em; color: var(--accent); }
+  .def .v { margin-top: 4px; font-size: 38px; font-weight: 550; line-height: 1.12; }
+
+  /* card B: no network */
+  #cardB .big { margin-top: 18px; }
+  .icons { position: absolute; left: 50px; right: 50px; top: 330px; display: flex; justify-content: space-between; }
+  .ic { width: 160px; text-align: center; white-space: nowrap; }
+  .ic .glyph { position: relative; width: 104px; height: 104px; margin: 0 auto; border-radius: 26px; background: rgba(255,255,255,0.06); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
+  .ic .glyph svg { width: 58px; height: 58px; }
+  .ic .slash { position: absolute; left: 24px; top: 78px; width: 76px; height: 4px; border-radius: 2px; background: var(--ink); transform-origin: 0 50%; }
+  .ic .lab { margin-top: 14px; font-size: 26px; font-weight: 600; color: var(--ink-2); }
+
+  /* card C: how it travels */
+  .step { position: absolute; left: 50px; right: 40px; display: flex; gap: 26px; opacity: 0.0; }
+  .step .dot { flex: none; width: 76px; height: 76px; border-radius: 22px; background: rgba(143,227,212,0.12); border: 1px solid rgba(143,227,212,0.35); display: flex; align-items: center; justify-content: center; }
+  .step .dot svg { width: 42px; height: 42px; }
+  .step .t1 { font-size: 36px; font-weight: 650; line-height: 1.1; }
+  .step .t2 { margin-top: 4px; font-size: 28px; font-weight: 500; color: var(--ink-2); }
+  #s1 { top: 112px; } #s2 { top: 290px; } #s3 { top: 430px; }
+  #rail { position: absolute; left: 87px; top: 190px; width: 2px; height: 240px; background: linear-gradient(var(--line), var(--line)); transform-origin: 50% 0; }
+  #packet { position: absolute; left: 81px; top: 190px; width: 14px; height: 14px; border-radius: 4px; background: var(--accent); box-shadow: 0 0 16px rgba(143,227,212,0.8); opacity: 0; }
+  #wave { position: absolute; left: 152px; top: 214px; height: 44px; display: flex; align-items: center; gap: 5px; transform-origin: 0 50%; }
+  #wave i { display: block; width: 6px; border-radius: 3px; background: var(--ink-2); }
+  #pill { position: absolute; left: 152px; top: 218px; height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(143,227,212,0.5); color: var(--accent); font-size: 22px; font-weight: 700; letter-spacing: 0.06em; display: flex; align-items: center; opacity: 0; }
+
+  /* card D: in short */
+  #cardD .row { position: absolute; left: 50px; right: 50px; top: 190px; display: flex; align-items: center; justify-content: space-between; }
+  .node { width: 124px; height: 124px; border-radius: 34px; background: rgba(255,255,255,0.06); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; opacity: 0.35; }
+  .node svg { width: 64px; height: 64px; }
+  .node .aa { font-size: 50px; font-weight: 700; color: var(--ink); }
+  .arr { width: 60px; height: 2px; background: var(--ink-3); position: relative; }
+  .arr::after { content: ""; position: absolute; right: -2px; top: -6px; border-left: 12px solid var(--ink-3); border-top: 7px solid transparent; border-bottom: 7px solid transparent; }
+  #cardD .caps { position: absolute; left: 50px; right: 50px; top: 344px; display: flex; justify-content: space-between; }
+  #cardD .caps div { width: 124px; text-align: center; font-size: 28px; font-weight: 600; color: var(--ink-2); opacity: 0.35; }
+
+  /* doorway */
+  #screenglow { position: absolute; inset: 14px; border-radius: 48px; background: radial-gradient(120% 70% at 50% 0%, rgba(143,227,212,0.07), rgba(0,0,0,0) 60%); opacity: 0; }
+  #notch { position: absolute; left: 50%; top: 22px; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: #0c0f14; border: 1px solid rgba(255,255,255,0.10); opacity: 0; }
+  #handoff { position: absolute; left: 0; right: 0; top: 50%; margin-top: -30px; text-align: center; font-size: 42px; font-weight: 600; color: var(--ink); opacity: 0; letter-spacing: -0.005em; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="scene1" data-start="0" data-duration="58" data-width="1920" data-height="1080">
+
+  <div id="stage">
+    <video id="v1" class="clip" src="assets/part1.mp4" data-start="0" data-duration="18" data-media-start="0" muted playsinline></video>
+    <video id="v2" class="clip" src="assets/part2.mp4" data-start="18" data-duration="40" data-media-start="0" muted playsinline></video>
+  </div>
+  <div id="dim"></div>
+
+  <audio id="voice" class="clip" src="assets/voice.wav" data-start="0" data-duration="58" data-volume="1"></audio>
+  <audio id="sfx" class="clip" src="assets/doorway.wav" data-start="54.65" data-duration="2.4" data-volume="1"></audio>
+
+  <div id="float">
+    <div id="panel">
+      <div id="screenglow"></div>
+      <div id="notch"></div>
+
+      <!-- A: 7.0 - 18.0  what the title means -->
+      <div class="card" id="cardA">
+        <div class="eyebrow">Problem statement · ISRO</div>
+        <div class="psid">SIH26173 <span>· iTantra</span></div>
+        <div class="def" id="dA1"><div class="k">TTS</div><div class="v">text becomes speech</div></div>
+        <div class="def" id="dA2"><div class="k">STT</div><div class="v">speech becomes text</div></div>
+        <div class="def" id="dA3"><div class="k">Low-bitrate link</div><div class="v">too little bandwidth for voice</div></div>
+      </div>
+
+      <!-- B: 18.3 - 27.9  nothing in between -->
+      <div class="card" id="cardB">
+        <div class="eyebrow">No infrastructure</div>
+        <div class="big" id="bHead">Phone to phone.<br/>Nothing in between.</div>
+        <div class="icons">
+          <div class="ic" id="icSim">
+            <div class="glyph">
+              <svg viewBox="0 0 48 48" fill="none" stroke="#f3f5f8" stroke-width="3.2" stroke-linecap="round"><path d="M8 40v-6M18 40V27M28 40V19M38 40V10"/></svg>
+              <div class="slash"></div>
+            </div>
+            <div class="lab">Mobile signal</div>
+          </div>
+          <div class="ic" id="icNet">
+            <div class="glyph">
+              <svg viewBox="0 0 48 48" fill="none" stroke="#f3f5f8" stroke-width="3" stroke-linecap="round"><circle cx="24" cy="24" r="16"/><path d="M8 24h32M24 8c5 5 7 10 7 16s-2 11-7 16c-5-5-7-10-7-16s2-11 7-16z"/></svg>
+              <div class="slash"></div>
+            </div>
+            <div class="lab">Internet</div>
+          </div>
+          <div class="ic" id="icWifi">
+            <div class="glyph">
+              <svg viewBox="0 0 48 48" fill="none" stroke="#f3f5f8" stroke-width="3.2" stroke-linecap="round"><path d="M6 19c10-9 26-9 36 0M12 26c7-6 17-6 24 0M18 33c4-3 8-3 12 0"/><circle cx="24" cy="39" r="1.8" fill="#f3f5f8"/></svg>
+              <div class="slash"></div>
+            </div>
+            <div class="lab">Wi-Fi router</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- C: 28.0 - 47.4  how a message travels -->
+      <div class="card" id="cardC">
+        <div class="eyebrow">How a message travels</div>
+        <div id="rail"></div>
+        <div id="packet"></div>
+        <div class="step" id="s1">
+          <div class="dot"><svg viewBox="0 0 48 48" fill="none" stroke="#8fe3d4" stroke-width="3.2" stroke-linecap="round"><rect x="17" y="6" width="14" height="24" rx="7"/><path d="M10 23c0 8 6 13 14 13s14-5 14-13M24 36v6"/></svg></div>
+          <div><div class="t1">Speech → text</div><div class="t2">on the phone itself</div></div>
+        </div>
+        <div id="wave"></div>
+        <div id="pill">TEXT</div>
+        <div class="step" id="s2">
+          <div class="dot"><svg viewBox="0 0 48 48" fill="none" stroke="#8fe3d4" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 15l20 18-10 8V7l10 8-20 18"/></svg></div>
+          <div><div class="t1">Sent over Bluetooth</div><div class="t2">phone to phone, through relays</div></div>
+        </div>
+        <div class="step" id="s3">
+          <div class="dot"><svg viewBox="0 0 48 48" fill="none" stroke="#8fe3d4" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19h8l10-8v26l-10-8H8z"/><path d="M33 17c3 4 3 10 0 14M38 12c6 7 6 17 0 24"/></svg></div>
+          <div><div class="t1">Text → speech</div><div class="t2">in the message's language</div></div>
+        </div>
+      </div>
+
+      <!-- D: 47.5 - 54.6  in short -->
+      <div class="card" id="cardD">
+        <div class="eyebrow">In short</div>
+        <div class="row">
+          <div class="node" id="n1"><svg viewBox="0 0 48 48" fill="none" stroke="#f3f5f8" stroke-width="3.2" stroke-linecap="round"><rect x="17" y="6" width="14" height="24" rx="7"/><path d="M10 23c0 8 6 13 14 13s14-5 14-13M24 36v6"/></svg></div>
+          <div class="arr"></div>
+          <div class="node" id="n2"><div class="aa">Aa</div></div>
+          <div class="arr"></div>
+          <div class="node" id="n3"><svg viewBox="0 0 48 48" fill="none" stroke="#f3f5f8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19h8l10-8v26l-10-8H8z"/><path d="M33 17c3 4 3 10 0 14M38 12c6 7 6 17 0 24"/></svg></div>
+        </div>
+        <div class="caps"><div id="c1">Speech</div><div id="c2">Text</div><div id="c3">Speech</div></div>
+      </div>
+
+      <div id="handoff">Let's see it work.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // waveform bars for the "compact text" moment (deterministic heights)
+  (function () {
+    const h = [14,26,38,22,44,30,18,40,34,20,42,28,16,36,24,40,22,32,14,26];
+    const w = document.getElementById('wave');
+    h.forEach(v => { const i = document.createElement('i'); i.style.height = v + 'px'; w.appendChild(i); });
+  })();
+
+  const tl = gsap.timeline({ paused: true });
+  const E = 'power2.out', EI = 'power2.inOut';
+
+  // footage cut: part 1 -> part 2 at 18.0 (hard cut hidden behind the panel's content change)
+
+  tl.set('.ic .slash', { rotation: -45, scaleX: 0 }, 0);
+
+  // ---- panel entrance (she says "problem statement" at 8.15) ----
+  tl.fromTo('#panel', { opacity: 0, x: 0, y: 26, rotationY: -5, filter: 'blur(10px)' }, { opacity: 1, x: 0, y: 0, rotationY: -5, filter: 'blur(0px)', duration: 0.9, ease: E }, 7.1);
+  // subtle float for depth
+  tl.to('#float', { y: -7, duration: 3, ease: 'sine.inOut', yoyo: true, repeat: 14 }, 7.1);
+  tl.to('#float', { y: 0, duration: 1.6, ease: 'sine.inOut' }, 52.3);
+  tl.to('#panel', { rotationY: -2, duration: 20, ease: 'sine.inOut', yoyo: true, repeat: 1 }, 8);
+
+  // ---- card A ----
+  tl.to('#cardA', { opacity: 1, duration: 0.6, ease: E }, 7.3);
+  tl.fromTo('#dA1', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 12.5);   // "TTS" 12.61
+  tl.fromTo('#dA2', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 13.7);   // "STT" 13.79
+  tl.fromTo('#dA3', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 16.3);   // "low bit rate" 16.43
+  tl.to('#cardA', { opacity: 0, duration: 0.45, ease: 'power1.in' }, 17.75);
+
+  // ---- card B ----
+  tl.to('#cardB', { opacity: 1, duration: 0.6, ease: E }, 18.35);
+  tl.fromTo('#bHead', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 21.6);  // "lets two Android devices communicate" 21.73
+  tl.fromTo('.icons', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 18.6);
+  [['#icSim', 24.6], ['#icNet', 25.3], ['#icWifi', 26.1]].forEach(([id, t]) => {           // "no SIM" "no internet" "no router"
+    tl.to(id + ' .slash', { scaleX: 1, duration: 0.28, ease: 'power3.out' }, t);
+    tl.to(id + ' .glyph svg', { opacity: 0.22, duration: 0.5 }, t + 0.1);
+    tl.to(id + ' .lab', { opacity: 0.4, duration: 0.5 }, t + 0.1);
+  });
+  tl.to('#cardB', { opacity: 0, duration: 0.45, ease: 'power1.in' }, 27.75);
+
+  // ---- card C ----
+  tl.to('#cardC', { opacity: 1, duration: 0.5, ease: E }, 28.0);
+  tl.fromTo('#s1', { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.5, ease: E }, 28.35);   // "on-device speech-to-text" 28.41
+  tl.fromTo('#wave', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 29.0);
+  tl.to('#wave', { scaleX: 0.12, opacity: 0, duration: 0.7, ease: 'power3.inOut' }, 32.35);       // "compact text" 32.51
+  tl.fromTo('#pill', { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.45, ease: 'back.out(1.6)' }, 32.75);
+  tl.fromTo('#rail', { scaleY: 0 }, { scaleY: 1, duration: 0.8, ease: EI }, 33.7);
+  tl.to('#s1', { opacity: 0.6, duration: 0.5 }, 33.8);
+  tl.fromTo('#s2', { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.5, ease: E }, 33.9);   // "Bluetooth" 33.97
+  tl.to('#pill', { opacity: 0, duration: 0.4 }, 34.0);
+  tl.fromTo('#packet', { opacity: 0, y: 0 }, { opacity: 1, duration: 0.3 }, 34.3);
+  tl.to('#packet', { y: 236, duration: 4.2, ease: 'sine.inOut' }, 34.4);                            // travels while "relay layer will send this text into another device"
+  tl.to('#packet', { opacity: 0, duration: 0.4 }, 38.7);
+  tl.to('#s2', { opacity: 0.6, duration: 0.5 }, 39.8);
+  tl.fromTo('#s3', { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.5, ease: E }, 39.85);  // "text-to-speech" 39.95
+  tl.to('#cardC', { opacity: 0, duration: 0.45, ease: 'power1.in' }, 47.25);
+
+  // ---- card D ----
+  tl.to('#cardD', { opacity: 1, duration: 0.5, ease: E }, 47.6);
+  [['#n1', '#c1', 48.95], ['#n2', '#c2', 50.5], ['#n3', '#c3', 53.8]].forEach(([n, c, t]) => {   // "speech" 49.01, "text is sent" 50.55, "becomes speech" 53.89
+    tl.to([n, c], { opacity: 1, duration: 0.35, ease: E }, t);
+    tl.fromTo(n, { scale: 1 }, { scale: 1.06, duration: 0.25, yoyo: true, repeat: 1, ease: 'sine.inOut' }, t);
+  });
+  tl.to('#n2', { borderColor: 'rgba(143,227,212,0.6)', duration: 0.4 }, 50.5);
+  tl.to('#cardD', { opacity: 0, duration: 0.4, ease: 'power1.in' }, 54.55);
+
+  // ---- doorway: panel contracts into an empty phone (54.65 -> 56.4) ----
+  tl.to('#panel', {
+    x: -504, y: -180, width: 452, height: 940, borderRadius: 64, rotationY: 0,
+    backgroundColor: 'rgba(5,7,10,0.97)', borderColor: 'rgba(255,255,255,0.24)',
+    duration: 1.6, ease: 'power3.inOut'
+  }, 54.7);
+  tl.to('#dim', { opacity: 0.93, duration: 1.5, ease: 'power2.inOut' }, 54.75);
+  tl.to('#stage', { scale: 1.07, filter: 'blur(8px)', duration: 1.7, ease: 'power2.inOut' }, 54.7);
+  tl.to(['#screenglow', '#notch'], { opacity: 1, duration: 0.6 }, 55.9);
+  tl.fromTo('#handoff', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 56.0);
+  tl.to('#handoff', { opacity: 0, duration: 0.5, ease: 'power1.in' }, 57.25);
+  // hold on the empty phone shape to the end (58.0)
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines['scene1'] = tl;
+  tl.seek(0);
+</script>
+</body>
+</html>

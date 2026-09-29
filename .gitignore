@@ -19,3 +19,8 @@ __pycache__/
 
 # ...except small preview clips (the listener still enforces 10 MB)
 !results/*/preview/*.mp4
+
+# HyperFrames scene working files (media and snapshots stay local)
+film/*/assets/
+film/*/snaps/
+film/*/.hyperframes/
