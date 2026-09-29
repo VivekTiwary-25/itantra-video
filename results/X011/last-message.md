@@ -1,0 +1,1 @@
+Completed the sandbox diagnostic and wrote [REPORT.md](/D:/Presentation_Itantra/itantra-video/results/X011/REPORT.md). `node` was available; `ffmpeg`, `ffprobe`, and `python` were not found. PowerShell blocked the HyperFrames script shim. The temp-file write succeeded, but neither temp variable ended in `local\tmp`.
