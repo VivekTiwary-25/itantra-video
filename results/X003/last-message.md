@@ -1,0 +1,1 @@
+Completed X003. `results/X003/hello.json` records the machine, 16 footage files totaling 425.072174 seconds, and the ffmpeg version. The one-second test pattern is at `RENDERS:X003-testpattern.mp4`; the report is in [REPORT.md](/<REPO>/results/X003/REPORT.md).
