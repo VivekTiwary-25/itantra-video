@@ -1,0 +1,6 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "python tools/statusline_usage.py"
+  }
+}

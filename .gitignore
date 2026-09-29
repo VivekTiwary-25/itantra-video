@@ -1,0 +1,21 @@
+# Machine-local stuff (never committed)
+local/
+machine.local.json
+__pycache__/
+*.pyc
+.claude/settings.local.json
+
+# Footage, audio and archives are never committed
+*.mp4
+*.mov
+*.mkv
+*.m4a
+*.wav
+*.aac
+*.mp3
+*.flac
+*.zip
+*.7z
+
+# ...except small preview clips (the listener still enforces 10 MB)
+!results/*/preview/*.mp4

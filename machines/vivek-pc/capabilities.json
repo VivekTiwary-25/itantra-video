@@ -1,0 +1,51 @@
+{
+  "machine": "vivek-pc",
+  "checked_at": "2026-09-29T17:20:10Z",
+  "os": "Windows-11-10.0.26200-SP0",
+  "tools": {
+    "git": {
+      "version": "git version 2.52.0.windows.1"
+    },
+    "python": {
+      "version": "Python 3.12.10"
+    },
+    "node": {
+      "version": "v24.12.0"
+    },
+    "npm": {
+      "version": "11.6.2"
+    },
+    "ffmpeg": {
+      "version": "ffmpeg version 7.1.1-essentials_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers"
+    },
+    "ffprobe": {
+      "version": "ffprobe version 7.1.1-essentials_build-www.gyan.dev Copyright (c) 2007-2025 the FFmpeg developers"
+    },
+    "codex": {
+      "version": "codex-cli 0.159.0"
+    },
+    "claude": {
+      "version": "2.1.284 (Claude Code)"
+    },
+    "hyperframes": null
+  },
+  "browsers": [
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+  ],
+  "gpu": [
+    "NVIDIA GeForce RTX 2050, 4096 MiB"
+  ],
+  "cpu_cores": 12,
+  "ram_gb": 23.7,
+  "free_disk_gb": {
+    "repo_drive": 47.3,
+    "footage_drive": 47.3,
+    "renders_drive": 47.3
+  },
+  "codex_sandbox": "workspace-write",
+  "codex_add_dirs": [],
+  "missing": [
+    "hyperframes"
+  ]
+}

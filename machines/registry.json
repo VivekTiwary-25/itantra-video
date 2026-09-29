@@ -1,0 +1,34 @@
+{
+  "_note": "Canonical list of machines and workers. Written by claude-lead only. Names must match machine.local.json on each PC.",
+  "machines": {
+    "vivek-pc": {
+      "owner": "Vivek",
+      "workers": ["claude-lead", "claude-helper", "codex-vivek"],
+      "listener_workers": ["codex-vivek"]
+    },
+    "yash-pc": {
+      "owner": "yash",
+      "workers": ["codex-f1"],
+      "listener_workers": ["codex-f1"]
+    },
+    "utkarsh-pc": {
+      "owner": "utkarsh",
+      "workers": ["codex-f2"],
+      "listener_workers": ["codex-f2"]
+    },
+    "yojitth-pc": {
+      "owner": "yojitth",
+      "workers": ["claude-second"],
+      "listener_workers": ["claude-second"]
+    }
+  },
+  "workers": {
+    "claude-lead":   { "machine": "vivek-pc",   "cli": "claude", "role": "lead foreman",   "queue": false, "interactive": true, "display_model": "Opus", "swarm": true },
+    "claude-helper": { "machine": "vivek-pc",   "cli": "claude", "role": "sonnet subagents inside the lead's session", "queue": false, "interactive": true, "swarm": false },
+    "codex-vivek":   { "machine": "vivek-pc",   "cli": "codex",  "role": "worker; final renders", "queue": true, "display_model": "GPT-6 Sol/Luna", "swarm": true },
+    "codex-f1":      { "machine": "yash-pc", "cli": "codex",  "role": "worker", "queue": true, "display_model": "GPT-6 Sol/Luna", "swarm": true },
+    "codex-f2":      { "machine": "utkarsh-pc", "cli": "codex",  "role": "worker", "queue": true, "display_model": "GPT-6 Sol/Luna", "swarm": true },
+    "claude-second": { "machine": "yojitth-pc", "cli": "claude", "role": "second foreman", "queue": true, "display_model": "Opus", "swarm": true }
+  },
+  "banned_models": ["astra"]
+}
