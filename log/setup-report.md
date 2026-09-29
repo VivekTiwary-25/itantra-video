@@ -71,3 +71,19 @@ Not compared yet (only vivek-pc exists so far).
 - **Temp folder (found on utkarsh-pc):** inside the `workspace-write` sandbox the normal Windows temp folder is blocked, so anything that writes temp files (ffmpeg, HyperFrames, Python `tempfile`) can fail. The listener now sets `TEMP`/`TMP`/`TMPDIR` to `local/tmp` for every task (verified with real Codex: set, writable, ffmpeg writes there) and `sandbox_check.py` uses it too. `local/tmp` is cleaned of files older than 2 days at listener start.
 - **Self-restart:** the listener hashes `tools/*.py` at start and, between tasks after a pull, exits with code 75 if they changed; `start-listener.cmd` restarts it. Tested. Listeners started before this change need one manual restart, after which fixes arrive by themselves.
 - **Working rule from Vivek:** whatever a friend machine needs goes to that machine's agent as a task (or a message to the agent). The human is asked only if the agent says it cannot do it.
+
+## Test results so far (30 Sept)
+| Test | Result |
+|---|---|
+| X001 (vivek-pc plumbing) | PASSED (real Codex, real push/pull round trip) |
+| X002 (yash-pc plumbing) | FAILED, honestly: worker could not see a working ffmpeg/ffprobe. Redo queued as X012 after the fix |
+| X004 (yash-pc HyperFrames still) | FAILED, honestly: `hyperframes check` could not load GSAP from a CDN, because the sandbox blocks the network. Redo queued as X010 using a local GSAP copy |
+| X005 (Astra on yash-pc) | PASSED: refused with `status: refused`, nothing ran |
+| X006 (yojitth-pc consult) | PASSED: `002-claude-second.md` answered in 117 words with a sensible risk (private data leaking into the public repo) and a concrete suggestion, which was implemented |
+| X011 (utkarsh-pc sandbox diagnostic) | DONE: ffmpeg, ffprobe and python not visible to the worker; `hyperframes` found but its .ps1 shim blocked by execution policy; node fine; his listener was on old code (TEMP not yet local/tmp) |
+| X003, X007-X009 | not run yet |
+
+## What the friend-machine tests taught us (all fixed in code or rules)
+- **Workers have no internet.** The workspace-write sandbox blocks the network, so a composition that loads GSAP, fonts or images from a URL fails. A local GSAP 3.14.2 copy is in `film/vendor/gsap/` (see its NOTICE.md). New worker rules 10 and 11 in AGENTS.md, CLAUDE.md and PROTOCOL.md: no URLs while building; use `hyperframes.cmd` / `npx.cmd`, not the `.ps1` shims (which a machine's execution policy can block). We did NOT weaken any PowerShell execution policy.
+- **ffmpeg visibility.** Friends' ffmpeg (same winget build) was visible to their own shell but not to workers. The fix that worked on yash-pc: copy the ffmpeg programs to a plain folder and list it in `path_prepend`. `tools/fix_ffmpeg_path.py` does this safely (dry run by default; picks the first candidate that really works, e.g. makes a lavfi test pattern and probes an audio file; never touches the original). The listener also builds the worker PATH like a brand-new terminal (registry Machine + User PATH) and re-reads `machine.local.json` for every task, so `path_prepend` edits need no restart.
+- **Public-repo safety net, second version** (suggested by claude-second in X006): the listener now redacts every configured path (repo, footage, renders, home), and holds back any result file containing an email address (other than GitHub/Anthropic no-reply) or a token-like string, moving it to `local/quarantine/<id>/` and marking the task failed. Tested with fake workers. A crash while handling one task no longer stops the listener: the task is marked failed and the listener carries on.

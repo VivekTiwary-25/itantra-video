@@ -121,7 +121,8 @@ File formats the listener reads (start each file with a short front-matter block
 6. Never commit footage or audio source files. Footage is referenced, never copied into git.
 7. All film rules in brief/decisions.md and brief/film-brief.md apply to every output.
 8. **This repo is public.** Nothing committed may contain absolute paths, user names, emails, tokens or anything private. Refer to footage as `FOOTAGE:Video/<name>` or `FOOTAGE:Audio/<name>` and to renders as `RENDERS:<relative path>` (relative to `renders_dir`). The listener replaces the machine's home-folder path with `<HOME>` in text results as a last safety net, but do not rely on it.
-9. If a task is unclear or impossible, finish with `status: failed` and explain why in REPORT.md. Do not guess at taste decisions.
+9. **Workers have no internet inside the sandbox** (workspace-write blocks the network): no URLs for scripts, fonts or images while building; use local copies in `film/vendor/`. On Windows call npm tools through their `.cmd` shims (`hyperframes.cmd`, `npx.cmd`), because `.ps1` shims can be blocked by the execution policy.
+10. If a task is unclear or impossible, finish with `status: failed` and explain why in REPORT.md. Do not guess at taste decisions.
 
 ## 6. Rendered video
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -69,3 +70,39 @@ def run(cmd: list[str], timeout: int = 30, cwd: Path | None = None) -> tuple[int
 
 def git(*args: str, timeout: int = 120) -> tuple[int, str]:
     return run(["git", *args], timeout=timeout, cwd=REPO_ROOT)
+
+
+def fresh_windows_path() -> list[str]:
+    """PATH as Windows gives a NEW terminal: machine + user values read from the registry.
+    A listener started from an old terminal has a stale PATH and misses tools installed since
+    (ffmpeg on yash-pc and utkarsh-pc, installed during bootstrap)."""
+    if os.name != "nt":
+        return []
+    try:
+        import winreg
+    except ImportError:
+        return []
+    keys = ((winreg.HKEY_LOCAL_MACHINE, chr(92).join(["SYSTEM", "CurrentControlSet", "Control", "Session Manager", "Environment"])),
+            (winreg.HKEY_CURRENT_USER, "Environment"))
+    out: list[str] = []
+    for hive, sub in keys:
+        try:
+            with winreg.OpenKey(hive, sub) as k:
+                value, _ = winreg.QueryValueEx(k, "Path")
+        except OSError:
+            continue
+        out += [os.path.expandvars(x.strip()) for x in str(value).split(";") if x.strip()]
+    return out
+
+
+def worker_path(cfg: dict, current: str) -> str:
+    """PATH for a worker: owner's path_prepend, then a fresh-terminal PATH, this Python's folder, then the inherited PATH."""
+    parts = list(cfg.get("path_prepend", [])) + fresh_windows_path() + [str(Path(sys.executable).parent)] + current.split(os.pathsep)
+    seen, out = set(), []
+    for x in parts:
+        x = x.strip()
+        key = x.rstrip(chr(92) + "/").lower()
+        if x and key not in seen:
+            seen.add(key)
+            out.append(x)
+    return os.pathsep.join(out)

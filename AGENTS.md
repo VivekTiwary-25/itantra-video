@@ -11,3 +11,5 @@ You are a worker in the iTantra demo-film production system.
 7. Footage is referred to as `FOOTAGE:Video/<name>` or `FOOTAGE:Audio/<name>` (original file names) and resolved with `$FOOTAGE_ROOT`. Never put absolute paths in committed files.
 8. If the task is unclear or impossible, finish with `status: failed` and explain. Do not guess at taste decisions.
 9. Never touch the iTantra app repo or any other repo.
+10. Workers have NO internet inside the sandbox. Never load scripts, fonts or images from a URL while building or checking (a CDN link fails with net::ERR_NETWORK_ACCESS_DENIED). Use local copies from `film/vendor/` (for GSAP: copy `film/vendor/gsap/gsap.min.js` next to the composition and use `<script src="./gsap.min.js"></script>`).
+11. On Windows PowerShell, call npm tools through their `.cmd` shims (`hyperframes.cmd`, `npx.cmd`, `npm.cmd`): the `.ps1` shims can be blocked by the machine's execution policy ("running scripts is disabled"). Do not change execution policy.

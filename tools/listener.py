@@ -24,7 +24,7 @@ import datetime as dt
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import (REPO_ROOT, SAFE_TOKEN, git, load_machine_config, now_iso, read_json, run, which, write_json)  # noqa: E402
+from common import (REPO_ROOT, SAFE_TOKEN, git, load_machine_config, now_iso, read_json, run, which, worker_path, write_json)  # noqa: E402
 
 SYNC_EVERY_S = 30
 HEARTBEAT_EVERY_S = 300
@@ -423,27 +423,63 @@ def build_prompt(worker: str, cli: str, rid: str) -> str:
 TEXT_EXT = {'.md', '.txt', '.json', '.jsonl', '.html', '.css', '.js', '.mjs', '.py', '.csv', '.srt', '.vtt', '.log', '.xml', '.yml', '.yaml'}
 _HOME = str(Path.home())
 _SEP = "(?:" + chr(92) * 2 + "+|/)"  # one or more backslashes, or a forward slash: logs nest paths inside JSON inside JSON
-HOME_RE = re.compile(_SEP.join(re.escape(part) for part in re.split("[" + chr(92) * 2 + "/]+", _HOME) if part), re.I)
+
+
+def path_regex(path: str) -> re.Pattern:
+    return re.compile(_SEP.join(re.escape(part) for part in re.split("[" + chr(92) * 2 + "/]+", path) if part), re.I)
+
+
+# most specific first: renders_dir sits inside repo_root, which may sit inside the home folder
+REDACTIONS = [(path_regex(v), label) for v, label in ((CFG.get("renders_dir"), "<RENDERS_DIR>"), (CFG.get("footage_root"), "<FOOTAGE_ROOT>"),
+                                                       (CFG.get("repo_root"), "<REPO>"), (_HOME, "<HOME>")) if v]
+EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:[.][A-Za-z0-9-]+)*[.][A-Za-z]{2,}")
+ALLOWED_EMAIL_TAILS = ("users.noreply.github.com", "noreply@anthropic.com")
+SECRET_RE = re.compile(r"gh[opusr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9_-]{16,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----")
+
+
+def text_files(roots: list[Path]):
+    seen: set[str] = set()
+    for root in roots:
+        files = [root] if root.is_file() else ([p for p in root.rglob("*") if p.is_file()] if root.exists() else [])
+        for f in files:
+            key = str(f.resolve()).lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            if f.suffix.lower() in TEXT_EXT and f.stat().st_size <= 5 * 1024 * 1024:
+                yield f
 
 
 def redact_home_paths(roots: list[Path]) -> int:
-    """Replace this PC's user-profile path with <HOME> in text files that are about to be committed."""
+    """Replace this PC's private paths (home, repo, footage, renders) with placeholders in text files about to be committed."""
     n = 0
-    for root in roots:
-        files = [root] if root.is_file() else ([p for p in root.rglob('*') if p.is_file()] if root.exists() else [])
-        for f in files:
-            if f.suffix.lower() not in TEXT_EXT or f.stat().st_size > 5 * 1024 * 1024:
-                continue
-            try:
-                raw = f.read_bytes()
-                text = raw.decode('utf-8')
-            except (OSError, UnicodeDecodeError):
-                continue
-            new, k = HOME_RE.subn('<HOME>', text)
-            if k:
-                f.write_bytes(new.encode('utf-8'))
-                n += k
+    for f in text_files(roots):
+        try:
+            text = f.read_bytes().decode("utf-8")
+        except (OSError, UnicodeDecodeError):
+            continue
+        new = text
+        for rx, label in REDACTIONS:
+            new, k = rx.subn(label, new)
+            n += k
+        if new != text:
+            f.write_bytes(new.encode("utf-8"))
     return n
+
+
+def find_private_data(roots: list[Path]) -> list[tuple[Path, str]]:
+    """Emails (other than GitHub/Anthropic no-reply addresses) and token-like strings cannot be safely rewritten: block them."""
+    bad = []
+    for f in text_files(roots):
+        try:
+            text = f.read_bytes().decode("utf-8", "replace")
+        except OSError:
+            continue
+        if SECRET_RE.search(text):
+            bad.append((f, "a token or key"))
+        elif any(not m.group(0).lower().endswith(ALLOWED_EMAIL_TAILS) for m in EMAIL_RE.finditer(text)):
+            bad.append((f, "an email address"))
+    return bad
 
 
 # ---------------------------------------------------------------- safety net for wide sandboxes
@@ -565,8 +601,7 @@ def run_task(worker: str, task_file: Path) -> None:
         prompt = build_prompt(worker, cli, rid)
         env = dict(os.environ, FOOTAGE_ROOT=FOOTAGE_ROOT, RENDERS_DIR=str(RENDERS_DIR), MACHINE=MACHINE,
                    WORKER=worker, TASK_ID=rid, HYPERFRAMES_NO_TELEMETRY="1", DO_NOT_TRACK="1")
-        if CFG.get("path_prepend"):
-            env["PATH"] = os.pathsep.join(CFG["path_prepend"]) + os.pathsep + env.get("PATH", "")
+        env["PATH"] = worker_path(read_json(REPO_ROOT / "machine.local.json", CFG), env.get("PATH", ""))  # re-read: path_prepend edits apply at once
         TASK_TMP.mkdir(parents=True, exist_ok=True)
         env.update(TEMP=str(TASK_TMP), TMP=str(TASK_TMP), TMPDIR=str(TASK_TMP))
         RENDERS_DIR.mkdir(parents=True, exist_ok=True)
@@ -648,6 +683,18 @@ def run_task(worker: str, task_file: Path) -> None:
     scrubbed = redact_home_paths(roots + [rdir])
     if scrubbed:
         log(f"{rid}: replaced {scrubbed} private home-folder path(s) with <HOME> before committing")
+    blocked = find_private_data(roots + [rdir])
+    if blocked:
+        qdir = REPO_ROOT / "local" / "quarantine" / rid
+        qdir.mkdir(parents=True, exist_ok=True)
+        names = []
+        for f, kind in blocked:
+            shutil.move(str(f), str(qdir / f.name))
+            names.append(f"{f.name} ({kind})")
+        log(f"{rid}: BLOCKED from the public repo: " + ", ".join(names) + " (moved to local/quarantine)")
+        status = "failed"
+        write_report(rid, "failed", worker, "Files were held back because they looked like they contain private data (this repo is public): "
+                     + ", ".join(names) + ". The owner of this machine should look in local/quarantine/" + rid + ", then the lead can re-queue the task.")
     notes = enforce_sizes(rid, roots + [rdir])
     if notes:
         with open(report, "a", encoding="utf-8", newline="\n") as f:
@@ -730,7 +777,19 @@ def main() -> None:
                     continue
                 task = next_task(worker)
                 if task:
-                    run_task(worker, task)
+                    try:
+                        run_task(worker, task)
+                    except KeyboardInterrupt:
+                        raise
+                    except Exception as e:  # noqa: BLE001
+                        import traceback
+                        log(f"{task.stem}: UNEXPECTED ERROR in the listener, marking the task failed and carrying on: {e}")
+                        log(traceback.format_exc())
+                        current_task = None
+                        if not (REPO_ROOT / "results" / task.stem / "REPORT.md").exists():
+                            write_report(task.stem, "failed", worker, f"The listener hit an unexpected error while handling this task: {type(e).__name__}. The lead should re-queue it.")
+                        commit_paths([f"results/{task.stem}"], f"result {task.stem} failed (listener error) ({worker}@{MACHINE})")
+                        push_with_retries()
                     ran = True
                     break
             if args.once:

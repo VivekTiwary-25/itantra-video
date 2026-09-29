@@ -14,7 +14,7 @@ import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import REPO_ROOT, load_machine_config, which  # noqa: E402
+from common import REPO_ROOT, load_machine_config, which, worker_path  # noqa: E402
 
 PROMPT = """This is a diagnostic, not a film task. Ignore any AGENTS.md. Run these PowerShell commands and print each result exactly as it appears, then one final line 'DONE'. Do not fix anything.
 1) where.exe ffmpeg
@@ -37,8 +37,7 @@ def main() -> None:
     out = os.path.join(work, "last.md")
     env = dict(os.environ, FOOTAGE_ROOT=cfg["footage_root"], RENDERS_DIR=cfg["renders_dir"], MACHINE=cfg["machine"])
     env.update(TEMP=str(tmp_root), TMP=str(tmp_root), TMPDIR=str(tmp_root))
-    if cfg.get("path_prepend"):
-        env["PATH"] = os.pathsep.join(cfg["path_prepend"]) + os.pathsep + env.get("PATH", "")
+    env["PATH"] = worker_path(cfg, env.get("PATH", ""))  # exactly what the listener gives workers
     cmd = [codex, "exec", "-m", "gpt-6-luna", "-c", 'model_reasoning_effort="low"', "--sandbox", cfg.get("codex_sandbox", "workspace-write"),
            "--cd", work, "--skip-git-repo-check", "--ephemeral", "-o", out, "-"]
     print(f"Running a tiny Codex diagnostic with sandbox '{cfg.get('codex_sandbox', 'workspace-write')}' ...")
