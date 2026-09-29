@@ -20,6 +20,7 @@ import shutil
 import subprocess
 import sys
 import time
+import uuid
 import datetime as dt
 from pathlib import Path
 
@@ -386,6 +387,50 @@ def scan_codex_events(log_path: Path) -> None:
 
 
 # ---------------------------------------------------------------- building the command
+SESSION_FILE = REPO_ROOT / "local" / "claude-second-session.json"
+UUID_RE = r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+
+
+def session_args() -> list[str]:
+    """How claude-second continues its conversation between tasks. Tracked by session ID, never by name:
+    two sessions with the same name make `--resume <name>` fail ('matches 2 sessions'), as happened on yojitth-pc."""
+    override = read_json(REPO_ROOT / "machine.local.json", CFG).get("claude_session_id")
+    if override:
+        return ["--resume", override]
+    st = read_json(SESSION_FILE)
+    if st and st.get("id"):
+        return ["--resume", st["id"]] if st.get("created") else ["--session-id", st["id"]]
+    if (REPO_ROOT / "local" / "claude-second-session.flag").exists():  # older installs resumed by name; heal_session() upgrades them
+        return ["--resume", "claude-second"]
+    sid = str(uuid.uuid4())
+    write_json(SESSION_FILE, {"id": sid, "created": False})
+    return ["--session-id", sid]
+
+
+def mark_session_created() -> None:
+    st = read_json(SESSION_FILE)
+    if st and st.get("id") and not st.get("created"):
+        st["created"] = True
+        write_json(SESSION_FILE, st)
+
+
+def heal_session(text: str) -> bool:
+    """Fix the two session errors we have seen. Returns True if the task should be retried once."""
+    m = re.search(r"matches [0-9]+ sessions.*?(" + UUID_RE + ")", text, re.S)
+    if m:  # the message lists the newest session first
+        write_json(SESSION_FILE, {"id": m.group(1), "created": True})
+        log(f"claude-second: name was ambiguous, now tracking session {m.group(1)[:8]}... by ID")
+        return True
+    if "is already in use" in text:
+        st = read_json(SESSION_FILE)
+        if st and st.get("id"):
+            st["created"] = True
+            write_json(SESSION_FILE, st)
+            log("claude-second: session already exists, switching to resume")
+            return True
+    return False
+
+
 def build_command(worker: str, fm: dict, rid: str, prompt_file_hint: str) -> tuple[list[str], str]:
     winfo = REGISTRY.get("workers", {}).get(worker, {})
     cli = winfo.get("cli", "codex")
@@ -407,8 +452,7 @@ def build_command(worker: str, fm: dict, rid: str, prompt_file_hint: str) -> tup
         cmd = [*exe, "-p", "--model", model, "--effort", effort, "--permission-mode", "auto",
                "--add-dir", FOOTAGE_ROOT]
         if worker == "claude-second":
-            flag = REPO_ROOT / "local" / "claude-second-session.flag"
-            cmd += ["--resume", "claude-second"] if flag.exists() else ["-n", "claude-second"]
+            cmd += session_args()
     return cmd, cli
 
 
@@ -540,7 +584,7 @@ def guard_paused() -> dict[str, str]:
 
 
 # ---------------------------------------------------------------- run one task
-def run_task(worker: str, task_file: Path) -> None:
+def run_task(worker: str, task_file: Path, _healed: bool = False) -> None:
     global current_task
     rid = task_file.stem
     fm, _ = parse_frontmatter(task_file.read_text(encoding="utf-8", errors="replace"))
@@ -637,11 +681,16 @@ def run_task(worker: str, task_file: Path) -> None:
                 kill_tree(proc)
             exit_code = proc.returncode if proc.returncode is not None else -1
         if cli == "claude" and worker == "claude-second" and exit_code == 0:
-            (REPO_ROOT / "local").mkdir(exist_ok=True)
-            (REPO_ROOT / "local" / "claude-second-session.flag").write_text(now_iso(), encoding="utf-8")
+            mark_session_created()
     except Exception as e:  # noqa: BLE001
         out_log.write_text(f"listener could not launch the worker: {e}\n", encoding="utf-8")
         log(f"{rid}: launch error: {e}")
+
+    if (worker == "claude-second" and exit_code != 0 and not _healed and not interrupted and not timed_out
+            and out_log.exists() and heal_session(out_log.read_text(encoding="utf-8", errors="replace"))):
+        log(f"{rid}: retrying once after fixing the session")
+        current_task = None
+        return run_task(worker, task_file, _healed=True)
 
     # --- after exit
     tail = tail_lines(out_log)
