@@ -1,0 +1,7 @@
+﻿{
+    "machine":  "vivek-pc",
+    "footage_file_count":  16,
+    "footage_total_duration_s":  425.072174,
+    "ffmpeg_first_line":  "ffmpeg version 7.1.1-essentials_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers",
+    "cpu_cores":  12
+}

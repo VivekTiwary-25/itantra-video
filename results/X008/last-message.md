@@ -1,0 +1,1 @@
+Completed X008. [hello.json](D:/projects/SIH/Presentation/Video/results/X008/hello.json) includes the footage counts and durations, ffmpeg version, and `cpu_cores`. The test pattern was rendered to `RENDERS:X008-testpattern.mp4`; the report is in [REPORT.md](D:/projects/SIH/Presentation/Video/results/X008/REPORT.md).
