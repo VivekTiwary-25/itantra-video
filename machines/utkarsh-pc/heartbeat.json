@@ -1,6 +1,6 @@
 {
   "machine": "utkarsh-pc",
-  "time": "2026-09-29T19:27:05Z",
+  "time": "2026-09-29T19:31:21Z",
   "status": "idle",
   "current_task": null,
   "workers": [
@@ -8,14 +8,7 @@
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 14480,
-  "last_task_usage": {
-    "seen_at": "2026-09-29T19:16:51Z",
-    "input_tokens": 81180,
-    "cached_input_tokens": 63488,
-    "cache_write_input_tokens": 0,
-    "output_tokens": 1738,
-    "reasoning_output_tokens": 0
-  },
+  "listener_pid": 30004,
+  "last_task_usage": null,
   "codex_rate_limits": null
 }
