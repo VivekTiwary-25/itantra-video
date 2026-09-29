@@ -1,5 +1,7 @@
 # SETUP SPEC — build the multi-machine video production system
 
+> **Setup is finished (30 Sept 2026).** This file is the original plan. What actually happened, what changed and what is still open is in `log/setup-report.md`; where they differ, that report and PROTOCOL.md win.
+
 > **Layout change (Vivek, 29 Sept 2026):** this project is its own private repo, `VivekTiwary-25/itantra-video`, branch `main`, cloned normally. It is NOT a worktree of the iTantra app repo. Wherever this spec says "worktree", "branch `video-production`" or "SIH repo", read "the itantra-video repo, branch `main`". Step 0 is already done. Friends are invited to this repo only.
 
 **Who runs this:** Claude Code, Sonnet, effort high, on vivek-pc (Windows).

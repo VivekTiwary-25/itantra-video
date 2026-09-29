@@ -1,103 +1,88 @@
-# Setup report (IN PROGRESS, written by the setup builder, 29 Sept 2026)
+# Setup report: FINAL HANDOVER (30 Sept 2026)
 
-Status: **vivek-pc plumbing built and tested offline. Not yet pushed, no friend machines yet, no live round-trip tests yet.** See "Blocked / waiting" below.
+**Status: setup is done.** The task system works end to end on all four machines: tasks go out through git, workers run them, results come back, reviews and redos work, and a silent machine is detected. Three small things still need a person (section 10). No film work has been started.
 
-## Layout (agreed with Vivek)
-- Repo: `VivekTiwary-25/itantra-video`, branch `main`, a normal clone (NOT a worktree of the iTantra app repo, so no orphan branch was needed). Friends are invited to this repo only.
-- Footage (never in git) sits in a separate `footage` folder next to the repo folder: the two Drive zips plus the unzipped `sih video clip\` and `sih audio clips\` folders. Each machine sets its own path as `footage_root` in `machine.local.json`.
-- The original pack is kept in a `_pack-source` folder next to the repo folder (safe to delete once the repo is pushed).
-- The folder above the repo is not itself a git repo. Left alone.
+## 1. Machines and workers
+| Machine | Owner (GitHub) | Workers | Hardware | CLIs |
+|---|---|---|---|---|
+| vivek-pc | Vivek (VivekTiwary-25) | `claude-lead` (interactive), `claude-helper` (Sonnet subagents), `codex-vivek` (listener). **Final renders happen here.** | RTX 2050 4 GB, 12 cores, 23.7 GB RAM | Codex 0.159.0, Claude Code 2.1.284, ffmpeg 7.1.1 |
+| yash-pc | Yash (MATHUR-Yash) | `codex-f1` | RTX 3050 6 GB, 12 cores, 15.6 GB | Codex 0.159.0, ffmpeg 9.0.2 |
+| utkarsh-pc | Utkarsh (utkarshKeshri11sketch) | `codex-f2` | RTX 4050 6 GB, 16 cores, 15.8 GB | Codex 0.159.0, ffmpeg 9.0.2 |
+| yojitth-pc | Yojitth (Yojithn) | `claude-second` (second foreman) | no GPU, 18 cores, 15.4 GB | Claude Code 2.1.284, ffmpeg 9.0.2 |
 
-## Footage facts (vivek-pc manifest: `machines/vivek-pc/footage-manifest.json`)
-- 16 media files: 10 video, 6 audio. About 7.1 minutes in total. `normalpart2.mp4` alone is 202 s (416 MB) of that.
-- Audio is deliberately missing for `normalpart2` to `normalpart5` (Vivek: any voice there is narration added later). `normalpart6` audio was added later and is the file `Normalpart6.mp3` (capital N) in the audio zip. **Match names ignoring case.** The manifest's `pairs` section does this.
-- Not HDR: every clip is H.264, 8-bit `yuv420p`, `bt709`, 1920x1080, about 30 fps variable frame rate. No HDR-to-SDR conversion is needed before grading. The video files also carry their own camera audio, which can help when syncing the clean audio.
-- **Audio and video lengths do not match**, so syncing needs offsets, not a straight overlay:
-  | clip | video s | clean audio s |
-  |---|---|---|
-  | normalpart1 | 10.83 | 11.74 |
-  | normalpart6 | 12.65 | 12.01 |
-  | sospart1 | 10.64 | 5.50 |
-  | sospart2 | 10.70 | 16.63 |
-  | vachna part1 | 19.67 | 20.67 |
-  | vachna part2 | 37.12 | 37.62 |
-- The audio zip in the footage folder was re-downloaded during setup (it now includes `Normalpart6.mp3`). Other machines must use that newer zip. Check zip hashes in the manifests' `archives` section.
+Repo: `VivekTiwary-25/itantra-video`, **public**, branch `main`, a normal clone on each machine. HyperFrames 0.8.92 is on all four (telemetry off). Every machine also has Chrome or Edge.
 
-## What works (tested)
-- `tools/doctor.py`: writes `capabilities.json`. Installs nothing.
-- `tools/manifest.py`: unzips (keeping the zips, keeping the paths inside the zips so relative paths are the same on every machine), runs ffprobe, HDR check, sha256, pairs video with audio.
-- `tools/listener.py`: tested offline against a fake worker (no real AI, no GitHub): good run; crash with no REPORT (failed report with last 50 lines); rate-limit text (parsed "try again in 2 hours 15 minutes", paused the worker); timeout kill; Astra refusal (`status: refused`, nothing run); files over 20 MB and preview mp4 over 10 MB moved to `local/renders/<id>/` with a note in REPORT.md; dependency gate (waits for REPORT `done` AND review `accepted`); recovery of a task left running by a crashed listener; only one listener per machine (lock file). Prompts go in through stdin, so Windows quoting cannot break them.
-- `tools/status.py`: shows every machine's heartbeat age and flags STALE (older than 15 min) or STOPPED. This is how a silent machine is detected (test X009).
-- `tools/statusline_usage.py`: tested with sample JSON. Registered in `.claude/settings.json`. **Not yet seen with a real Claude Code session**: `local/claude-usage.json` should appear after the first response in the lead's session. If it doesn't, use `/usage`.
-- Small PROTOCOL.md addition: exact front-matter formats for REPORT.md (`status:`) and reviews (`verdict:`), because the listener reads them.
-
-## CLI flags checked on vivek-pc (codex-cli 0.159.0, Claude Code 2.1.284)
-- Codex: `codex exec -m gpt-6-luna -c model_reasoning_effort="low" --sandbox workspace-write --cd <repo> --json -o <file> -` works (prompt read from stdin with `-`). `gpt-6-luna` and effort `low` are accepted. `--json` events give token usage only (`turn.completed.usage`), **no rate-limit percentages**, so Codex limits are handled reactively (rate-limit error text pauses the worker). The listener still records any `rate_limit` field if a later version adds one.
-- Claude: `claude -p --model sonnet --effort low --permission-mode auto -n <name>` creates a named session, and `claude -p ... --resume <name>` continues it (it remembered a secret word). Prompt via stdin works. So `claude-second` needs no fallback memory file. Not yet tested with `--model opus` (needs yojitth's machine or a decision to spend Opus usage).
-- `codex` resolves to `codex.CMD` via `shutil.which`; that works from Python.
-
-## BLOCKED / waiting
-1. ~~Codex sandbox on Windows (vivek-pc)~~ **RESOLVED 29 Sept.** It was broken (`helper_unknown_error`, and `--sandbox workspace-write` could not start a shell). The cause was not admin rights: Codex's setup step validates every file under its own `runtimes/cua_node` folder, and that folder held 7 abandoned `.staging-*` directories from failed installs on 5 and 9 Sept (about 1.2 GB), two with 331-character paths the check cannot open. With Vivek's OK they were moved (a reversible rename) to a `codex-staging-parked` folder in his user profile; the real runtime folder was left alone. After that the normal `workspace-write` sandbox works. Verified with the real listener and real Codex (`gpt-6-luna`, low): **X001 passed** (read all 16 footage files outside the repo, 425.072 s total, ran ffmpeg, wrote the test pattern to `local/renders`), and a boundary task confirmed writes to the repo and `local/renders` work while writes to the folder above the repo and to `footage_root` are denied. **Sandbox choice for vivek-pc: `workspace-write`.** If another machine shows `helper_unknown_error`, look for the same stale `.staging-*` folders first (`codex doctor` and the newest `~/.codex/.sandbox/sandbox.<date>.log` name the file that fails).
-   - Fallback (built and tested, not needed on vivek-pc): if a machine's sandbox cannot be fixed and its owner approves `codex_sandbox: danger-full-access`, list every other git repo on that PC in `guard_repos` in `machine.local.json`. The listener snapshots each one (`git status --porcelain -uall`, a hash of tracked changes, HEAD) before and after every task. If anything differs it adds a SAFETY WARNING to REPORT.md, saves the details in `local/guard/<id>.txt` (kept off git because this repo is public), and pauses that worker with `local/paused-<worker>.flag` until the owner deletes the file. Limit: it cannot see edits to files that were already untracked before the task, and it will false-alarm if the owner edits a guarded repo while a task runs. The rule is in every friend bootstrap prompt.
-2. **HyperFrames** is installed on vivek-pc (0.8.92, global npm). `hyperframes doctor`: Chrome, FFmpeg and FFprobe found. Not installed (optional): whisper-cpp, Kokoro, MusicGen, Docker not running. HyperFrames telemetry is switched off on vivek-pc (`hyperframes telemetry disable`), and the listener sets `HYPERFRAMES_NO_TELEMETRY=1` for every task it launches; the friend prompts have the same step. A local proof passed: a 3-second composition (text fading in on dark), `hyperframes check` clean, `hyperframes snapshot --at 0.2,1.5,2.8 --no-end` gave the expected frames (blank at 0.2 s, fully visible at 1.5 s). Notes: the starter page loads GSAP from a CDN and fonts from Google Fonts, so renders need internet.
-3. **Real X004** (codex-f1 on yash-pc), the friend machines, X001 to X009 live tests, and the cross-machine manifest comparison: not started. Friends have not been invited or have not accepted yet, and the lead must be started by Vivek.
-
-## Per-machine facts
-| machine | sandbox choice | how to read usage |
-|---|---|---|
-| vivek-pc | `workspace-write` (verified) | Claude: status line writes `local/claude-usage.json` (untested live); fallback `/usage`. Codex: no numbers in `--json`; fallback `/status` in Codex, or wait for a rate-limit error. |
-| yash-pc, utkarsh-pc, yojitth-pc | not checked yet | not checked yet |
-
-Vivek's PC: Windows 11, 12 cores, 23.7 GB RAM, RTX 2050 (4 GB), 47.8 GB free on D:, 15.9 GB free on C:.
-
-## Manifest differences across machines
-Not compared yet (only vivek-pc exists so far).
-
-## Renames and banner (Vivek, 29 Sept 2026)
-- Machines renamed: friend1-pc -> `yash-pc`, friend2-pc -> `utkarsh-pc`, friend3-pc -> `yojitth-pc` (worker IDs unchanged). Friend prompts: `prompts/4-friend-machine-bootstrap-yash.md`, `-utkarsh.md`, `-yojitth.md`. Each tells the friend to set their own GitHub no-reply email in git config for this repo before their first commit.
-- `tools/swarm_status.py` prints the swarm banner from real files only (registry, heartbeats, `local/claude-usage.json`). ONLINE means a heartbeat under 10 minutes old. The lead has no listener, so it counts as ONLINE when the status-line file was refreshed in the last 10 minutes. The lead runs `python tools/swarm_status.py --as-lead` (in its prompt), which first records `machines/vivek-pc/lead-heartbeat.json`, so the lead always shows ONLINE when it prints the banner; without the flag nothing is written, so nobody else can fake the lead. The status-line file `local/claude-usage.json` also counts as a live signal. The status line itself is not yet seen live. Tested here with made-up heartbeats (all online, mixed, no data).
-- The repo is public from 29 Sept 2026, after a history scrub (one clean commit, authored with the GitHub no-reply address).
-
-## The repo is public: privacy rules the tools enforce
-- PROTOCOL.md rule 8: nothing committed may contain absolute paths, user names, emails or tokens. Footage is `FOOTAGE:<relative path>`, renders are `RENDERS:<relative path>`.
-- The listener replaces the machine's user-profile path with `<HOME>` in text results (md, json, html, py and similar) before committing, and its own notes about moved files use `RENDERS:` paths. Tested with markdown, escaped JSON paths and a Python traceback. It is a last safety net, not a licence to write paths.
-- Every commit should use a GitHub no-reply email (each friend prompt says how).
-
-## Findings from the first friend-machine test (yash-pc, X002, 30 Sept)
-- **X002 failed, two causes.** (1) A bug in the listener: it scanned the whole worker log for the words "rate limit", but the log contains the docs the worker was told to read (PROTOCOL.md mentions rate limits), so a failed task wrongly paused the worker for 30 minutes. **Fixed**: only real error signals are scanned now (plain stderr lines and Codex `error` / `turn.failed` events, never tool output or model messages). Tested: docs-echo does not pause; a real Codex error event pauses for the time it names; plain text errors still work. (2) On yash-pc the Codex worker could not find `ffprobe` on its PATH, fell back to a stripped-down ffmpeg from a KeyShot install (no audio decoding, no `lavfi`), and reported honestly that it could not finish. The doctor, run outside the sandbox, had found a proper ffmpeg 9.0.2 there, so the worker's environment differs from the owner's shell. Cause not yet confirmed. New tools: `python tools/sandbox_check.py` shows what a Codex worker really sees (ffmpeg, ffprobe, footage access, PATH), and `path_prepend` in `machine.local.json` puts folders first on the worker's PATH.
-- Lesson: a worker that cannot do its task and says so is the system working; a listener that mislabels the failure is the bug.
-- Yash's commits carry his college email (his AI skipped the no-reply step). Yash chose to leave the old commits as they are; his machine switched to a no-reply email for new commits.
-- Footage: yash-pc and vivek-pc manifests are identical (16 files, same paths, sizes and sha256) in the `Video/` + `Audio/` layout.
-- **Temp folder (found on utkarsh-pc):** inside the `workspace-write` sandbox the normal Windows temp folder is blocked, so anything that writes temp files (ffmpeg, HyperFrames, Python `tempfile`) can fail. The listener now sets `TEMP`/`TMP`/`TMPDIR` to `local/tmp` for every task (verified with real Codex: set, writable, ffmpeg writes there) and `sandbox_check.py` uses it too. `local/tmp` is cleaned of files older than 2 days at listener start.
-- **Self-restart:** the listener hashes `tools/*.py` at start and, between tasks after a pull, exits with code 75 if they changed; `start-listener.cmd` restarts it. Tested. Listeners started before this change need one manual restart, after which fixes arrive by themselves.
-- **Working rule from Vivek:** whatever a friend machine needs goes to that machine's agent as a task (or a message to the agent). The human is asked only if the agent says it cannot do it.
-
-## Test results so far (30 Sept)
+## 2. Test results
 | Test | Result |
 |---|---|
-| X001 (vivek-pc plumbing) | PASSED (real Codex, real push/pull round trip) |
-| X002 (yash-pc plumbing) | FAILED, honestly: worker could not see a working ffmpeg/ffprobe. Redo queued as X012 after the fix |
-| X004 (yash-pc HyperFrames still) | FAILED, honestly: `hyperframes check` could not load GSAP from a CDN, because the sandbox blocks the network. Redo queued as X010 using a local GSAP copy |
-| X005 (Astra on yash-pc) | PASSED: refused with `status: refused`, nothing ran |
-| X006 (yojitth-pc consult) | PASSED: `002-claude-second.md` answered in 117 words with a sensible risk (private data leaking into the public repo) and a concrete suggestion, which was implemented |
-| X011 (utkarsh-pc sandbox diagnostic) | DONE: ffmpeg, ffprobe and python not visible to the worker; `hyperframes` found but its .ps1 shim blocked by execution policy; node fine; his listener was on old code (TEMP not yet local/tmp) |
-| X003, X007-X009 | not run yet |
+| X001 plumbing on vivek-pc | PASSED |
+| X002 plumbing on yash-pc | FAILED (honestly): the worker could not see a working ffmpeg. Redo **X012 PASSED** |
+| X003 plumbing on utkarsh-pc | PASSED |
+| X004 HyperFrames still on yash-pc | FAILED (honestly): sandbox has no internet, GSAP came from a CDN. Redo X010: work was right, record wrong (my blocker bug). Clean re-run **X014 PASSED** |
+| X005 Astra refused | PASSED on a real machine: `status: refused`, nothing ran |
+| X006 second foreman consult | PASSED: a sensible answer that led to real safeguards |
+| X007 + X008 review then redo | PASSED: `reviews/X001.md` said redo, X008 came back with `cpu_cores` and every other key kept |
+| X009 silent machine | PASSED (section 8) |
+| X011 then X013 sandbox diagnostic on utkarsh-pc | PASSED: ffmpeg, temp folder and HyperFrames healthy after the fix |
+| X015 / X016 HyperFrames on utkarsh-pc / vivek-pc | PASSED both (Chrome reachable inside the sandbox) |
+| X017 / X018 second foreman remembers its earlier answer | FAILED both, found a real bug (section 7). Fixed in code. **Live proof still pending**: needs yojitth-pc's listener restarted, then a new task (X019) |
 
-## What the friend-machine tests taught us (all fixed in code or rules)
-- **Workers have no internet.** The workspace-write sandbox blocks the network, so a composition that loads GSAP, fonts or images from a URL fails. A local GSAP 3.14.2 copy is in `film/vendor/gsap/` (see its NOTICE.md). New worker rules 10 and 11 in AGENTS.md, CLAUDE.md and PROTOCOL.md: no URLs while building; use `hyperframes.cmd` / `npx.cmd`, not the `.ps1` shims (which a machine's execution policy can block). We did NOT weaken any PowerShell execution policy.
-- **ffmpeg visibility.** Friends' ffmpeg (same winget build) was visible to their own shell but not to workers. The fix that worked on yash-pc: copy the ffmpeg programs to a plain folder and list it in `path_prepend`. `tools/fix_ffmpeg_path.py` does this safely (dry run by default; picks the first candidate that really works, e.g. makes a lavfi test pattern and probes an audio file; never touches the original). The listener also builds the worker PATH like a brand-new terminal (registry Machine + User PATH) and re-reads `machine.local.json` for every task, so `path_prepend` edits need no restart.
-- **Public-repo safety net, second version** (suggested by claude-second in X006): the listener now redacts every configured path (repo, footage, renders, home), and holds back any result file containing an email address (other than GitHub/Anthropic no-reply) or a token-like string, moving it to `local/quarantine/<id>/` and marking the task failed. Tested with fake workers. A crash while handling one task no longer stops the listener: the task is marked failed and the listener carries on.
+Failures were honest reports from workers or bugs of mine, and each one led to a fix that is now in the code or the rules.
 
-## More results (30 Sept, later)
-- X008 (redo of X001 on vivek-pc): PASSED. The review-then-redo loop works end to end: `reviews/X001.md` said redo, X008 came back with `cpu_cores` added and every other key kept.
-- X012 (redo of X002 on yash-pc): PASSED after the ffmpeg fix (`path_prepend` to a plain folder). 16 files, 425.072 s, same as every other machine.
-- X010 (redo of X004): the worker's work was right (check passed; 0.2 s frame empty, 1.5 s frame shows the word), but the private-data blocker I had just added wrongly held back `gsap.min.js` (the GSAP author's email is in its license header) and replaced the worker's report. Fixed: vendored/minified libraries are exempt, and a worker's own report is kept (with a warning and status failed) unless the report itself is the problem. Tested. Re-run queued as X014.
+## 3. Exact commands that worked
+- **Codex worker** (built by the listener): `codex exec -m <model> -c model_reasoning_effort="<effort>" --sandbox workspace-write --cd <repo> --json -o <file> -` with the prompt sent on stdin (no Windows quoting problems). Models used: `gpt-6-luna` (low) and `gpt-6-sol` (medium). `gpt-6-astra` is refused by the listener before anything runs.
+- **Second foreman**: `claude -p --model opus --effort high --permission-mode auto --add-dir <footage_root>` plus `--session-id <uuid>` on the first task and `--resume <uuid>` afterwards, prompt on stdin. The ID form was checked against the real CLI on vivek-pc. On yojitth-pc only the older name-based first task (X006) has run live.
+- **HyperFrames**: `hyperframes.cmd init project --non-interactive --skip-transcribe`, `hyperframes.cmd check`, `hyperframes.cmd snapshot --at 0.2,1.5 --no-end -o snaps`, with `HYPERFRAMES_NO_TELEMETRY=1` and `HYPERFRAMES_SKIP_SKILLS=1`.
+- **Git**: `git pull --rebase --autostash origin main`, `git push origin HEAD` with up to 5 retries. Heartbeats every 5 minutes; `tools/status.py`, `tools/swarm_status.py` and `tools/find_stuck_tasks.py` read them.
 
-## X009: detecting a silent machine (PASSED, 30 Sept)
-utkarsh-pc's listener was stopped by its owner. It did NOT write a final `stopped` heartbeat (its last heartbeat still said `idle`), so this was the hard case: a machine that just goes quiet. X009 (a task for `codex-f2`) was queued while it was silent.
-- Timeline (last heartbeat 19:48 UTC): swarm banner flipped to `OFFLINE last seen 10m ago` at 19:58 (10-minute rule); `tools/status.py` showed `STALE: reassign any queued tasks` at 15.3 min; `tools/find_stuck_tasks.py` flagged `STUCK X009` at 20:03 (15-minute rule, PROTOCOL.md section 7) and named the healthy workers of the same kind that could take it (`codex-vivek`, `codex-f1`).
-- How the lead detects it: `python tools/swarm_status.py --as-lead` (10 min) and `python tools/find_stuck_tasks.py` (15 min, lists stuck tasks and reassign options). The lead then reassigns by writing a NEW task with `redo_of: X009` for a healthy worker and a `dropped` review for the old one (the same redo mechanism proven by X008, X010, X012 and X014). `find_stuck_tasks.py` never changes anything itself.
-- Lessons: (1) a silent machine is invisible for the first 10 to 15 minutes by design; the lead should not treat a 5-minute-old heartbeat as a problem. (2) Do not rely on a `stopped` heartbeat: a killed or closed listener leaves none, so detection is by heartbeat age. (3) A stopped listener that later returns simply picks up its queued task; nothing is lost.
+## 4. Sandbox choice per machine
+`workspace-write` everywhere Codex runs (vivek-pc, yash-pc, utkarsh-pc). Nobody uses `danger-full-access`. The optional `guard_repos` safety net is built and tested but unused. What the sandbox does (checked on vivek-pc): workers can **read** the footage, **write** the repo, `local/renders` and `local/tmp`, cannot write anywhere else, and have **no internet**. The Windows sandbox on vivek-pc was broken at first by stale `.staging-*` folders in Codex's runtimes folder (moved aside, not deleted; the parked copy can be deleted). yash-pc and utkarsh-pc needed ffmpeg copied to a plain folder listed in `path_prepend` (`tools/fix_ffmpeg_path.py`).
 
-## Found by X017 (second-foreman memory test): duplicate session names
-`--resume claude-second` failed on yojitth-pc with "matches 2 sessions": his agent's bootstrap test and the listener's first task had each created a session with that name, and Claude refuses to guess. This would have broken every second-foreman task after the first. Fixed: the listener now tracks the session by ID (`local/claude-second-session.json`; created with `--session-id`, then `--resume <id>`), and repairs the two errors we saw (ambiguous name: adopts the newest listed session; "session ID already in use": switches to resume) with one automatic retry. Older installs (name flag) are upgraded the same way. Tested with a fake `claude` for all three cases, and the real CLI behaviours were checked first. The bootstrap prompts now use a throwaway session name. Re-run queued as X018.
+## 5. Reading usage
+- **Claude lead**: the status line writes `local/claude-usage.json` (works live: the banner shows real 5-hour and 7-day percentages). Fallback: `/usage`.
+- **Codex**: `codex exec --json` gives token counts only, no percentages. A real rate-limit error pauses that worker (parsed from Codex error events; tested with fake errors, never yet hit for real). Fallback: `/status` in Codex on that PC.
+- **claude-second**: the listener gives no usage numbers. Ask Yojitth's agent to run `/usage` when needed.
+
+## 6. Footage (identical on all four machines)
+16 files (10 in `Video/`, 6 in `Audio/`), same paths, sizes and sha256, **425.073 s (7.1 min)**. Layout: `footage_root` holds exactly `Video/` and `Audio/`; clips are `FOOTAGE:Video/<name>` and `FOOTAGE:Audio/<name>`; names match ignoring case (`Audio/Normalpart6.mp3` goes with `Video/normalpart6.mp4`). `python tools/compare_manifests.py` checks this. Facts for the lead:
+- Not HDR: every clip is H.264, 8-bit, bt709, 1920x1080, about 30 fps variable frame rate. The video files carry their own camera audio.
+- Audio is missing for `normalpart2` to `normalpart5` on purpose (narration will be added later).
+- Clean audio and video lengths differ, so syncing needs offsets, not a straight overlay:
+
+| clip | video s | clean audio s |
+|---|---|---|
+| normalpart1 | 10.83 | 11.74 |
+| normalpart6 | 12.65 | 12.01 |
+| sospart1 | 10.64 | 5.50 |
+| sospart2 | 10.70 | 16.63 |
+| vachna part1 | 19.67 | 20.67 |
+| vachna part2 | 37.12 | 37.62 |
+
+## 7. What testing taught us (all fixed; the rules are in PROTOCOL.md, AGENTS.md and CLAUDE.md)
+- **Workers have no internet.** A composition that loads GSAP, fonts or images from a URL fails. A local GSAP 3.14.2 is in `film/vendor/gsap/`. No URLs while building.
+- **Call npm tools as `hyperframes.cmd` / `npx.cmd`.** The `.ps1` shims can be blocked by a machine's execution policy. We did not weaken any execution policy.
+- **`TEMP`/`TMP` are set to `<repo>/local/tmp` for every task** (the normal Windows temp folder is blocked in the sandbox). Cleaned after 2 days.
+- **ffmpeg visibility:** a worker's PATH differs from the owner's shell. The listener builds the worker PATH like a fresh terminal, re-reads `machine.local.json` each task (so `path_prepend` edits apply at once), and `tools/fix_ffmpeg_path.py` repairs a machine.
+- **Failure logs echo our docs**, so rate-limit detection scans only real error events, never tool output or model messages.
+- **The repo is public.** Results are redacted (home, repo, footage and renders paths become placeholders, at any backslash nesting). Result files with an email (other than GitHub or Anthropic no-reply) or a token-like string are held back in `local/quarantine/`. Vendored or minified libraries are exempt. A worker's own report is never overwritten unless the report itself is the problem. Both safeguards were caused to misfire once during testing and were fixed; always test safeguards against real worker output.
+- **Duplicate session names break `--resume`:** two Claude sessions named `claude-second` make `--resume claude-second` fail. The listener now tracks the session by ID and repairs both errors seen (ambiguous name, "already in use") with one automatic retry. The bootstrap prompts use a throwaway session name.
+- **The listener restarts itself** between tasks when a git pull changes the tool code (exit code 75, `start-listener.cmd` loops), and one bad task can no longer stop the listener.
+
+## 8. Silent machines (X009)
+utkarsh-pc's listener was stopped and left no "stopped" heartbeat. Timeline from its last heartbeat: the banner showed `OFFLINE last seen 10m ago` at 10 minutes; `tools/status.py` said STALE and `tools/find_stuck_tasks.py` flagged `STUCK X009` at 15 minutes, naming healthy workers of the same kind. The lead reassigns by writing a NEW task with `redo_of: <old id>` for a healthy worker and a `dropped` review for the old one. When the listener returned it simply ran the queued task (X009 done). A silent machine is invisible for the first 10 to 15 minutes by design; do not rely on a `stopped` heartbeat because a killed listener leaves none.
+
+## 9. Tools
+`listener.py` (the worker daemon), `doctor.py` (what a machine has; installs nothing), `manifest.py` (footage layout and manifest), `compare_manifests.py`, `status.py`, `swarm_status.py` (the banner; the lead runs it with `--as-lead`), `find_stuck_tasks.py`, `sandbox_check.py` (what a Codex worker really sees), `fix_ffmpeg_path.py`, `statusline_usage.py`, `start-listener.cmd`.
+
+## 10. Open items (each needs a person, none blocks starting the lead)
+1. **Restart Vivek's listener once.** It is still the first version, started 29 Sept 23:48, so it lacks every fix. After one restart it updates itself. (`tools\start-listener.cmd`)
+2. **Yojitth's agent: run `git pull` and restart the listener once** (same reason). Then queue X019 (redo of X018) to prove the second foreman's session memory live. Until then the second foreman's follow-up tasks will fail.
+3. **Yash's agent: set the repo's git identity to his no-reply address** (`245989214+MATHUR-Yash@users.noreply.github.com`, name `MATHUR-Yash`, run inside the repo and check `git log -1 --format=%ae` after the next heartbeat). His newest commit still used his college email. Yash accepted the college email on his older commits.
+4. Windows power settings: the PCs must not sleep while listeners run. Not checked.
+5. Film info still missing (ask Vivek): team ID for the title card, the exact official problem-statement text, music track (if any), SIH deadline and length limit.
+
+## 11. State of the public repo (privacy)
+Checked on 30 Sept over everything pushed to GitHub: no tokens, no Gmail address, no Drive link, no Windows account names except Yash's in 6 old revisions of one file (`results/X002/REPORT.md`, scrubbed at the tip), and Yash's college email on his older commits (his choice). The history was squashed once, before the repo went public, to remove an account name and an email. A local-only branch `pre-public-backup` on vivek-pc still holds those old commits: never push it, delete it when no longer needed. Everyone else uses GitHub no-reply addresses.
+
+## 12. Next step
+Start the lead foreman on vivek-pc, in the repo folder: `claude --model opus --effort high --permission-mode auto`, then paste `prompts/2-lead-foreman-opus.md`. Its first action is `git pull` and `python tools/swarm_status.py --as-lead`, shown to Vivek in a code block. Then it asks Vivek for the missing film information and waits for a go for batch 1 (footage inventory and shot list, no editing).
