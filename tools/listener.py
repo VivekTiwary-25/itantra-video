@@ -384,7 +384,8 @@ def build_prompt(worker: str, cli: str, rid: str) -> str:
 # ---------------------------------------------------------------- keep private paths out of the (public) repo
 TEXT_EXT = {'.md', '.txt', '.json', '.jsonl', '.html', '.css', '.js', '.mjs', '.py', '.csv', '.srt', '.vtt', '.log', '.xml', '.yml', '.yaml'}
 _HOME = str(Path.home())
-HOME_RE = re.compile("|".join(re.escape(v) for v in {_HOME, _HOME.replace(chr(92), "/"), _HOME.replace(chr(92), chr(92) * 2)}), re.I)
+_SEP = "(?:" + chr(92) * 2 + "+|/)"  # one or more backslashes, or a forward slash: logs nest paths inside JSON inside JSON
+HOME_RE = re.compile(_SEP.join(re.escape(part) for part in re.split("[" + chr(92) * 2 + "/]+", _HOME) if part), re.I)
 
 
 def redact_home_paths(roots: list[Path]) -> int:
