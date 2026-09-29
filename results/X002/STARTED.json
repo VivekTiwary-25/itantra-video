@@ -1,0 +1,10 @@
+{
+  "id": "X002",
+  "machine": "yash-pc",
+  "worker": "codex-f1",
+  "time": "2026-09-29T18:49:49Z",
+  "model": "gpt-6-luna",
+  "effort": "low",
+  "pid": 25264,
+  "timeout_min": 15
+}
