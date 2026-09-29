@@ -1,0 +1,74 @@
+[
+  {
+    "confidence": "high", 
+    "drift_last_s": -0.068, 
+    "drift_first_s": -0.047, 
+    "peak_ratio": 2.974, 
+    "drift_ms": -21, 
+    "video": "FOOTAGE:Video/normalpart1.mp4", 
+    "pair": "normalpart1", 
+    "audio": "FOOTAGE:Audio/normalpart1.mp3", 
+    "clean_outside_video": "first 0.047 s before video start; last 0.864 s after video end", 
+    "offset_s": -0.047
+  }, 
+  {
+    "confidence": "high", 
+    "drift_last_s": -0.386, 
+    "drift_first_s": -0.022, 
+    "peak_ratio": 7.841, 
+    "drift_ms": -364, 
+    "video": "FOOTAGE:Video/normalpart6.mp4", 
+    "pair": "normalpart6", 
+    "audio": "FOOTAGE:Audio/Normalpart6.mp3", 
+    "clean_outside_video": "first 0.370 s before video start", 
+    "offset_s": -0.37
+  }, 
+  {
+    "confidence": "high", 
+    "drift_last_s": 4.271, 
+    "drift_first_s": 4.737, 
+    "peak_ratio": 4.083, 
+    "drift_ms": -466, 
+    "video": "FOOTAGE:Video/sospart1.mp4", 
+    "pair": "sospart1", 
+    "audio": "FOOTAGE:Audio/sospart1.mp3", 
+    "clean_outside_video": "none", 
+    "offset_s": 4.271
+  }, 
+  {
+    "confidence": "high", 
+    "drift_last_s": -0.233, 
+    "drift_first_s": 0.11, 
+    "peak_ratio": 6.059, 
+    "drift_ms": -343, 
+    "video": "FOOTAGE:Video/sospart2.mp4", 
+    "pair": "sospart2", 
+    "audio": "FOOTAGE:Audio/sospart2.mp3", 
+    "clean_outside_video": "last 5.991 s after video end", 
+    "offset_s": 0.066
+  }, 
+  {
+    "confidence": "high", 
+    "drift_last_s": 0.574, 
+    "drift_first_s": 0.77, 
+    "peak_ratio": 6.355, 
+    "drift_ms": -196, 
+    "video": "FOOTAGE:Video/vachna part1.mp4", 
+    "pair": "vachna part1", 
+    "audio": "FOOTAGE:Audio/vachna part1.mp3", 
+    "clean_outside_video": "last 1.570 s after video end", 
+    "offset_s": 0.571
+  }, 
+  {
+    "confidence": "high", 
+    "drift_last_s": 0.396, 
+    "drift_first_s": 0.39, 
+    "peak_ratio": 11.156, 
+    "drift_ms": 6, 
+    "video": "FOOTAGE:Video/vachna part2.mp4", 
+    "pair": "vachna part2", 
+    "audio": "FOOTAGE:Audio/vachna part2.mp3", 
+    "clean_outside_video": "last 0.882 s after video end", 
+    "offset_s": 0.389
+  }
+]
