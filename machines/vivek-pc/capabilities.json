@@ -1,6 +1,6 @@
 {
   "machine": "vivek-pc",
-  "checked_at": "2026-09-29T17:28:39Z",
+  "checked_at": "2026-09-29T17:37:22Z",
   "os": "Windows-11-10.0.26200-SP0",
   "tools": {
     "git": {
@@ -46,6 +46,8 @@
     "renders_drive": 47.3
   },
   "codex_sandbox": "workspace-write",
+  "codex_sandbox_note": "workspace-write verified 2026-09-29 (read footage, write repo and renders, outside writes denied) after moving stale Codex staging folders",
+  "guard_repos": 0,
   "codex_add_dirs": [],
   "missing": []
 }

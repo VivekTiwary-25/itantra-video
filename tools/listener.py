@@ -478,7 +478,7 @@ def run_task(worker: str, task_file: Path) -> None:
         cmd, cli = build_command(worker, fm, rid, "")
         prompt = build_prompt(worker, cli, rid)
         env = dict(os.environ, FOOTAGE_ROOT=FOOTAGE_ROOT, RENDERS_DIR=str(RENDERS_DIR), MACHINE=MACHINE,
-                   WORKER=worker, TASK_ID=rid)
+                   WORKER=worker, TASK_ID=rid, HYPERFRAMES_NO_TELEMETRY="1", DO_NOT_TRACK="1")
         RENDERS_DIR.mkdir(parents=True, exist_ok=True)
         with open(out_log, "w", encoding="utf-8", errors="replace") as fh:
             proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=fh, stderr=subprocess.STDOUT, cwd=str(REPO_ROOT),

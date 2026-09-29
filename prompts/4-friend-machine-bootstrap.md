@@ -17,6 +17,7 @@ Do this, and ask the owner of this PC before installing anything:
 2. Read `PROTOCOL.md`, `MODELS.md` and `SETUP_SPEC.md` (Steps 2–3 describe the tools).
 3. Create `machine.local.json` in the repo root (it's git-ignored) with this machine's name, worker, repo_root, footage_root (the folder the zips extract into), renders_dir = `<repo_root>\local\renders`, and os.
 4. Run `python tools/doctor.py`. Install what's missing, with the owner's OK. Needed: git, Python 3.11+, ffmpeg/ffprobe, Node 22+, and `npm i -g hyperframes` (or use it through npx). Chrome or Edge must exist.
+   After HyperFrames is installed, turn off its anonymous usage tracking: run `hyperframes telemetry disable` (or set the environment variable `HYPERFRAMES_NO_TELEMETRY=1`). The listener also sets it for every task it launches.
 5. Run `python tools/manifest.py`. It extracts the zips (keeping the originals) and writes the footage manifest.
 6. Confirm the worker CLI works non-interactively on this machine:
    - Codex: `codex exec -m gpt-6-luna "print the word ready"`, then confirm that `-c model_reasoning_effort='"low"'` is accepted. Also check that `--sandbox workspace-write` can read files under footage_root. Note the result.

@@ -38,6 +38,7 @@ machines/<machine>/        written ONLY by that machine's listener:
     heartbeat.json         time, idle/busy, current task, rate-limited-until
     capabilities.json      tools and versions, GPU, CPU, RAM, free disk (from tools/doctor.py)
     footage-manifest.json  every footage file: relative path, size, duration, sha256
+    lead-heartbeat.json    (vivek-pc only) written by claude-lead when it runs `python tools/swarm_status.py --as-lead`; the lead commits it with its own work
 queue/<worker-id>/<id>.md  task files. Written ONLY by claude-lead (or claude-second for tasks it owns)
 results/<id>/              written ONLY by the assigned worker
     STARTED.json           written the moment the worker starts

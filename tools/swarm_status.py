@@ -6,14 +6,20 @@ Anything else shows OFFLINE with "last seen X ago", or "never seen" if there is 
 The lead is interactive (no listener), so it counts as ONLINE when the status-line file
 local/claude-usage.json was refreshed in the last 10 minutes.
 
-Usage: python tools/swarm_status.py     (run `git pull` first to get fresh heartbeats)
+The lead runs it as `python tools/swarm_status.py --as-lead`. That flag first records
+machines/<lead machine>/lead-heartbeat.json ("the lead is running right now"), so the lead shows ONLINE.
+Without the flag nothing is written, so a human or another agent running the banner cannot fake the lead.
+
+Usage: python tools/swarm_status.py [--as-lead]     (run `git pull` first to get fresh heartbeats)
 """
+import argparse
 import datetime as dt
+import os
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import REPO_ROOT, read_json  # noqa: E402
+from common import REPO_ROOT, now_iso, read_json, write_json  # noqa: E402
 
 ONLINE_MINUTES = 10
 WIDTH = 55
@@ -54,7 +60,10 @@ def usage_cell(label, pct):
 def agent_state(worker, info, now, usage):
     """Return (online, detail) using only real files."""
     if info.get("interactive") and not info.get("queue"):  # the lead
-        t = parse_time((usage or {}).get("updated_at"))
+        lead_hb = read_json(REPO_ROOT / "machines" / info["machine"] / "lead-heartbeat.json")
+        times = [parse_time((usage or {}).get("updated_at")), parse_time((lead_hb or {}).get("time"))]
+        times = [x for x in times if x]
+        t = max(times) if times else None
         if t and (now - t).total_seconds() < ONLINE_MINUTES * 60:
             return True, "← command"
         return False, ("last seen " + ago(t, now)) if t else "never seen (no status-line data yet)"
@@ -78,9 +87,17 @@ def agent_state(worker, info, now, usage):
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--as-lead", action="store_true", help="record that claude-lead is running right now (only the lead should use this)")
+    args = ap.parse_args()
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     reg = read_json(REPO_ROOT / "machines" / "registry.json", {})
+    if args.as_lead:
+        lead_machine = reg.get("workers", {}).get("claude-lead", {}).get("machine")
+        if lead_machine:
+            write_json(REPO_ROOT / "machines" / lead_machine / "lead-heartbeat.json",
+                       {"worker": "claude-lead", "machine": lead_machine, "time": now_iso(), "status": "active", "pid": os.getppid()})
     usage = read_json(REPO_ROOT / "local" / "claude-usage.json")
     now = dt.datetime.now(dt.timezone.utc)
     heavy, light = "═" * WIDTH, "─" * WIDTH

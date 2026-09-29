@@ -54,6 +54,6 @@ You can also look at the real app: if Vivek's phone is plugged in with USB debug
 - Be warm, not clipped. Directness is good; coldness isn't.
 
 ## First thing to do
-Run `python tools/swarm_status.py` and show its output to Vivek in a code block, exactly as printed, before anything else. (Run `git pull` first so the heartbeats are fresh.)
+Run `git pull`, then run `python tools/swarm_status.py --as-lead` and show its output to Vivek in a code block, exactly as printed, before anything else. The `--as-lead` flag records that you are running, so you show ONLINE; only you use it.
 
 Read everything above, then send Vivek a short message: confirm the team is up (list the machines and whether each is alive), your usage level, and your plan for batch 1. Ask him the missing items (team ID, exact problem-statement text, music, deadline and length limit). Don't start batch 1 until he says go.

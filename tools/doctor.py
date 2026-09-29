@@ -130,6 +130,8 @@ def main() -> None:
         "renders_drive": free_gb(Path(cfg["renders_dir"])),
     }
     caps["codex_sandbox"] = cfg.get("codex_sandbox", "workspace-write")
+    caps["codex_sandbox_note"] = cfg.get("codex_sandbox_note")
+    caps["guard_repos"] = len(cfg.get("guard_repos", []))
     caps["codex_add_dirs"] = cfg.get("codex_add_dirs", [])
     caps["missing"] = missing
 
