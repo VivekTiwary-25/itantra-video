@@ -1,21 +1,14 @@
 {
   "machine": "vivek-pc",
-  "time": "2026-09-29T20:21:53Z",
-  "status": "stopped",
+  "time": "2026-09-29T20:22:24Z",
+  "status": "idle",
   "current_task": null,
   "workers": [
     "codex-vivek"
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 35448,
-  "last_task_usage": {
-    "seen_at": "2026-09-29T19:42:49Z",
-    "input_tokens": 551832,
-    "cached_input_tokens": 525824,
-    "cache_write_input_tokens": 0,
-    "output_tokens": 3608,
-    "reasoning_output_tokens": 895
-  },
+  "listener_pid": 2308,
+  "last_task_usage": null,
   "codex_rate_limits": null
 }
