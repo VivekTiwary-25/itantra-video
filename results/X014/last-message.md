@@ -1,0 +1,3 @@
+X014 is done. The three-second composition uses local GSAP, and `hyperframes.cmd check` passed with zero errors. The [0.2 s still](/<REPO>/results/X014/preview/snapshot-0.2s.png) is empty and dark; the [1.5 s still](/<REPO>/results/X014/preview/snapshot-1.5s.png) shows “iTantra.” The commands and results are recorded in [REPORT.md](/<REPO>/results/X014/REPORT.md).
+
+TLDR: The fade works, and both proof stills are ready.
