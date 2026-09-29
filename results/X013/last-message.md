@@ -1,0 +1,1 @@
+Completed the sandbox diagnostic and wrote [REPORT.md](/<REPO>/results/X013/REPORT.md). FFmpeg worked for both render and temp outputs; HyperFrames doctor reported missing optional tools and failures for Chrome and Docker running.
