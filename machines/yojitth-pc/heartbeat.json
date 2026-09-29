@@ -1,0 +1,14 @@
+{
+  "machine": "yojitth-pc",
+  "time": "2026-09-29T19:06:48Z",
+  "status": "idle",
+  "current_task": null,
+  "workers": [
+    "claude-second"
+  ],
+  "rate_limited_until": null,
+  "paused_by_safety_check": null,
+  "listener_pid": 41192,
+  "last_task_usage": null,
+  "codex_rate_limits": null
+}
