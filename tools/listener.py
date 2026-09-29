@@ -471,6 +471,8 @@ def find_private_data(roots: list[Path]) -> list[tuple[Path, str]]:
     """Emails (other than GitHub/Anthropic no-reply addresses) and token-like strings cannot be safely rewritten: block them."""
     bad = []
     for f in text_files(roots):
+        if ".min." in f.name.lower() or {"vendor", "node_modules"} & {part.lower() for part in f.parts}:
+            continue  # libraries such as gsap.min.js name their authors in the license header
         try:
             text = f.read_bytes().decode("utf-8", "replace")
         except OSError:
@@ -693,8 +695,14 @@ def run_task(worker: str, task_file: Path) -> None:
             names.append(f"{f.name} ({kind})")
         log(f"{rid}: BLOCKED from the public repo: " + ", ".join(names) + " (moved to local/quarantine)")
         status = "failed"
-        write_report(rid, "failed", worker, "Files were held back because they looked like they contain private data (this repo is public): "
-                     + ", ".join(names) + ". The owner of this machine should look in local/quarantine/" + rid + ", then the lead can re-queue the task.")
+        why = ("Files were held back because they looked like they contain private data (this repo is public): "
+               + ", ".join(names) + ". The owner of this machine should look in local/quarantine/" + rid + ", then the lead can re-queue the task.")
+        if any(f.name == "REPORT.md" and f.parent == rdir for f, _ in blocked) or not report.exists():
+            write_report(rid, "failed", worker, why)
+        else:  # the worker's own report is fine: keep it, add the warning, set the status to failed
+            text = report.read_text(encoding="utf-8-sig")
+            text = re.sub(r"(?im)^status\s*:\s*\w+", "status: failed", text, count=1)
+            report.write_text(text.rstrip() + "\n\n> **Listener warning:** " + why + "\n", encoding="utf-8", newline="\n")
     notes = enforce_sizes(rid, roots + [rdir])
     if notes:
         with open(report, "a", encoding="utf-8", newline="\n") as f:
