@@ -1,0 +1,6 @@
+﻿{
+    "machine":  "yash-pc",
+    "footage_file_count":  16,
+    "footage_total_duration_s":  425.072,
+    "ffmpeg_first_line":  "ffmpeg version 9.0.2-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers"
+}

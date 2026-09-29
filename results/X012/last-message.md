@@ -1,0 +1,1 @@
+Completed X012. `hello.json` reports 16 footage files totaling 425.072 seconds, and the 1-second 360p test pattern was rendered to `RENDERS:X012-testpattern.mp4`. `REPORT.md` is written with status `done`.
