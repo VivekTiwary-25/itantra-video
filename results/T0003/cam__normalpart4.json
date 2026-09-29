@@ -1,0 +1,35 @@
+[
+  {
+    "start": 0.5,
+    "end": 1.36,
+    "text": " Thank you for watching!",
+    "avg_logprob": -0.9323128312826157,
+    "no_speech_prob": 0.8577272891998291,
+    "words": [
+      {
+        "start": 0.5,
+        "end": 0.5,
+        "word": " Thank",
+        "probability": 0.007028786465525627
+      },
+      {
+        "start": 0.5,
+        "end": 1.36,
+        "word": " you",
+        "probability": 0.9430301785469055
+      },
+      {
+        "start": 1.36,
+        "end": 1.36,
+        "word": " for",
+        "probability": 0.28202006220817566
+      },
+      {
+        "start": 1.36,
+        "end": 1.36,
+        "word": " watching!",
+        "probability": 0.8613876104354858
+      }
+    ]
+  }
+]

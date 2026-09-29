@@ -1,0 +1,77 @@
+[
+  {
+    "start": 0.85,
+    "end": 10.05,
+    "text": " I am in the garden where I will come to you.",
+    "avg_logprob": -0.6074294010798137,
+    "no_speech_prob": 0.3069981336593628,
+    "words": [
+      {
+        "start": 0.85,
+        "end": 1.45,
+        "word": " I",
+        "probability": 0.13482753932476044
+      },
+      {
+        "start": 1.45,
+        "end": 1.45,
+        "word": " am",
+        "probability": 0.3384453356266022
+      },
+      {
+        "start": 1.45,
+        "end": 3.87,
+        "word": " in",
+        "probability": 0.922547459602356
+      },
+      {
+        "start": 8.73,
+        "end": 8.85,
+        "word": " the",
+        "probability": 0.728180468082428
+      },
+      {
+        "start": 8.85,
+        "end": 9.03,
+        "word": " garden",
+        "probability": 0.8931854963302612
+      },
+      {
+        "start": 9.03,
+        "end": 9.19,
+        "word": " where",
+        "probability": 0.25939351320266724
+      },
+      {
+        "start": 9.19,
+        "end": 9.25,
+        "word": " I",
+        "probability": 0.7893016338348389
+      },
+      {
+        "start": 9.25,
+        "end": 9.41,
+        "word": " will",
+        "probability": 0.8072661757469177
+      },
+      {
+        "start": 9.41,
+        "end": 9.59,
+        "word": " come",
+        "probability": 0.9461090564727783
+      },
+      {
+        "start": 9.59,
+        "end": 9.73,
+        "word": " to",
+        "probability": 0.8504864573478699
+      },
+      {
+        "start": 9.73,
+        "end": 10.05,
+        "word": " you.",
+        "probability": 0.8573014140129089
+      }
+    ]
+  }
+]

@@ -1,0 +1,29 @@
+[
+  {
+    "start": 0.21,
+    "end": 2.09,
+    "text": " Two one go",
+    "avg_logprob": -0.26149943470954895,
+    "no_speech_prob": 0.29678308963775635,
+    "words": [
+      {
+        "start": 0.21,
+        "end": 0.83,
+        "word": " Two",
+        "probability": 0.21795593202114105
+      },
+      {
+        "start": 0.83,
+        "end": 1.55,
+        "word": " one",
+        "probability": 0.7814781069755554
+      },
+      {
+        "start": 1.55,
+        "end": 2.09,
+        "word": " go",
+        "probability": 0.9754480123519897
+      }
+    ]
+  }
+]

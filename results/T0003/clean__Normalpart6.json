@@ -1,0 +1,89 @@
+[
+  {
+    "start": 0.0,
+    "end": 10.64,
+    "text": " Oh, it's too hot here. I'm in the garden. I'll come to you",
+    "avg_logprob": -0.39496468143029645,
+    "no_speech_prob": 0.12146539986133575,
+    "words": [
+      {
+        "start": 0.0,
+        "end": 0.38,
+        "word": " Oh,",
+        "probability": 0.3630455732345581
+      },
+      {
+        "start": 1.8,
+        "end": 1.92,
+        "word": " it's",
+        "probability": 0.8593244552612305
+      },
+      {
+        "start": 1.92,
+        "end": 2.04,
+        "word": " too",
+        "probability": 0.9529078602790833
+      },
+      {
+        "start": 2.04,
+        "end": 2.24,
+        "word": " hot",
+        "probability": 0.9950880408287048
+      },
+      {
+        "start": 2.24,
+        "end": 2.72,
+        "word": " here.",
+        "probability": 0.8013551831245422
+      },
+      {
+        "start": 8.6,
+        "end": 9.0,
+        "word": " I'm",
+        "probability": 0.75997593998909
+      },
+      {
+        "start": 9.0,
+        "end": 9.1,
+        "word": " in",
+        "probability": 0.9954234957695007
+      },
+      {
+        "start": 9.1,
+        "end": 9.22,
+        "word": " the",
+        "probability": 0.9951583743095398
+      },
+      {
+        "start": 9.22,
+        "end": 9.4,
+        "word": " garden.",
+        "probability": 0.9900109171867371
+      },
+      {
+        "start": 9.52,
+        "end": 9.74,
+        "word": " I'll",
+        "probability": 0.7878231406211853
+      },
+      {
+        "start": 9.74,
+        "end": 9.94,
+        "word": " come",
+        "probability": 0.9939409494400024
+      },
+      {
+        "start": 9.94,
+        "end": 10.08,
+        "word": " to",
+        "probability": 0.989485502243042
+      },
+      {
+        "start": 10.08,
+        "end": 10.64,
+        "word": " you",
+        "probability": 0.9988307356834412
+      }
+    ]
+  }
+]

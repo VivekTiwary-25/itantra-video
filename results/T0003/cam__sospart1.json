@@ -1,0 +1,122 @@
+[
+  {
+    "start": 0.0,
+    "end": 6.88,
+    "text": " I think I am lost somewhere near the construction site.",
+    "avg_logprob": -0.321121301651001,
+    "no_speech_prob": 0.19164934754371643,
+    "words": [
+      {
+        "start": 0.0,
+        "end": 0.62,
+        "word": " I",
+        "probability": 0.4415762424468994
+      },
+      {
+        "start": 3.6,
+        "end": 4.34,
+        "word": " think",
+        "probability": 0.9639853239059448
+      },
+      {
+        "start": 4.34,
+        "end": 4.48,
+        "word": " I",
+        "probability": 0.9081323146820068
+      },
+      {
+        "start": 4.48,
+        "end": 4.56,
+        "word": " am",
+        "probability": 0.5042718052864075
+      },
+      {
+        "start": 4.56,
+        "end": 4.78,
+        "word": " lost",
+        "probability": 0.9972288012504578
+      },
+      {
+        "start": 4.78,
+        "end": 5.3,
+        "word": " somewhere",
+        "probability": 0.9436331391334534
+      },
+      {
+        "start": 5.3,
+        "end": 5.74,
+        "word": " near",
+        "probability": 0.9600746631622314
+      },
+      {
+        "start": 5.74,
+        "end": 6.04,
+        "word": " the",
+        "probability": 0.8703823089599609
+      },
+      {
+        "start": 6.04,
+        "end": 6.44,
+        "word": " construction",
+        "probability": 0.9781240224838257
+      },
+      {
+        "start": 6.44,
+        "end": 6.88,
+        "word": " site.",
+        "probability": 0.9757469892501831
+      }
+    ]
+  },
+  {
+    "start": 7.22,
+    "end": 9.0,
+    "text": " Please reach me out, help me anyone.",
+    "avg_logprob": -0.321121301651001,
+    "no_speech_prob": 0.19164934754371643,
+    "words": [
+      {
+        "start": 7.22,
+        "end": 7.28,
+        "word": " Please",
+        "probability": 0.9508573412895203
+      },
+      {
+        "start": 7.28,
+        "end": 7.5,
+        "word": " reach",
+        "probability": 0.98581463098526
+      },
+      {
+        "start": 7.5,
+        "end": 7.66,
+        "word": " me",
+        "probability": 0.9706773161888123
+      },
+      {
+        "start": 7.66,
+        "end": 7.94,
+        "word": " out,",
+        "probability": 0.9906190633773804
+      },
+      {
+        "start": 8.32,
+        "end": 8.52,
+        "word": " help",
+        "probability": 0.9447470307350159
+      },
+      {
+        "start": 8.52,
+        "end": 8.74,
+        "word": " me",
+        "probability": 0.9935296177864075
+      },
+      {
+        "start": 8.74,
+        "end": 9.0,
+        "word": " anyone.",
+        "probability": 0.7144488096237183
+      }
+    ]
+  }
+]

@@ -1,0 +1,4 @@
+[8.08-15.42] router connections, nothing. Our on-device speech-to-text model takes the speech and converts the speech into compact text.
+[15.90-21.20] The Bluetooth-based transport and relay layer will send this text into another device.
+[21.80-29.50] The text-to-speech model will again convert text into speech which is in the messages language.
+[29.98-36.58] So in short, speech becomes text and text is sent locally and text again becomes speech.

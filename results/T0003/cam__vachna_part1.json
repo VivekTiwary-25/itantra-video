@@ -1,0 +1,269 @@
+[
+  {
+    "start": 1.68,
+    "end": 6.12,
+    "text": " Hello dear viewers, we are from Team CH 1977 from the National Institute of Business.",
+    "avg_logprob": -0.8003077443156924,
+    "no_speech_prob": 0.3041995167732239,
+    "words": [
+      {
+        "start": 1.68,
+        "end": 1.88,
+        "word": " Hello",
+        "probability": 0.6732486486434937
+      },
+      {
+        "start": 1.88,
+        "end": 2.04,
+        "word": " dear",
+        "probability": 0.5555050373077393
+      },
+      {
+        "start": 2.04,
+        "end": 2.4,
+        "word": " viewers,",
+        "probability": 0.9560531377792358
+      },
+      {
+        "start": 2.62,
+        "end": 2.7,
+        "word": " we",
+        "probability": 0.911233127117157
+      },
+      {
+        "start": 2.7,
+        "end": 2.84,
+        "word": " are",
+        "probability": 0.9688006043434143
+      },
+      {
+        "start": 2.84,
+        "end": 3.04,
+        "word": " from",
+        "probability": 0.926958441734314
+      },
+      {
+        "start": 3.04,
+        "end": 3.24,
+        "word": " Team",
+        "probability": 0.44670262932777405
+      },
+      {
+        "start": 3.24,
+        "end": 3.54,
+        "word": " CH",
+        "probability": 0.9479416012763977
+      },
+      {
+        "start": 3.54,
+        "end": 4.06,
+        "word": " 1977",
+        "probability": 0.02501336857676506
+      },
+      {
+        "start": 4.06,
+        "end": 4.78,
+        "word": " from",
+        "probability": 0.8434686064720154
+      },
+      {
+        "start": 4.78,
+        "end": 4.92,
+        "word": " the",
+        "probability": 0.7700059413909912
+      },
+      {
+        "start": 4.92,
+        "end": 5.14,
+        "word": " National",
+        "probability": 0.3565550446510315
+      },
+      {
+        "start": 5.14,
+        "end": 5.52,
+        "word": " Institute",
+        "probability": 0.6157711148262024
+      },
+      {
+        "start": 5.52,
+        "end": 5.78,
+        "word": " of",
+        "probability": 0.9795669913291931
+      },
+      {
+        "start": 5.78,
+        "end": 6.12,
+        "word": " Business.",
+        "probability": 0.16585715115070343
+      }
+    ]
+  },
+  {
+    "start": 6.7,
+    "end": 7.18,
+    "text": " I am Vachita.",
+    "avg_logprob": -0.8003077443156924,
+    "no_speech_prob": 0.3041995167732239,
+    "words": [
+      {
+        "start": 6.7,
+        "end": 6.74,
+        "word": " I",
+        "probability": 0.797705352306366
+      },
+      {
+        "start": 6.74,
+        "end": 6.86,
+        "word": " am",
+        "probability": 0.8828362822532654
+      },
+      {
+        "start": 6.86,
+        "end": 7.18,
+        "word": " Vachita.",
+        "probability": 0.28991756588220596
+      }
+    ]
+  },
+  {
+    "start": 7.86,
+    "end": 9.94,
+    "text": " We are here to speak on the global stage of IT.",
+    "avg_logprob": -0.8003077443156924,
+    "no_speech_prob": 0.3041995167732239,
+    "words": [
+      {
+        "start": 7.86,
+        "end": 8.06,
+        "word": " We",
+        "probability": 0.9686851501464844
+      },
+      {
+        "start": 8.06,
+        "end": 8.14,
+        "word": " are",
+        "probability": 0.9769580364227295
+      },
+      {
+        "start": 8.14,
+        "end": 8.26,
+        "word": " here",
+        "probability": 0.0987970307469368
+      },
+      {
+        "start": 8.26,
+        "end": 8.38,
+        "word": " to",
+        "probability": 0.8262908458709717
+      },
+      {
+        "start": 8.38,
+        "end": 8.56,
+        "word": " speak",
+        "probability": 0.1597202867269516
+      },
+      {
+        "start": 8.56,
+        "end": 8.76,
+        "word": " on",
+        "probability": 0.6953568458557129
+      },
+      {
+        "start": 8.76,
+        "end": 8.96,
+        "word": " the",
+        "probability": 0.9206833243370056
+      },
+      {
+        "start": 8.96,
+        "end": 9.16,
+        "word": " global",
+        "probability": 0.2503340542316437
+      },
+      {
+        "start": 9.16,
+        "end": 9.5,
+        "word": " stage",
+        "probability": 0.6336770057678223
+      },
+      {
+        "start": 9.5,
+        "end": 9.78,
+        "word": " of",
+        "probability": 0.6779167056083679
+      },
+      {
+        "start": 9.78,
+        "end": 9.94,
+        "word": " IT.",
+        "probability": 0.15624459087848663
+      }
+    ]
+  },
+  {
+    "start": 10.54,
+    "end": 11.62,
+    "text": " Thank you very much.",
+    "avg_logprob": -0.8003077443156924,
+    "no_speech_prob": 0.3041995167732239,
+    "words": [
+      {
+        "start": 10.54,
+        "end": 10.88,
+        "word": " Thank",
+        "probability": 0.08780544996261597
+      },
+      {
+        "start": 10.88,
+        "end": 11.12,
+        "word": " you",
+        "probability": 0.9822361469268799
+      },
+      {
+        "start": 11.12,
+        "end": 11.62,
+        "word": " very",
+        "probability": 0.19778308272361755
+      },
+      {
+        "start": 11.62,
+        "end": 11.62,
+        "word": " much.",
+        "probability": 0.9927640557289124
+      }
+    ]
+  },
+  {
+    "start": 14.77,
+    "end": 15.81,
+    "text": " Thank you very much.",
+    "avg_logprob": -0.8003077443156924,
+    "no_speech_prob": 0.3041995167732239,
+    "words": [
+      {
+        "start": 14.77,
+        "end": 15.19,
+        "word": " Thank",
+        "probability": 0.14411616325378418
+      },
+      {
+        "start": 15.19,
+        "end": 15.27,
+        "word": " you",
+        "probability": 0.9924299120903015
+      },
+      {
+        "start": 15.27,
+        "end": 15.27,
+        "word": " very",
+        "probability": 0.3227856159210205
+      },
+      {
+        "start": 15.27,
+        "end": 15.81,
+        "word": " much.",
+        "probability": 0.9868478178977966
+      }
+    ]
+  }
+]

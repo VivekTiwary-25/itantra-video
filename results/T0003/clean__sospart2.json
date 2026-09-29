@@ -1,0 +1,77 @@
+[
+  {
+    "start": 7.54,
+    "end": 10.34,
+    "text": " wait I'm in the chemistry lab I'll come get you wait",
+    "avg_logprob": -0.43183221481740475,
+    "no_speech_prob": 0.11550144851207733,
+    "words": [
+      {
+        "start": 7.54,
+        "end": 8.02,
+        "word": " wait",
+        "probability": 0.5021855235099792
+      },
+      {
+        "start": 8.02,
+        "end": 8.3,
+        "word": " I'm",
+        "probability": 0.4409363120794296
+      },
+      {
+        "start": 8.3,
+        "end": 8.4,
+        "word": " in",
+        "probability": 0.9906589984893799
+      },
+      {
+        "start": 8.4,
+        "end": 8.54,
+        "word": " the",
+        "probability": 0.9832431674003601
+      },
+      {
+        "start": 8.54,
+        "end": 8.86,
+        "word": " chemistry",
+        "probability": 0.9108453392982483
+      },
+      {
+        "start": 8.86,
+        "end": 9.1,
+        "word": " lab",
+        "probability": 0.9845742583274841
+      },
+      {
+        "start": 9.1,
+        "end": 9.34,
+        "word": " I'll",
+        "probability": 0.766642689704895
+      },
+      {
+        "start": 9.34,
+        "end": 9.48,
+        "word": " come",
+        "probability": 0.9895392060279846
+      },
+      {
+        "start": 9.48,
+        "end": 9.66,
+        "word": " get",
+        "probability": 0.9438243508338928
+      },
+      {
+        "start": 9.66,
+        "end": 9.82,
+        "word": " you",
+        "probability": 0.9795804619789124
+      },
+      {
+        "start": 9.82,
+        "end": 10.34,
+        "word": " wait",
+        "probability": 0.6556312441825867
+      }
+    ]
+  }
+]

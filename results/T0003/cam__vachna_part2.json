@@ -1,0 +1,440 @@
+[
+  {
+    "start": 8.08,
+    "end": 15.42,
+    "text": " router connections, nothing. Our on-device speech-to-text model takes the speech and converts the speech into compact text.",
+    "avg_logprob": -0.24791685382971604,
+    "no_speech_prob": 0.08219262212514877,
+    "words": [
+      {
+        "start": 8.08,
+        "end": 8.5,
+        "word": " router",
+        "probability": 0.15316282212734222
+      },
+      {
+        "start": 8.5,
+        "end": 9.1,
+        "word": " connections,",
+        "probability": 0.4090854823589325
+      },
+      {
+        "start": 9.38,
+        "end": 9.52,
+        "word": " nothing.",
+        "probability": 0.7732186317443848
+      },
+      {
+        "start": 10.18,
+        "end": 10.44,
+        "word": " Our",
+        "probability": 0.5751587748527527
+      },
+      {
+        "start": 10.44,
+        "end": 10.76,
+        "word": " on",
+        "probability": 0.8932421207427979
+      },
+      {
+        "start": 10.76,
+        "end": 11.02,
+        "word": "-device",
+        "probability": 0.7745733261108398
+      },
+      {
+        "start": 11.02,
+        "end": 11.3,
+        "word": " speech",
+        "probability": 0.9284464120864868
+      },
+      {
+        "start": 11.3,
+        "end": 11.46,
+        "word": "-to",
+        "probability": 0.8439805209636688
+      },
+      {
+        "start": 11.46,
+        "end": 11.62,
+        "word": "-text",
+        "probability": 0.9915932714939117
+      },
+      {
+        "start": 11.62,
+        "end": 12.04,
+        "word": " model",
+        "probability": 0.9486249685287476
+      },
+      {
+        "start": 12.04,
+        "end": 12.5,
+        "word": " takes",
+        "probability": 0.9798231720924377
+      },
+      {
+        "start": 12.5,
+        "end": 12.68,
+        "word": " the",
+        "probability": 0.4932587444782257
+      },
+      {
+        "start": 12.68,
+        "end": 12.96,
+        "word": " speech",
+        "probability": 0.9962843656539917
+      },
+      {
+        "start": 12.96,
+        "end": 13.36,
+        "word": " and",
+        "probability": 0.9509891867637634
+      },
+      {
+        "start": 13.36,
+        "end": 13.78,
+        "word": " converts",
+        "probability": 0.9933093786239624
+      },
+      {
+        "start": 13.78,
+        "end": 14.0,
+        "word": " the",
+        "probability": 0.9159716963768005
+      },
+      {
+        "start": 14.0,
+        "end": 14.2,
+        "word": " speech",
+        "probability": 0.9984369874000549
+      },
+      {
+        "start": 14.2,
+        "end": 14.56,
+        "word": " into",
+        "probability": 0.9678738117218018
+      },
+      {
+        "start": 14.56,
+        "end": 14.94,
+        "word": " compact",
+        "probability": 0.9742470383644104
+      },
+      {
+        "start": 14.94,
+        "end": 15.42,
+        "word": " text.",
+        "probability": 0.9787762761116028
+      }
+    ]
+  },
+  {
+    "start": 15.9,
+    "end": 21.2,
+    "text": " The Bluetooth-based transport and relay layer will send this text into another device.",
+    "avg_logprob": -0.24791685382971604,
+    "no_speech_prob": 0.08219262212514877,
+    "words": [
+      {
+        "start": 15.9,
+        "end": 15.96,
+        "word": " The",
+        "probability": 0.7772878408432007
+      },
+      {
+        "start": 15.96,
+        "end": 16.3,
+        "word": " Bluetooth",
+        "probability": 0.7417420148849487
+      },
+      {
+        "start": 16.3,
+        "end": 16.7,
+        "word": "-based",
+        "probability": 0.6780587285757065
+      },
+      {
+        "start": 16.7,
+        "end": 17.48,
+        "word": " transport",
+        "probability": 0.9315100908279419
+      },
+      {
+        "start": 17.48,
+        "end": 17.94,
+        "word": " and",
+        "probability": 0.964771568775177
+      },
+      {
+        "start": 17.94,
+        "end": 18.2,
+        "word": " relay",
+        "probability": 0.9647077918052673
+      },
+      {
+        "start": 18.2,
+        "end": 18.68,
+        "word": " layer",
+        "probability": 0.9434218406677246
+      },
+      {
+        "start": 18.68,
+        "end": 19.0,
+        "word": " will",
+        "probability": 0.8585374355316162
+      },
+      {
+        "start": 19.0,
+        "end": 19.3,
+        "word": " send",
+        "probability": 0.9826981425285339
+      },
+      {
+        "start": 19.3,
+        "end": 19.48,
+        "word": " this",
+        "probability": 0.9259518384933472
+      },
+      {
+        "start": 19.48,
+        "end": 19.8,
+        "word": " text",
+        "probability": 0.9969313144683838
+      },
+      {
+        "start": 19.8,
+        "end": 20.3,
+        "word": " into",
+        "probability": 0.9532467126846313
+      },
+      {
+        "start": 20.3,
+        "end": 20.78,
+        "word": " another",
+        "probability": 0.9863570928573608
+      },
+      {
+        "start": 20.78,
+        "end": 21.2,
+        "word": " device.",
+        "probability": 0.9982283711433411
+      }
+    ]
+  },
+  {
+    "start": 21.8,
+    "end": 29.5,
+    "text": " The text-to-speech model will again convert text into speech which is in the messages language.",
+    "avg_logprob": -0.24791685382971604,
+    "no_speech_prob": 0.08219262212514877,
+    "words": [
+      {
+        "start": 21.8,
+        "end": 21.98,
+        "word": " The",
+        "probability": 0.9880115985870361
+      },
+      {
+        "start": 21.98,
+        "end": 22.18,
+        "word": " text",
+        "probability": 0.9832825660705566
+      },
+      {
+        "start": 22.18,
+        "end": 22.36,
+        "word": "-to",
+        "probability": 0.9836337864398956
+      },
+      {
+        "start": 22.36,
+        "end": 22.58,
+        "word": "-speech",
+        "probability": 0.9978366196155548
+      },
+      {
+        "start": 22.58,
+        "end": 23.14,
+        "word": " model",
+        "probability": 0.9869295358657837
+      },
+      {
+        "start": 23.14,
+        "end": 23.86,
+        "word": " will",
+        "probability": 0.8893865942955017
+      },
+      {
+        "start": 23.86,
+        "end": 24.56,
+        "word": " again",
+        "probability": 0.7512399554252625
+      },
+      {
+        "start": 24.56,
+        "end": 25.92,
+        "word": " convert",
+        "probability": 0.7512839436531067
+      },
+      {
+        "start": 25.92,
+        "end": 26.78,
+        "word": " text",
+        "probability": 0.8581883311271667
+      },
+      {
+        "start": 26.78,
+        "end": 27.24,
+        "word": " into",
+        "probability": 0.9925643801689148
+      },
+      {
+        "start": 27.24,
+        "end": 27.9,
+        "word": " speech",
+        "probability": 0.9958068132400513
+      },
+      {
+        "start": 27.9,
+        "end": 28.32,
+        "word": " which",
+        "probability": 0.5425936579704285
+      },
+      {
+        "start": 28.32,
+        "end": 28.46,
+        "word": " is",
+        "probability": 0.9821797013282776
+      },
+      {
+        "start": 28.46,
+        "end": 28.6,
+        "word": " in",
+        "probability": 0.6632301211357117
+      },
+      {
+        "start": 28.6,
+        "end": 28.76,
+        "word": " the",
+        "probability": 0.9805536270141602
+      },
+      {
+        "start": 28.76,
+        "end": 29.04,
+        "word": " messages",
+        "probability": 0.1358717978000641
+      },
+      {
+        "start": 29.04,
+        "end": 29.5,
+        "word": " language.",
+        "probability": 0.8818304538726807
+      }
+    ]
+  },
+  {
+    "start": 29.98,
+    "end": 36.58,
+    "text": " So in short, speech becomes text and text is sent locally and text again becomes speech.",
+    "avg_logprob": -0.24791685382971604,
+    "no_speech_prob": 0.08219262212514877,
+    "words": [
+      {
+        "start": 29.98,
+        "end": 30.04,
+        "word": " So",
+        "probability": 0.9538585543632507
+      },
+      {
+        "start": 30.04,
+        "end": 30.16,
+        "word": " in",
+        "probability": 0.784898579120636
+      },
+      {
+        "start": 30.16,
+        "end": 30.54,
+        "word": " short,",
+        "probability": 0.9936849474906921
+      },
+      {
+        "start": 30.9,
+        "end": 31.28,
+        "word": " speech",
+        "probability": 0.9636083841323853
+      },
+      {
+        "start": 31.28,
+        "end": 31.66,
+        "word": " becomes",
+        "probability": 0.9952006340026855
+      },
+      {
+        "start": 31.66,
+        "end": 32.02,
+        "word": " text",
+        "probability": 0.9933330416679382
+      },
+      {
+        "start": 32.02,
+        "end": 32.56,
+        "word": " and",
+        "probability": 0.7754903435707092
+      },
+      {
+        "start": 32.56,
+        "end": 32.96,
+        "word": " text",
+        "probability": 0.987447202205658
+      },
+      {
+        "start": 32.96,
+        "end": 33.2,
+        "word": " is",
+        "probability": 0.9936389327049255
+      },
+      {
+        "start": 33.2,
+        "end": 34.12,
+        "word": " sent",
+        "probability": 0.9775832891464233
+      },
+      {
+        "start": 34.12,
+        "end": 34.74,
+        "word": " locally",
+        "probability": 0.9957833290100098
+      },
+      {
+        "start": 34.74,
+        "end": 35.22,
+        "word": " and",
+        "probability": 0.9042866826057434
+      },
+      {
+        "start": 35.22,
+        "end": 35.56,
+        "word": " text",
+        "probability": 0.943543016910553
+      },
+      {
+        "start": 35.56,
+        "end": 35.9,
+        "word": " again",
+        "probability": 0.9290918707847595
+      },
+      {
+        "start": 35.9,
+        "end": 36.28,
+        "word": " becomes",
+        "probability": 0.957170844078064
+      },
+      {
+        "start": 36.28,
+        "end": 36.58,
+        "word": " speech.",
+        "probability": 0.885882556438446
+      }
+    ]
+  }
+]

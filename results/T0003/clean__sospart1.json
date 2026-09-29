@@ -1,0 +1,95 @@
+[
+  {
+    "start": 0.0,
+    "end": 4.72,
+    "text": " I'm lost somewhere near the construction site. Please reach me out. Help me anyone.",
+    "avg_logprob": -0.36431193351745605,
+    "no_speech_prob": 0.026007037609815598,
+    "words": [
+      {
+        "start": 0.0,
+        "end": 0.24,
+        "word": " I'm",
+        "probability": 0.6833208501338959
+      },
+      {
+        "start": 0.24,
+        "end": 0.48,
+        "word": " lost",
+        "probability": 0.9940658807754517
+      },
+      {
+        "start": 0.48,
+        "end": 0.96,
+        "word": " somewhere",
+        "probability": 0.9505736231803894
+      },
+      {
+        "start": 0.96,
+        "end": 1.44,
+        "word": " near",
+        "probability": 0.9892939329147339
+      },
+      {
+        "start": 1.44,
+        "end": 1.76,
+        "word": " the",
+        "probability": 0.9511216878890991
+      },
+      {
+        "start": 1.76,
+        "end": 2.18,
+        "word": " construction",
+        "probability": 0.9843065738677979
+      },
+      {
+        "start": 2.18,
+        "end": 2.6,
+        "word": " site.",
+        "probability": 0.9890853762626648
+      },
+      {
+        "start": 2.92,
+        "end": 3.0,
+        "word": " Please",
+        "probability": 0.9707735776901245
+      },
+      {
+        "start": 3.0,
+        "end": 3.22,
+        "word": " reach",
+        "probability": 0.9904604554176331
+      },
+      {
+        "start": 3.22,
+        "end": 3.4,
+        "word": " me",
+        "probability": 0.9790571928024292
+      },
+      {
+        "start": 3.4,
+        "end": 3.66,
+        "word": " out.",
+        "probability": 0.9897794127464294
+      },
+      {
+        "start": 4.1,
+        "end": 4.22,
+        "word": " Help",
+        "probability": 0.9719790816307068
+      },
+      {
+        "start": 4.22,
+        "end": 4.46,
+        "word": " me",
+        "probability": 0.9849739074707031
+      },
+      {
+        "start": 4.46,
+        "end": 4.72,
+        "word": " anyone.",
+        "probability": 0.72991943359375
+      }
+    ]
+  }
+]

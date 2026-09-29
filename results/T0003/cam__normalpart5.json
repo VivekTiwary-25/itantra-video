@@ -1,0 +1,17 @@
+[
+  {
+    "start": 0.0,
+    "end": 0.48,
+    "text": " out",
+    "avg_logprob": -0.6666566580533981,
+    "no_speech_prob": 0.03836911916732788,
+    "words": [
+      {
+        "start": 0.0,
+        "end": 0.48,
+        "word": " out",
+        "probability": 0.37451350688934326
+      }
+    ]
+  }
+]
