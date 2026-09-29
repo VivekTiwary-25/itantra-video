@@ -87,6 +87,8 @@ def main() -> None:
     machine = cfg["machine"]
     caps: dict = {"machine": machine, "checked_at": now_iso(), "os": platform.platform(), "tools": {}}
     missing: list[str] = []
+    home = str(Path.home()).lower()
+    under_user_folder: list[str] = []
 
     for name, cmd in TOOLS.items():
         exe = which(cmd[0]) if cmd[0] != sys.executable else sys.executable
@@ -94,6 +96,8 @@ def main() -> None:
             caps["tools"][name] = None
             missing.append(name)
             continue
+        if name in ('ffmpeg', 'ffprobe') and str(exe).lower().startswith(home):
+            under_user_folder.append(name)
         code, out = run([exe, *cmd[1:]], timeout=30)
         caps["tools"][name] = {"version": first_line(out) if code == 0 else f"error: {first_line(out)}"}  # no paths: they contain the Windows account name
 
@@ -133,6 +137,7 @@ def main() -> None:
     caps["codex_sandbox_note"] = cfg.get("codex_sandbox_note")
     caps["guard_repos"] = len(cfg.get("guard_repos", []))
     caps["codex_add_dirs"] = cfg.get("codex_add_dirs", [])
+    caps["media_tools_under_user_folder"] = under_user_folder  # names only, never paths (public repo)
     caps["missing"] = missing
 
     out_path = REPO_ROOT / "machines" / machine / "capabilities.json"
@@ -146,6 +151,11 @@ def main() -> None:
     print(f"  CPU cores    {caps['cpu_cores']}   RAM {caps['ram_gb']} GB")
     print(f"  free disk    {caps['free_disk_gb']}")
     print(f"Wrote {out_path}")
+    if under_user_folder:
+        print()
+        print("NOTE: these media tools live inside your user folder: " + ", ".join(under_user_folder))
+        print("  A Codex worker may not see or run them the same way your own shell does (a task on yash-pc could not find ffmpeg).")
+        print("  Run: python tools/sandbox_check.py   to see what the worker really sees.")
     if missing:
         print("\nMISSING (nothing was installed; ask the PC's owner before running these):")
         for m in missing:

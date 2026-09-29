@@ -32,7 +32,7 @@ MAX_FILE_MB = 20
 MAX_PREVIEW_MB = 10
 PUSH_TRIES = 5
 DEFAULT_TIMEOUT_MIN = 60
-RATE_RE = re.compile(r"rate.?limit|usage limit|quota|too many requests|\b429\b|limit reached|exceeded your", re.I)
+RATE_RE = re.compile(r"rate.?limit(ed| reached| exceeded)|usage limit|too many requests|\b429\b|quota (exceeded|reached)|exceeded your|limit reached|try again (in|later|at)", re.I)
 STATUS_RE = re.compile(r"^\s*status\s*:\s*[\"']?(done|failed|refused)\b", re.I | re.M)
 
 CFG = load_machine_config()
@@ -278,6 +278,27 @@ def kill_tree(proc: subprocess.Popen) -> None:
         log(f"kill failed: {e}")
 
 
+def error_text(blob: str, cli: str) -> str:
+    """The part of a worker's output that can carry a real error. Never the tool output or the model's
+    own messages: those echo our docs (which mention 'rate limit') and caused a false alarm on yash-pc."""
+    lines = blob.splitlines()
+    if cli != "codex":
+        return "\n".join(lines[-40:])
+    keep = []
+    for ln in lines:
+        if not ln.startswith("{"):
+            keep.append(ln)  # plain stderr line
+            continue
+        try:
+            ev = json.loads(ln)
+        except ValueError:
+            keep.append(ln)
+            continue
+        if ev.get("type") in ("error", "turn.failed"):
+            keep.append(ln)
+    return "\n".join(keep)
+
+
 def parse_wait(text: str) -> dt.timedelta:
     m = re.search(r"(?:try again|retry|resets?|available again)[^.\n]{0,60}?\bin\s+([^.\n]{1,60})", text, re.I)
     if m:
@@ -505,6 +526,8 @@ def run_task(worker: str, task_file: Path) -> None:
         prompt = build_prompt(worker, cli, rid)
         env = dict(os.environ, FOOTAGE_ROOT=FOOTAGE_ROOT, RENDERS_DIR=str(RENDERS_DIR), MACHINE=MACHINE,
                    WORKER=worker, TASK_ID=rid, HYPERFRAMES_NO_TELEMETRY="1", DO_NOT_TRACK="1")
+        if CFG.get("path_prepend"):
+            env["PATH"] = os.pathsep.join(CFG["path_prepend"]) + os.pathsep + env.get("PATH", "")
         RENDERS_DIR.mkdir(parents=True, exist_ok=True)
         with open(out_log, "w", encoding="utf-8", errors="replace") as fh:
             proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=fh, stderr=subprocess.STDOUT, cwd=str(REPO_ROOT),
@@ -559,7 +582,7 @@ def run_task(worker: str, task_file: Path) -> None:
         status = "done" if exit_code == 0 else "failed"
 
     if status == "failed" or exit_code != 0:
-        blob = out_log.read_text(encoding="utf-8", errors="replace") if out_log.exists() else ""
+        blob = error_text(out_log.read_text(encoding="utf-8", errors="replace"), cli) if out_log.exists() else ""
         if RATE_RE.search(blob):
             until = dt.datetime.now(dt.timezone.utc) + parse_wait(blob)
             rate_until[worker] = until
