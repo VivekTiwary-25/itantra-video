@@ -1,6 +1,7 @@
 {
   "machine": "vivek-pc",
-  "generated_at": "2026-09-29T17:04:57Z",
+  "generated_at": "2026-09-29T18:48:24Z",
+  "layout": "footage_root/Video/<name> and footage_root/Audio/<name>; compare machines by path + sha256",
   "summary": {
     "file_count": 16,
     "video_files": 10,
@@ -14,149 +15,54 @@
       "normalpart4",
       "normalpart5"
     ],
-    "audio_without_video": []
+    "audio_without_video": [],
+    "layout_warnings": []
   },
   "pairs": {
     "normalpart1": {
-      "video": "sih video clip/normalpart1.mp4",
-      "audio": "sih audio clips/normalpart1.mp3"
+      "video": "Video/normalpart1.mp4",
+      "audio": "Audio/normalpart1.mp3"
     },
     "normalpart2": {
-      "video": "sih video clip/normalpart2.mp4",
+      "video": "Video/normalpart2.mp4",
       "audio": null
     },
     "normalpart3": {
-      "video": "sih video clip/normalpart3.mp4",
+      "video": "Video/normalpart3.mp4",
       "audio": null
     },
     "normalpart4": {
-      "video": "sih video clip/normalpart4.mp4",
+      "video": "Video/normalpart4.mp4",
       "audio": null
     },
     "normalpart5": {
-      "video": "sih video clip/normalpart5.mp4",
+      "video": "Video/normalpart5.mp4",
       "audio": null
     },
     "normalpart6": {
-      "video": "sih video clip/normalpart6.mp4",
-      "audio": "sih audio clips/Normalpart6.mp3"
+      "video": "Video/normalpart6.mp4",
+      "audio": "Audio/Normalpart6.mp3"
     },
     "sospart1": {
-      "video": "sih video clip/sospart1.mp4",
-      "audio": "sih audio clips/sospart1.mp3"
+      "video": "Video/sospart1.mp4",
+      "audio": "Audio/sospart1.mp3"
     },
     "sospart2": {
-      "video": "sih video clip/sospart2.mp4",
-      "audio": "sih audio clips/sospart2.mp3"
+      "video": "Video/sospart2.mp4",
+      "audio": "Audio/sospart2.mp3"
     },
     "vachna part1": {
-      "video": "sih video clip/vachna part1.mp4",
-      "audio": "sih audio clips/vachna part1.mp3"
+      "video": "Video/vachna part1.mp4",
+      "audio": "Audio/vachna part1.mp3"
     },
     "vachna part2": {
-      "video": "sih video clip/vachna part2.mp4",
-      "audio": "sih audio clips/vachna part2.mp3"
+      "video": "Video/vachna part2.mp4",
+      "audio": "Audio/vachna part2.mp3"
     }
   },
   "files": [
     {
-      "path": "sih audio clips/normalpart1.mp3",
-      "kind": "audio",
-      "size": 469753,
-      "sha256": "fe6dd42106a7c6d599805ed3227f854d47d66db9bceeae5bcbbcdca2f4ef2d61",
-      "duration_s": 11.744,
-      "streams": [
-        {
-          "type": "audio",
-          "codec": "mp3",
-          "sample_rate": "48000",
-          "channels": 2
-        }
-      ],
-      "hdr": false
-    },
-    {
-      "path": "sih audio clips/Normalpart6.mp3",
-      "kind": "audio",
-      "size": 480386,
-      "sha256": "2ad0b101774b7f112848183bdf85d9c7ad01d57f91c27b2f8bbade0362a963c2",
-      "duration_s": 12.01,
-      "streams": [
-        {
-          "type": "audio",
-          "codec": "mp3",
-          "sample_rate": "48000",
-          "channels": 2
-        }
-      ],
-      "hdr": false
-    },
-    {
-      "path": "sih audio clips/sospart1.mp3",
-      "kind": "audio",
-      "size": 219805,
-      "sha256": "5215f2216deac053782eba9de31abf105fcb3e1dcce1f8ca793a255e76f20cc3",
-      "duration_s": 5.495,
-      "streams": [
-        {
-          "type": "audio",
-          "codec": "mp3",
-          "sample_rate": "48000",
-          "channels": 2
-        }
-      ],
-      "hdr": false
-    },
-    {
-      "path": "sih audio clips/sospart2.mp3",
-      "kind": "audio",
-      "size": 665014,
-      "sha256": "6da4115603943aaf1a18256827641d373e21d2aaaf13d24c98889bb0a7f618e5",
-      "duration_s": 16.625,
-      "streams": [
-        {
-          "type": "audio",
-          "codec": "mp3",
-          "sample_rate": "48000",
-          "channels": 2
-        }
-      ],
-      "hdr": false
-    },
-    {
-      "path": "sih audio clips/vachna part1.mp3",
-      "kind": "audio",
-      "size": 826688,
-      "sha256": "790134e6a51ea39307f143f23be0c8be99a51ce07176627992f1528446e9389f",
-      "duration_s": 20.667,
-      "streams": [
-        {
-          "type": "audio",
-          "codec": "mp3",
-          "sample_rate": "48000",
-          "channels": 2
-        }
-      ],
-      "hdr": false
-    },
-    {
-      "path": "sih audio clips/vachna part2.mp3",
-      "kind": "audio",
-      "size": 1504605,
-      "sha256": "888b3bf8844d191ef51386c2d183af160b3a965fecb91ac7c75b85d9b9694707",
-      "duration_s": 37.615,
-      "streams": [
-        {
-          "type": "audio",
-          "codec": "mp3",
-          "sample_rate": "48000",
-          "channels": 2
-        }
-      ],
-      "hdr": false
-    },
-    {
-      "path": "sih video clip/normalpart1.mp4",
+      "path": "Video/normalpart1.mp4",
       "kind": "video",
       "size": 22937983,
       "sha256": "cc57f487d6d19a1fb9aa0af3af7c69392489c8fb7ddecad8429cf07ef8749ed8",
@@ -183,7 +89,7 @@
       "hdr": false
     },
     {
-      "path": "sih video clip/normalpart2.mp4",
+      "path": "Video/normalpart2.mp4",
       "kind": "video",
       "size": 436580164,
       "sha256": "bb99117bcee215f842f99cd1650b5406c656d08ba9eb13de37b12eeb61ad90d1",
@@ -210,7 +116,7 @@
       "hdr": false
     },
     {
-      "path": "sih video clip/normalpart3.mp4",
+      "path": "Video/normalpart3.mp4",
       "kind": "video",
       "size": 8147085,
       "sha256": "29855cac5f5ef9e1ee5db8b6d464dfdc3bde3a3aea778d88d49be38696a23816",
@@ -237,7 +143,7 @@
       "hdr": false
     },
     {
-      "path": "sih video clip/normalpart4.mp4",
+      "path": "Video/normalpart4.mp4",
       "kind": "video",
       "size": 2945471,
       "sha256": "c036e471cf98757bca3fab9848aee4613b948e999c0d6ca16b668f38a0c6db02",
@@ -264,7 +170,7 @@
       "hdr": false
     },
     {
-      "path": "sih video clip/normalpart5.mp4",
+      "path": "Video/normalpart5.mp4",
       "kind": "video",
       "size": 3794112,
       "sha256": "39f8a7bf8d957a222126128385443029bfa280cc158b66c6df2a4b6299022756",
@@ -291,7 +197,7 @@
       "hdr": false
     },
     {
-      "path": "sih video clip/normalpart6.mp4",
+      "path": "Video/normalpart6.mp4",
       "kind": "video",
       "size": 19351482,
       "sha256": "ce05837890c9129949851751f9c6c0ca6c3fde27381a5ea7cc5d3ce020df3e12",
@@ -318,7 +224,7 @@
       "hdr": false
     },
     {
-      "path": "sih video clip/sospart1.mp4",
+      "path": "Video/sospart1.mp4",
       "kind": "video",
       "size": 21477470,
       "sha256": "26603df1b301a3dcd3abb69a617ae76ad21b40d86b9b666f30dacde05ec91f18",
@@ -345,7 +251,7 @@
       "hdr": false
     },
     {
-      "path": "sih video clip/sospart2.mp4",
+      "path": "Video/sospart2.mp4",
       "kind": "video",
       "size": 14012745,
       "sha256": "13e7845431f4e483a249b24b3383dd1cc0276f950b7e8199929b3fe377b5c243",
@@ -372,7 +278,7 @@
       "hdr": false
     },
     {
-      "path": "sih video clip/vachna part1.mp4",
+      "path": "Video/vachna part1.mp4",
       "kind": "video",
       "size": 15791741,
       "sha256": "c638b770e1f339a638d8315075ff46a51373fd139acfa7b1defca3445bb1b12b",
@@ -399,7 +305,7 @@
       "hdr": false
     },
     {
-      "path": "sih video clip/vachna part2.mp4",
+      "path": "Video/vachna part2.mp4",
       "kind": "video",
       "size": 41733985,
       "sha256": "c65f4695b726de0ad54db437e449cc84184eba848b25beda09914812556df8ef",
@@ -424,9 +330,105 @@
         }
       ],
       "hdr": false
+    },
+    {
+      "path": "Audio/normalpart1.mp3",
+      "kind": "audio",
+      "size": 469753,
+      "sha256": "fe6dd42106a7c6d599805ed3227f854d47d66db9bceeae5bcbbcdca2f4ef2d61",
+      "duration_s": 11.744,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Audio/Normalpart6.mp3",
+      "kind": "audio",
+      "size": 480386,
+      "sha256": "2ad0b101774b7f112848183bdf85d9c7ad01d57f91c27b2f8bbade0362a963c2",
+      "duration_s": 12.01,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Audio/sospart1.mp3",
+      "kind": "audio",
+      "size": 219805,
+      "sha256": "5215f2216deac053782eba9de31abf105fcb3e1dcce1f8ca793a255e76f20cc3",
+      "duration_s": 5.495,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Audio/sospart2.mp3",
+      "kind": "audio",
+      "size": 665014,
+      "sha256": "6da4115603943aaf1a18256827641d373e21d2aaaf13d24c98889bb0a7f618e5",
+      "duration_s": 16.625,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Audio/vachna part1.mp3",
+      "kind": "audio",
+      "size": 826688,
+      "sha256": "790134e6a51ea39307f143f23be0c8be99a51ce07176627992f1528446e9389f",
+      "duration_s": 20.667,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
+    },
+    {
+      "path": "Audio/vachna part2.mp3",
+      "kind": "audio",
+      "size": 1504605,
+      "sha256": "888b3bf8844d191ef51386c2d183af160b3a965fecb91ac7c75b85d9b9694707",
+      "duration_s": 37.615,
+      "streams": [
+        {
+          "type": "audio",
+          "codec": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "hdr": false
     }
   ],
-  "archives": [
+  "archives_info_only": [
     {
       "path": "sih audio clips-20260929T141559Z-1-001.zip",
       "size": 4162540,
@@ -439,7 +441,7 @@
     }
   ],
   "extraction_log": [
-    "sih audio clips-20260929T141559Z-1-001.zip: extracted 6, already present 0",
-    "sih video clip-20260929T135856Z-1-001.zip: extracted 10, already present 0"
+    "sih audio clips-20260929T141559Z-1-001.zip: unpacked 0, already present 6, non-media ignored 0",
+    "sih video clip-20260929T135856Z-1-001.zip: unpacked 0, already present 10, non-media ignored 0"
   ]
 }

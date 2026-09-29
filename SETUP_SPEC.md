@@ -33,7 +33,7 @@ Talk to Vivek in plain, simple language, with a short TLDR at the end of each me
 - Anything missing is listed under `"missing"`.
 - It installs nothing by itself. It prints the install commands for Vivek or the machine owner to approve.
 
-**`tools/manifest.py`** — scans `footage_root`, auto-extracting any `.zip` it finds into a sibling folder first (never deleting the zip). It writes `machines/<machine>/footage-manifest.json` with, for every media file: the relative path, size, duration and streams (from ffprobe), whether it's HDR (color transfer = smpte2084 or arib-std-b67), and sha256. It also writes a summary: file count and total duration.
+**`tools/manifest.py`** — checks the footage layout (`footage_root` holds exactly `Video/` and `Audio/`, original file names; see PROTOCOL.md) and warns about anything else. If `.zip` files sit in `footage_root` it unpacks their media straight into `Video/` and `Audio/` (never deleting or changing the zip). It writes `machines/<machine>/footage-manifest.json` with, for every media file: the relative path, size, duration and streams (from ffprobe), whether it's HDR (color transfer = smpte2084 or arib-std-b67), and sha256. It also writes a summary: file count and total duration.
 
 **`tools/listener.py`** — the core. Behaviour:
 - It reads `machine.local.json`, and refuses to start if that file is missing or its machine name isn't in the registry.
@@ -61,7 +61,7 @@ Talk to Vivek in plain, simple language, with a short TLDR at the end of each me
 ## Step 3 — Set up vivek-pc
 1. Write `machine.local.json` for vivek-pc (ask Vivek for the footage folder path).
 2. Run `doctor.py`. Help Vivek install anything missing (ffmpeg, node, hyperframes), with his approval.
-3. Run `manifest.py`, including unzipping the footage.
+3. Run `manifest.py` (it unpacks any zips into the `Video/` + `Audio/` layout and scans).
 4. Start the listener for `codex-vivek` in its own terminal.
 5. Remind Vivek to set Windows power settings so the PC doesn't sleep while listeners run.
 

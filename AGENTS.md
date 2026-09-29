@@ -7,7 +7,7 @@ You are a worker in the iTantra demo-film production system.
 3. Write only inside the paths listed in the task's `writes:`. Default: `results/<id>/`.
 4. Finish by writing `results/<id>/REPORT.md` (status: done | failed | refused, what you made, notes).
 5. Never use GPT-6 Astra.
-6. Never commit footage, audio sources, or any file over 20 MB. Big outputs go to `local/renders/`; put the local path in REPORT.md.
-7. Footage is referred to as `FOOTAGE:<relative path>` and resolved with `$FOOTAGE_ROOT`. Never put absolute paths in committed files.
+6. Never commit footage, audio sources, or any file over 20 MB. Big outputs go to `local/renders/`; refer to them in REPORT.md as `RENDERS:<relative path>` (never an absolute path: this repo is public).
+7. Footage is referred to as `FOOTAGE:Video/<name>` or `FOOTAGE:Audio/<name>` (original file names) and resolved with `$FOOTAGE_ROOT`. Never put absolute paths in committed files.
 8. If the task is unclear or impossible, finish with `status: failed` and explain. Do not guess at taste decisions.
 9. Never touch the iTantra app repo or any other repo.

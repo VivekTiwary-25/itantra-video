@@ -26,7 +26,10 @@ The canonical list lives in `machines/registry.json`. Each machine also has a lo
 }
 ```
 
-Tasks never contain absolute paths. Footage is referred to as `FOOTAGE:<relative path>` and resolved using `footage_root`. Renders go to `renders_dir`, which lives under `local/` and is git-ignored.
+Tasks never contain absolute paths. Footage is referred to as `FOOTAGE:Video/<name>` or `FOOTAGE:Audio/<name>` and resolved using `footage_root`.
+
+Footage layout (the same on every machine): `footage_root` contains exactly two folders, `Video/` (the 10 .mp4 clips) and `Audio/` (the 6 .mp3 files), with the original file names and no other folders (the Drive zips may sit beside them but are never used). Clip paths are always `FOOTAGE:Video/<name>` or `FOOTAGE:Audio/<name>`, for example `FOOTAGE:Video/normalpart1.mp4`. Video and audio names are matched ignoring case (`Audio/Normalpart6.mp3` belongs to `Video/normalpart6.mp4`). Machines are compared by these paths plus sha256 (`python tools/compare_manifests.py`), not by how the files arrived.
+ Renders go to `renders_dir`, which lives under `local/` and is git-ignored.
 
 ## 2. Folders
 
@@ -47,7 +50,7 @@ results/<id>/              written ONLY by the assigned worker
 reviews/<id>.md            verdict from a foreman: accepted | redo (with notes) | dropped
 discussion/<topic>/NNN-<author>.md   foreman-to-foreman notes, append-only, one file per message
 film/                      the HyperFrames project. Only claude-lead writes here, or a task that explicitly lists film/ paths in `writes:`
-tools/                     listener.py, doctor.py, manifest.py, statusline_usage.py, status.py, swarm_status.py (the banner the lead shows Vivek first)
+tools/                     listener.py, doctor.py, manifest.py, compare_manifests.py, statusline_usage.py, status.py, swarm_status.py (the banner the lead shows Vivek first)
 log/                       lead's usage log and batch log
 local/                     git-ignored: renders, logs, scratch, machine.local.json
 ```
@@ -115,7 +118,7 @@ File formats the listener reads (start each file with a short front-matter block
 5. Never touch the iTantra app repo or its worktrees.
 6. Never commit footage or audio source files. Footage is referenced, never copied into git.
 7. All film rules in brief/decisions.md and brief/film-brief.md apply to every output.
-8. **This repo is public.** Nothing committed may contain absolute paths, user names, emails, tokens or anything private. Refer to footage as `FOOTAGE:<relative path>` and to renders as `RENDERS:<relative path>` (relative to `renders_dir`). The listener replaces the machine's home-folder path with `<HOME>` in text results as a last safety net, but do not rely on it.
+8. **This repo is public.** Nothing committed may contain absolute paths, user names, emails, tokens or anything private. Refer to footage as `FOOTAGE:Video/<name>` or `FOOTAGE:Audio/<name>` and to renders as `RENDERS:<relative path>` (relative to `renders_dir`). The listener replaces the machine's home-folder path with `<HOME>` in text results as a last safety net, but do not rely on it.
 9. If a task is unclear or impossible, finish with `status: failed` and explain why in REPORT.md. Do not guess at taste decisions.
 
 ## 6. Rendered video

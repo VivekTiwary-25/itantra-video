@@ -1,9 +1,14 @@
-"""manifest.py - extract footage zips (never deleting them) and write machines/<machine>/footage-manifest.json.
+"""manifest.py - make sure the footage is in the standard layout, then write machines/<machine>/footage-manifest.json.
 
-Zips are extracted next to themselves, keeping the paths inside the zip, so the relative paths in the
-manifest are the same on every machine no matter what the zips were called when downloaded.
-A zip whose files are not all inside one top-level folder is extracted into a folder named after the zip
-(minus Google Drive's "-2026...Z-1-001" suffix).
+THE LAYOUT (same on every machine). footage_root contains exactly two folders, with the original file names:
+    Video/   the .mp4 clips
+    Audio/   the .mp3 files
+Clip paths in tasks are therefore always FOOTAGE:Video/<name> or FOOTAGE:Audio/<name>.
+Machines are compared by these paths plus sha256, not by how the files arrived.
+
+If .zip files are sitting in footage_root, their media files are unpacked straight into Video/ and Audio/
+(any folder names inside the zip are dropped; the zips are never deleted or changed). If you downloaded the
+folders by hand from Drive, there is nothing to unpack and this just scans them.
 
 Usage: python tools/manifest.py
 """
@@ -11,7 +16,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import re
 import sys
 import zipfile
 from pathlib import Path, PurePosixPath
@@ -19,8 +23,8 @@ from pathlib import Path, PurePosixPath
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import AUDIO_EXT, MEDIA_EXT, REPO_ROOT, load_machine_config, now_iso, run, which, write_json  # noqa: E402
 
-DRIVE_SUFFIX = re.compile(r"-\d{8}T\d{6}Z-\d+-\d+$")
 HDR_TRANSFERS = {"smpte2084", "arib-std-b67"}
+FOLDERS = {"Video": "video", "Audio": "audio"}
 
 
 def sha256(path: Path) -> str:
@@ -31,19 +35,30 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def extract_zip(zpath: Path, log: list[str]) -> None:
+def target_folder(name: str) -> str | None:
+    ext = PurePosixPath(name).suffix.lower()
+    if ext not in MEDIA_EXT:
+        return None
+    return "Audio" if ext in AUDIO_EXT else "Video"
+
+
+def extract_zip(zpath: Path, root: Path, log: list[str]) -> None:
+    """Unpack the media files of one zip into root/Video and root/Audio, keeping the original file names."""
+    done = skipped = ignored = 0
     with zipfile.ZipFile(zpath) as z:
-        entries = [i for i in z.infolist() if not i.is_dir()]
-        tops = {PurePosixPath(i.filename).parts[0] for i in entries if len(PurePosixPath(i.filename).parts) > 1}
-        single_top = len(tops) == 1 and all(len(PurePosixPath(i.filename).parts) > 1 for i in entries)
-        base = zpath.parent if single_top else zpath.parent / DRIVE_SUFFIX.sub("", zpath.stem)
-        done = skipped = 0
-        for info in entries:
+        for info in z.infolist():
+            if info.is_dir():
+                continue
             rel = PurePosixPath(info.filename)
             if rel.is_absolute() or ".." in rel.parts:
                 log.append(f"skipped unsafe path in {zpath.name}: {info.filename}")
                 continue
-            target = base.joinpath(*rel.parts)
+            folder = target_folder(rel.name)
+            if folder is None:
+                ignored += 1
+                continue
+            target = root / folder / rel.name
+            # Windows file names are case-insensitive: an existing Normalpart6.mp3 counts as present.
             if target.exists() and target.stat().st_size == info.file_size:
                 skipped += 1
                 continue
@@ -52,7 +67,7 @@ def extract_zip(zpath: Path, log: list[str]) -> None:
                 while chunk := src.read(1024 * 1024):
                     dst.write(chunk)
             done += 1
-        log.append(f"{zpath.name}: extracted {done}, already present {skipped}")
+    log.append(f"{zpath.name}: unpacked {done}, already present {skipped}, non-media ignored {ignored}")
 
 
 def probe(ffprobe: str, path: Path) -> dict:
@@ -84,7 +99,7 @@ def probe(ffprobe: str, path: Path) -> dict:
 
 
 def pair_key(rel: str) -> str:
-    """'sih video clip/Normalpart6.mp4' and 'sih audio clips/normalpart6.mp3' both give 'normalpart6'."""
+    """'Video/Normalpart6.mp4' and 'Audio/normalpart6.mp3' both give 'normalpart6' (names match ignoring case)."""
     return PurePosixPath(rel).stem.lower().strip()
 
 
@@ -99,26 +114,43 @@ def main() -> None:
         sys.exit("ffprobe not found. Run tools/doctor.py for install hints.")
 
     log: list[str] = []
-    zips = sorted(root.rglob("*.zip"), key=lambda p: p.name.lower())
+    warnings: list[str] = []
+    zips = sorted(root.glob("*.zip"), key=lambda p: p.name.lower())
     for z in zips:
         print(f"Checking {z.name} ...")
-        extract_zip(z, log)
+        extract_zip(z, root, log)
 
-    files, archives = [], []
-    for p in sorted(root.rglob("*"), key=lambda p: str(p).lower()):
-        if not p.is_file():
+    # Layout check: exactly Audio/ and Video/ (zips may sit beside them).
+    for child in sorted(root.iterdir(), key=lambda p: p.name.lower()):
+        if child.is_dir() and child.name not in FOLDERS:
+            warnings.append(f"unexpected folder in footage_root (not part of the standard layout, not scanned): {child.name}")
+        elif child.is_file() and child.suffix.lower() in MEDIA_EXT:
+            warnings.append(f"media file loose in footage_root (should be in Video/ or Audio/, not scanned): {child.name}")
+    for folder in FOLDERS:
+        if not (root / folder).is_dir():
+            warnings.append(f"missing folder: {folder}/")
+
+    files = []
+    for folder, kind in FOLDERS.items():
+        d = root / folder
+        if not d.is_dir():
             continue
-        rel = p.relative_to(root).as_posix()
-        if p.suffix.lower() == ".zip":
-            archives.append({"path": rel, "size": p.stat().st_size, "sha256": sha256(p)})
-            continue
-        if p.suffix.lower() not in MEDIA_EXT:
-            continue
-        print(f"  scanning {rel}")
-        entry = {"path": rel, "kind": "audio" if p.suffix.lower() in AUDIO_EXT else "video",
-                 "size": p.stat().st_size, "sha256": sha256(p)}
-        entry.update(probe(ffprobe, p))
-        files.append(entry)
+        for p in sorted(d.iterdir(), key=lambda p: p.name.lower()):
+            if p.is_dir():
+                warnings.append(f"subfolder inside {folder}/ (not scanned): {p.name}")
+                continue
+            if p.suffix.lower() not in MEDIA_EXT:
+                warnings.append(f"non-media file in {folder}/ (ignored): {p.name}")
+                continue
+            if target_folder(p.name) != folder:
+                warnings.append(f"{folder}/{p.name} looks like it belongs in {target_folder(p.name)}/")
+            rel = f"{folder}/{p.name}"
+            print(f"  scanning {rel}")
+            entry = {"path": rel, "kind": kind, "size": p.stat().st_size, "sha256": sha256(p)}
+            entry.update(probe(ffprobe, p))
+            files.append(entry)
+
+    archives = [{"path": z.name, "size": z.stat().st_size, "sha256": sha256(z)} for z in zips]
 
     videos = {pair_key(f["path"]): f["path"] for f in files if f["kind"] == "video"}
     audios = {pair_key(f["path"]): f["path"] for f in files if f["kind"] == "audio"}
@@ -128,6 +160,7 @@ def main() -> None:
     manifest = {
         "machine": machine,
         "generated_at": now_iso(),
+        "layout": "footage_root/Video/<name> and footage_root/Audio/<name>; compare machines by path + sha256",
         "summary": {
             "file_count": len(files),
             "video_files": sum(f["kind"] == "video" for f in files),
@@ -137,10 +170,11 @@ def main() -> None:
             "errors": [f["path"] for f in files if "error" in f],
             "video_without_audio": [k for k, v in pairs.items() if v["video"] and not v["audio"]],
             "audio_without_video": [k for k, v in pairs.items() if v["audio"] and not v["video"]],
+            "layout_warnings": warnings,
         },
         "pairs": pairs,
         "files": files,
-        "archives": archives,
+        "archives_info_only": archives,
         "extraction_log": log,
     }
     out = REPO_ROOT / "machines" / machine / "footage-manifest.json"
@@ -153,6 +187,12 @@ def main() -> None:
     print(f"Audio with no matching video: {s['audio_without_video'] or 'none'}")
     if s["errors"]:
         print(f"ffprobe errors: {s['errors']}")
+    if warnings:
+        print("LAYOUT WARNINGS (fix these so every machine matches):")
+        for w in warnings:
+            print("  -", w)
+    else:
+        print("Layout OK: exactly Video/ and Audio/.")
 
 
 if __name__ == "__main__":
