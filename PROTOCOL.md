@@ -52,7 +52,7 @@ results/<id>/              written ONLY by the assigned worker
 reviews/<id>.md            verdict from a foreman: accepted | redo (with notes) | dropped
 discussion/<topic>/NNN-<author>.md   foreman-to-foreman notes, append-only, one file per message
 film/                      the HyperFrames project. Only claude-lead writes here, or a task that explicitly lists film/ paths in `writes:`
-tools/                     listener.py, doctor.py, manifest.py, compare_manifests.py, statusline_usage.py, status.py, swarm_status.py (the banner the lead shows Vivek first)
+tools/                     listener.py, doctor.py, manifest.py, compare_manifests.py, find_stuck_tasks.py (queued tasks stuck on a silent machine), statusline_usage.py, status.py, swarm_status.py (the banner the lead shows Vivek first)
 log/                       lead's usage log and batch log
 local/                     git-ignored: renders, logs, scratch, machine.local.json
 ```
