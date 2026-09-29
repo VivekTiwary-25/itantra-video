@@ -1,0 +1,53 @@
+{
+  "machine": "yash-pc",
+  "checked_at": "2026-09-29T18:47:20Z",
+  "os": "Windows-11-10.0.26200-SP0",
+  "tools": {
+    "git": {
+      "version": "git version 2.52.0.windows.1"
+    },
+    "python": {
+      "version": "Python 3.13.14"
+    },
+    "node": {
+      "version": "v24.19.0"
+    },
+    "npm": {
+      "version": "11.17.0"
+    },
+    "ffmpeg": {
+      "version": "ffmpeg version 9.0.2-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers"
+    },
+    "ffprobe": {
+      "version": "ffprobe version 9.0.2-full_build-www.gyan.dev Copyright (c) 2007-2026 the FFmpeg developers"
+    },
+    "codex": {
+      "version": "codex-cli 0.159.0"
+    },
+    "claude": null,
+    "hyperframes": {
+      "version": "0.8.92"
+    }
+  },
+  "browsers": [
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+  ],
+  "gpu": [
+    "NVIDIA GeForce RTX 3050 6GB Laptop GPU, 6144 MiB"
+  ],
+  "cpu_cores": 12,
+  "ram_gb": 15.6,
+  "free_disk_gb": {
+    "repo_drive": 137.0,
+    "footage_drive": 137.0,
+    "renders_drive": 137.0
+  },
+  "codex_sandbox": "workspace-write",
+  "codex_sandbox_note": null,
+  "guard_repos": 0,
+  "codex_add_dirs": [],
+  "missing": [
+    "claude"
+  ]
+}
