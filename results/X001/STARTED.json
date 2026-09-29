@@ -1,0 +1,10 @@
+{
+  "id": "X001",
+  "machine": "vivek-pc",
+  "worker": "codex-vivek",
+  "time": "2026-09-29T18:37:09Z",
+  "model": "gpt-6-luna",
+  "effort": "low",
+  "pid": 35448,
+  "timeout_min": 15
+}
