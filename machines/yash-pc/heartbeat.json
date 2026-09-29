@@ -1,14 +1,14 @@
 {
   "machine": "yash-pc",
-  "time": "2026-09-29T20:15:23Z",
-  "status": "restarting",
+  "time": "2026-09-29T20:15:41Z",
+  "status": "idle",
   "current_task": null,
   "workers": [
     "codex-f1"
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 35684,
+  "listener_pid": 33564,
   "last_task_usage": null,
   "codex_rate_limits": null
 }
