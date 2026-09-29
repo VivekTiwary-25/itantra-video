@@ -21,6 +21,7 @@ Do this, and ask the owner of this PC before installing anything:
 6. Confirm the worker CLI works non-interactively on this machine:
    - Codex: `codex exec -m gpt-6-luna "print the word ready"`, then confirm that `-c model_reasoning_effort='"low"'` is accepted. Also check that `--sandbox workspace-write` can read files under footage_root. Note the result.
    - Codex on Windows: also run `codex doctor`. If it reports `sandbox provisioning failed` (`helper_unknown_error`), or a `codex exec --sandbox workspace-write` test can't start a shell, TELL THE OWNER and write it in your report. Do not change sandbox settings or run anything as administrator without the owner's OK.
+   If the sandbox is broken and the owner explicitly approves the fallback, set `"codex_sandbox": "danger-full-access"` in `machine.local.json` and list every OTHER git repo on this PC that must never change in `"guard_repos": ["<path>", ...]` in the same file. The listener then checks those repos before and after every task, and pauses this worker (with a warning in the report) if anything changed. Never use the fallback without the owner's OK.
    - Claude (yojitth-pc): `claude -p --model opus --effort high -n claude-second "reply with the word ready"`, then check that `claude -p --resume claude-second "reply again"` continues the same session.
 7. Commit and push `machines/yash-pc/capabilities.json` and `footage-manifest.json`.
 8. Start the listener: `tools\start-listener.cmd`. Leave that terminal open.

@@ -65,6 +65,8 @@ def agent_state(worker, info, now, usage):
     fresh = (now - t).total_seconds() < ONLINE_MINUTES * 60
     state = hb.get("status")
     if fresh and state != "stopped":
+        if worker in (hb.get("paused_by_safety_check") or {}):
+            return True, "PAUSED: safety check, owner must look"
         if hb.get("current_task"):
             return True, f"working {hb['current_task']}"
         if state == "rate_limited":

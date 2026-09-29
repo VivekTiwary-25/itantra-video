@@ -11,6 +11,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import random
@@ -23,7 +24,7 @@ import datetime as dt
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import (REPO_ROOT, SAFE_TOKEN, git, load_machine_config, now_iso, read_json, which, write_json)  # noqa: E402
+from common import (REPO_ROOT, SAFE_TOKEN, git, load_machine_config, now_iso, read_json, run, which, write_json)  # noqa: E402
 
 SYNC_EVERY_S = 30
 HEARTBEAT_EVERY_S = 300
@@ -40,6 +41,7 @@ REGISTRY = read_json(REPO_ROOT / "machines" / "registry.json", {})
 MY_WORKERS: list[str] = CFG["workers"]
 FOOTAGE_ROOT = CFG["footage_root"]
 RENDERS_DIR = Path(CFG["renders_dir"])
+GUARD_REPOS: list[str] = CFG.get("guard_repos", [])  # other repos that no task may change
 LOG_DIR = REPO_ROOT / "local" / "logs"
 OFFLINE = False
 
@@ -181,6 +183,7 @@ def write_heartbeat(status: str | None = None, push: bool = True) -> None:
         "current_task": current_task,
         "workers": MY_WORKERS,
         "rate_limited_until": paused or None,
+        "paused_by_safety_check": guard_paused() or None,
         "listener_pid": os.getpid(),
         "last_task_usage": last_usage or None,
         "codex_rate_limits": last_codex_rate_limits,
@@ -357,6 +360,61 @@ def build_prompt(worker: str, cli: str, rid: str) -> str:
             f"Finish by writing results/{rid}/REPORT.md.")
 
 
+# ---------------------------------------------------------------- safety net for wide sandboxes
+def repo_state(path: str) -> dict | None:
+    """Snapshot of another git repo: file list, hash of tracked changes, HEAD. None if it is not a repo."""
+    p = Path(path)
+    if not (p / ".git").exists():
+        return None
+    g = ["git", "-C", str(p)]
+    _, status = run([*g, "status", "--porcelain=v1", "-uall"], timeout=180)
+    _, diff = run([*g, "diff", "--no-ext-diff"], timeout=180)
+    _, head = run([*g, "rev-parse", "HEAD"], timeout=30)
+    return {"status": sorted(status.splitlines()), "diff_hash": hashlib.sha256(diff.encode("utf-8", "replace")).hexdigest(),
+            "head": head.strip()}
+
+
+def snapshot_guards() -> dict:
+    snap = {}
+    for r in GUARD_REPOS:
+        st = repo_state(r)
+        if st is None:
+            log(f"guard: {r} is not a git repo, skipping")
+        else:
+            snap[r] = st
+    return snap
+
+
+def guard_changes(before: dict) -> list[str]:
+    """Human-readable list of what changed in guarded repos since `before` (empty = untouched)."""
+    lines = []
+    for r, b in before.items():
+        a = repo_state(r)
+        if a is None:
+            lines.append(f"{r}: could not be read after the task")
+            continue
+        if a["head"] != b["head"]:
+            lines.append(f"{r}: HEAD moved {b['head'][:8]} -> {a['head'][:8]}")
+        if a["diff_hash"] != b["diff_hash"]:
+            lines.append(f"{r}: the content of tracked files changed")
+        added, removed = sorted(set(a["status"]) - set(b["status"])), sorted(set(b["status"]) - set(a["status"]))
+        lines += [f"{r}: now listed: {x}" for x in added] + [f"{r}: no longer listed: {x}" for x in removed]
+    return lines
+
+
+def guard_flag(worker: str) -> Path:
+    return REPO_ROOT / "local" / f"paused-{worker}.flag"
+
+
+def guard_paused() -> dict[str, str]:
+    out = {}
+    for w in MY_WORKERS:
+        f = guard_flag(w)
+        if f.exists():
+            out[w] = f.read_text(encoding="utf-8", errors="replace").splitlines()[0] if f.stat().st_size else "paused"
+    return out
+
+
 # ---------------------------------------------------------------- run one task
 def run_task(worker: str, task_file: Path) -> None:
     global current_task
@@ -408,6 +466,8 @@ def run_task(worker: str, task_file: Path) -> None:
     push_with_retries()
     write_heartbeat("busy")
     log(f"{rid}: starting on {worker} with {model}/{effort}, timeout {timeout_min} min")
+
+    guards_before = snapshot_guards() if GUARD_REPOS else {}
 
     # --- launch
     LOG_DIR.mkdir(parents=True, exist_ok=True)
@@ -481,6 +541,18 @@ def run_task(worker: str, task_file: Path) -> None:
             with open(report, "a", encoding="utf-8", newline="\n") as f:
                 f.write(f"\n> Listener note: a rate-limit or quota error was seen. {worker} is paused until {until.isoformat()}. "
                         "The lead should reassign or re-queue this task.\n")
+
+    if guards_before:
+        changed = guard_changes(guards_before)
+        if changed:
+            (REPO_ROOT / "local" / "guard").mkdir(parents=True, exist_ok=True)
+            (REPO_ROOT / "local" / "guard" / f"{rid}.txt").write_text("\n".join(changed) + "\n", encoding="utf-8")
+            guard_flag(worker).write_text(f"paused after {rid}: a guarded repo changed. Look at local/guard/{rid}.txt, then delete this file.\n", encoding="utf-8")
+            log(f"{rid}: SAFETY WARNING - a guarded repo changed ({len(changed)} differences). {worker} is paused.")
+            with open(report, "a", encoding="utf-8", newline="\n") as f:
+                f.write(f"\n> **SAFETY WARNING (listener):** a repo outside this project that must not be touched changed while this task ran "
+                        f"({len(changed)} differences). {worker} on {MACHINE} is now PAUSED until the owner looks at it. "
+                        f"Details are kept on that machine only (local/guard/{rid}.txt) because this repo is public.\n")
 
     roots = [REPO_ROOT / p for p in write_paths]
     notes = enforce_sizes(rid, roots + [rdir])
@@ -557,6 +629,8 @@ def main() -> None:
         while True:
             ran = False
             for worker in MY_WORKERS:
+                if worker in guard_paused():
+                    continue
                 until = rate_until.get(worker)
                 if until and until > dt.datetime.now(dt.timezone.utc):
                     continue
