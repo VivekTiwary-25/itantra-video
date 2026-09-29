@@ -1,7 +1,7 @@
 {
   "machine": "utkarsh-pc",
-  "time": "2026-09-29T19:35:22Z",
-  "status": "idle",
+  "time": "2026-09-29T19:35:27Z",
+  "status": "restarting",
   "current_task": null,
   "workers": [
     "codex-f2"
