@@ -1,0 +1,3 @@
+X016 is complete. `hyperframes.cmd check` passed with zero errors. The [0.2 s preview](/D:/projects/SIH/Presentation/Video/results/X016/preview/snapshot-0.2s.png) is dark; the [1.5 s preview](/D:/projects/SIH/Presentation/Video/results/X016/preview/snapshot-1.5s.png) shows “iTantra”. The [report](/D:/projects/SIH/Presentation/Video/results/X016/REPORT.md) records the commands and results.
+
+TLDR: The local GSAP and browser proof passed.
