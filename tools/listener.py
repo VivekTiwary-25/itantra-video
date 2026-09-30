@@ -32,6 +32,8 @@ HEARTBEAT_EVERY_S = 300
 MAX_FILE_MB = 20
 MAX_PREVIEW_MB = 10
 PUSH_TRIES = 8
+HEARTBEAT_PUSH_BUDGET = 90  # seconds: one push cycle may not take longer, so a dead connection cannot freeze the listener
+RESULT_PUSH_BUDGET = 240  # seconds for result / start commits; anything left over is retried on later cycles
 NET_TIMEOUT = 45  # seconds for any single network git call: a half-dead connection must not block the listener for minutes
 NET = ["-c", "http.lowSpeedLimit=1000", "-c", "http.lowSpeedTime=20"]  # abort a transfer that has stalled for 20 s
 DEFAULT_TIMEOUT_MIN = 60
@@ -197,10 +199,16 @@ def sync() -> bool:
     return True
 
 
-def push_with_retries(tries: int = PUSH_TRIES, quiet: bool = False) -> bool:
-    """Pull/rebase then push, retrying transient network errors and concurrent pushes."""
+def push_with_retries(tries: int = PUSH_TRIES, quiet: bool = False, budget: int | None = None) -> bool:
+    """Pull/rebase then push, retrying transient network errors and concurrent pushes.
+    `budget` (seconds, default 90 for quiet heartbeat pushes and 240 otherwise) caps the whole cycle: collisions are quick
+    and use all `tries`, but hung network calls (each cut at NET_TIMEOUT) must not add up to many minutes."""
     if OFFLINE:
         return True
+    if budget is None:
+        budget = HEARTBEAT_PUSH_BUDGET if quiet else RESULT_PUSH_BUDGET
+    start = time.time()
+    out_of_time = False
     for attempt in range(1, tries + 1):
         rc, out = git(*NET, "pull", "--rebase", "--autostash", "origin", branch(), timeout=NET_TIMEOUT)
         if rc != 0:
@@ -214,9 +222,14 @@ def push_with_retries(tries: int = PUSH_TRIES, quiet: bool = False) -> bool:
                 return True
             log(f"push attempt {attempt}/{tries} failed: {out.strip()[:200]}")
         if attempt < tries:
-            time.sleep(random.uniform(3, 15))
+            wait = random.uniform(3, 15)
+            if time.time() - start + wait > budget:
+                out_of_time = True
+                break
+            time.sleep(wait)
     if not quiet:
-        log("push gave up after retries; the commit stays local and will be retried on later cycles")
+        why = f"time budget of {budget} s used up after {time.time() - start:.0f} s" if out_of_time else "retries used up"
+        log(f"push gave up ({why}); the commit stays local and will be retried on later cycles")
     update_sync_state(last_push_error_at=now_iso(), unpushed=count_unpushed())
     return False
 
