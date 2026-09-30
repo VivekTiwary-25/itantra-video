@@ -29,7 +29,7 @@ Place each so its first word lands where the spec says:
 - `sent` at `yash_app.sent_at`.
 - Scene 2 **ends on `sonar_b` + a 0.5 s hold**: no fade, no N4, no `vachana_reply`.
 
-**4. Framing** (split panel x 0-1232):
+**4. Framing** (split panel x 0-1232). **Superseded by note 004:** T0032 uses a centred crop (src 344-1576), which keeps both people whole. No change needed. The original text follows.
 - Yash at the hedge (normalpart6) is roughly centred in the source (x ≈ 560-1260; checked on a frame at src 5 s). `object-position: 50% center` shows src 344-1576 and keeps him whole.
 - Vachana on the bench (normalpart1), **checked on real frames at src 4.8 and 7.0**: she spans source x ≈ 780-1230. With `object-position: left center` (src 0-1232), **her right arm touches the 24 px feather**. Use a 250 px shift, `object-position: 36.3% center` (0.363 × 688 = 250 → src 250-1482). She then sits at panel x ≈ 530-980 with the phone central, and the second woman on the bench (src x ≈ 1790) stays out of frame. Apply the same shift to the enter move and to any held still of the last frame (`background-position: -250px center`).
 
