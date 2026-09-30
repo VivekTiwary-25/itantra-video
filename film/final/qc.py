@@ -22,6 +22,9 @@ FRAME_W, FRAME_H = 64, 36
 PHONE_W, PHONE_H = 243, 540
 
 
+MAX_BLACK_S = 1.0
+
+
 def command(args):
     result = subprocess.run(args, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if result.returncode:
@@ -81,10 +84,8 @@ def issue(issues, name, observed, expected, fail=True):
 def parse_intervals(log, pattern, duration):
     starts = []
     rows = []
-    for line in log.splitlines():
-        match = re.search(pattern, line)
-        if not match:
-            continue
+    # ffmpeg 7+ prints blackdetect's start and end on ONE line, so read every match on a line, not just the first
+    for match in (m for line in log.splitlines() for m in re.finditer(pattern, line)):
         kind, val = match.groups()
         if kind.endswith("start"):
             starts.append(float(val))
@@ -114,7 +115,9 @@ def picture(path, duration):
                          "frames": number - active})
             active = None
 
-    vf = ("blackdetect=d=0:pix_th=0.015:pic_th=0.99,"
+    # pic_th=1.0: a frame counts as black only if EVERY pixel is below pix_th. The sonar sections are mostly
+    # black with thin luminous lines and points, which a 99 % rule wrongly reported as black (claude-second, T0027).
+    vf = ("blackdetect=d=0:pix_th=0.02:pic_th=1.0,"
           "freezedetect=n=-60dB:d=1.0,vfrdet,"
           f"scale={FRAME_W}:{FRAME_H}:flags=area,format=rgb24")
     count, log = stream_bytes(["ffmpeg", "-hide_banner", "-nostdin", "-i", str(path),
@@ -170,7 +173,7 @@ def placeholder(path):
 
     count, _ = stream_bytes(["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-i", str(path),
                              "-map", "0:v:0", "-an", "-vf",
-                             f"fps=1,crop=486:1080:717:0,scale={PHONE_W}:{PHONE_H}:flags=area,format=rgb24",
+                             f"fps=1,scale=1920:1080,crop=486:1080:717:0,scale={PHONE_W}:{PHONE_H}:flags=area,format=rgb24",
                              "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
                             PHONE_W * PHONE_H * 3, visit)
     return {"sampled_seconds": count, "placeholder_seconds": hits, "samples": details}
@@ -275,8 +278,11 @@ def check(path):
     picture_data = picture(path, vd)
     issue(issues, "variable frame timing", picture_data["vfr_ratio"], "0 changed intervals",
           picture_data["vfr_ratio"] is None or picture_data["vfr_changed_frames"] > 0)
-    issue(issues, "black frames", picture_data["black"], "none", bool(picture_data["black"]))
-    issue(issues, "flat colour frames", picture_data["flat"], "none", bool(picture_data["flat"]))
+    # Short black/flat runs are intended fades (e.g. sonar_a opens from black); only runs of 1 s or more fail.
+    long_black = [x for x in picture_data["black"] if x["duration"] >= MAX_BLACK_S]
+    long_flat = [x for x in picture_data["flat"] if x["frames"] / FPS >= MAX_BLACK_S]
+    issue(issues, "black frames", picture_data["black"], f"none >= {MAX_BLACK_S} s", bool(long_black))
+    issue(issues, "flat colour frames", picture_data["flat"], f"none >= {MAX_BLACK_S} s", bool(long_flat))
     issue(issues, "frozen holds >1 s", picture_data["frozen"], "review intended holds", False)
     place_data = placeholder(path)
     issue(issues, "placeholder card", place_data["placeholder_seconds"], "none", bool(place_data["placeholder_seconds"]))
