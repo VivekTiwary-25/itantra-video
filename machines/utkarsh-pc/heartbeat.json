@@ -1,21 +1,14 @@
 {
   "machine": "utkarsh-pc",
-  "time": "2026-09-30T03:26:43Z",
-  "status": "restarting",
+  "time": "2026-09-30T03:27:29Z",
+  "status": "idle",
   "current_task": null,
   "workers": [
     "codex-f2"
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 33896,
-  "last_task_usage": {
-    "seen_at": "2026-09-29T22:13:26Z",
-    "input_tokens": 1395251,
-    "cached_input_tokens": 1311616,
-    "cache_write_input_tokens": 0,
-    "output_tokens": 13797,
-    "reasoning_output_tokens": 4491
-  },
+  "listener_pid": 33216,
+  "last_task_usage": null,
   "codex_rate_limits": null
 }
