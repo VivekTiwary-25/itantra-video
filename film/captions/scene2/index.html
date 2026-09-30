@@ -15,10 +15,10 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:transpa
 #caption.left{left:42px;right:auto;transform:none;max-width:650px;text-align:left}
 #caption.right{left:auto;right:42px;transform:none;max-width:650px;text-align:right}
 </style></head><body>
-<div id="root" data-composition-id="scene2_captions" data-start="0" data-duration="98.267"
+<div id="root" data-composition-id="scene2_captions" data-start="0" data-duration="102.5"
   data-width="1920" data-height="1080"><div id="caption" aria-live="off"></div></div>
 <script>
-const rows=[{"scene":"scene2","start":7.882,"end":11.202,"text":"Hey dude, I'm in the campus\nnear the entry benches,","position":"left"},{"scene":"scene2","start":11.202,"end":12.462,"text":"where are you?","position":"left"},{"scene":"scene2","start":21.033,"end":22.533,"text":"Let's see how far\nthat message","position":"left"},{"scene":"scene2","start":22.533,"end":24.133,"text":"actually has to travel.","position":"left"},{"scene":"scene2","start":33.933,"end":36.283,"text":"Oh, it's too hot here.","position":"bottom"},{"scene":"scene2","start":50.23,"end":52.27,"text":"I'm in the garden.\nI'll come to you.","position":"bottom"},{"scene":"scene2","start":57.167,"end":59.367,"text":"But how did that happen?","position":"bottom"},{"scene":"scene2","start":59.367,"end":61.367,"text":"Bluetooth doesn't reach that far.","position":"bottom"},{"scene":"scene2","start":86.167,"end":87.567,"text":"And that's how it gets there.","position":"bottom"},{"scene":"scene2","start":88.467,"end":90.467,"text":"His reply comes back the same way.","position":"bottom"}];
+const rows=[{"scene":"scene2","start":7.882,"end":11.202,"text":"Hey dude, I'm in the campus\nnear the entry benches,","position":"left"},{"scene":"scene2","start":11.202,"end":12.462,"text":"where are you?","position":"left"},{"scene":"scene2","start":21.033,"end":22.533,"text":"Let's see how far\nthat message","position":"left"},{"scene":"scene2","start":22.533,"end":24.133,"text":"actually has to travel.","position":"left"},{"scene":"scene2","start":33.563,"end":36.283,"text":"Oh, it's too hot here.","position":"bottom"},{"scene":"scene2","start":53.463,"end":55.503,"text":"I'm in the garden.\nI'll come to you.","position":"bottom"},{"scene":"scene2","start":61.4,"end":63.6,"text":"But how did that happen?","position":"bottom"},{"scene":"scene2","start":63.6,"end":65.6,"text":"Bluetooth doesn't reach that far.","position":"bottom"},{"scene":"scene2","start":90.4,"end":91.8,"text":"And that's how it gets there.","position":"bottom"},{"scene":"scene2","start":92.7,"end":94.7,"text":"His reply comes back the same way.","position":"bottom"}];
 const caption=document.getElementById('caption');
 function render(t){
   const row=rows.find(r=>t>=r.start&&t<r.end);
@@ -30,7 +30,7 @@ function render(t){
   caption.style.opacity=String(Math.max(0,alpha));
 }
 const tl=gsap.timeline({paused:true,onUpdate:()=>render(tl.time())});
-tl.to({},{duration:98.267},0);
+tl.to({},{duration:102.5},0);
 window.__timelines=window.__timelines||{};
 window.__timelines['scene2_captions']=tl;
 window.addEventListener('hf-seek',e=>render(e.detail.time));

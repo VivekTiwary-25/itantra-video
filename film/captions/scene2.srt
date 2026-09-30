@@ -17,26 +17,26 @@ that message
 actually has to travel.
 
 5
-00:00:33,933 --> 00:00:36,283
+00:00:33,563 --> 00:00:36,283
 Oh, it's too hot here.
 
 6
-00:00:50,230 --> 00:00:52,270
+00:00:53,463 --> 00:00:55,503
 I'm in the garden.
 I'll come to you.
 
 7
-00:00:57,167 --> 00:00:59,367
+00:01:01,400 --> 00:01:03,600
 But how did that happen?
 
 8
-00:00:59,367 --> 00:01:01,367
+00:01:03,600 --> 00:01:05,600
 Bluetooth doesn't reach that far.
 
 9
-00:01:26,167 --> 00:01:27,567
+00:01:30,400 --> 00:01:31,800
 And that's how it gets there.
 
 10
-00:01:28,467 --> 00:01:30,467
+00:01:32,700 --> 00:01:34,700
 His reply comes back the same way.

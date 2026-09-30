@@ -1,9 +1,9 @@
 {
   "fps": 30,
   "size": [1920, 1080],
-  "durations": {"scene1": 56.466, "scene2": 98.267, "scene3": 60.1},
+  "durations": {"scene1": 56.466, "scene2": 102.5, "scene3": 60.2},
   "scene3_timing": {
-    "status": "planned; revise after app recordings change slot lengths",
+    "status": "current scene 3 timeline (T0016)",
     "s3_open": 0.0,
     "vachana_sos": 4.1,
     "vachana_listen_at": 0.171,
@@ -13,9 +13,9 @@
     "lab_a": 30.6,
     "vivek_sos": 32.2,
     "lab_b": 44.2,
-    "vivek_reply": 47.6,
-    "vachana_response": 52.6,
-    "end": 60.1
+    "vivek_reply": 47.7,
+    "vachana_response": 52.7,
+    "end": 60.2
   },
   "captions": [
     {"scene":"scene1","start":0.490,"end":1.620,"text":"Hello, dear viewers.","position":"bottom"},
@@ -48,12 +48,12 @@
     {"scene":"scene2","start":11.202,"end":12.462,"text":"where are you?","position":"left"},
     {"scene":"scene2","start":21.033,"end":22.533,"text":"Let's see how far\nthat message","position":"left"},
     {"scene":"scene2","start":22.533,"end":24.133,"text":"actually has to travel.","position":"left"},
-    {"scene":"scene2","start":33.933,"end":36.283,"text":"Oh, it's too hot here.","position":"bottom"},
-    {"scene":"scene2","start":50.230,"end":52.270,"text":"I'm in the garden.\nI'll come to you.","position":"bottom"},
-    {"scene":"scene2","start":57.167,"end":59.367,"text":"But how did that happen?","position":"bottom"},
-    {"scene":"scene2","start":59.367,"end":61.367,"text":"Bluetooth doesn't reach that far.","position":"bottom"},
-    {"scene":"scene2","start":86.167,"end":87.567,"text":"And that's how it gets there.","position":"bottom"},
-    {"scene":"scene2","start":88.467,"end":90.467,"text":"His reply comes back the same way.","position":"bottom"},
+    {"scene":"scene2","start":33.563,"end":36.283,"text":"Oh, it's too hot here.","position":"bottom"},
+    {"scene":"scene2","start":53.463,"end":55.503,"text":"I'm in the garden.\nI'll come to you.","position":"bottom"},
+    {"scene":"scene2","start":61.400,"end":63.600,"text":"But how did that happen?","position":"bottom"},
+    {"scene":"scene2","start":63.600,"end":65.600,"text":"Bluetooth doesn't reach that far.","position":"bottom"},
+    {"scene":"scene2","start":90.400,"end":91.800,"text":"And that's how it gets there.","position":"bottom"},
+    {"scene":"scene2","start":92.700,"end":94.700,"text":"His reply comes back the same way.","position":"bottom"},
 
     {"scene":"scene3","start":0.300,"end":3.900,"text":"What if you need help,\nbut don't know who's nearby?","position":"bottom"},
     {"scene":"scene3","start":4.271,"end":6.871,"text":"I'm lost somewhere near\nthe construction site.","position":"left"},
