@@ -1,0 +1,3 @@
+T0005 is **failed**: Windows speech synthesis could not render the lines in this session, so there are no valid WAVs or durations. I recorded the errors and installed voices in [REPORT.md](<REPO>/results/T0005/REPORT.md) and left a local-only [rerun script](<REPO>/results/T0005/tts.ps1). The script passed a PowerShell syntax check.
+
+TLDR: Synthesis is blocked here; T0005 needs a working Windows speech session to produce the audio.
