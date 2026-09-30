@@ -12,3 +12,4 @@
 | 30 Sep 11:00 | T0004 SECTION HANDOVER: scene 2 sonar + 3 relay callouts (may use codex-f1/f2 via S-tasks) | claude-second | opus / high | very heavy | 5h ~33%, 7d ~64% |
 | 30 Sep 11:00 | T0005 narration computer-voice (4 lines, installed Windows voices) | codex-vivek | gpt-6-sol / medium | light | |
 | 30 Sep 11:00 | T0006 walk clip: find bench + garden in normalpart2, speed-ramp plan + preview | codex-f2 | gpt-6-sol / high | medium | |
+| 30 Sep 12:05 | T0007 scene 2 assembly from lead's cut list (slots for app screens) | codex-vivek | gpt-6-sol / high | heavy | 5h 64%, 7d 69% |

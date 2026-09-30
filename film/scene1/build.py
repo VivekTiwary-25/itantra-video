@@ -18,7 +18,7 @@ ROOT = json.load(open('machine.local.json'))['footage_root']
 FPS = 30
 SR = 48000
 OFF = {1: 0.571, 2: 0.389}          # clean-audio time t plays at video time t + OFF (cross-correlation, no drift)
-GRADE = 'A'                         # draft choice; options in grades.sh / grade_option_*.jpg
+GRADE = 'V1'                        # Vivek chose the original gentle v1 grade (30 Sept); options in grades.sh
 
 def sh(cmd):
     r = subprocess.run(cmd, capture_output=True, text=True)
@@ -96,9 +96,12 @@ def onset(part, w, E):
     return edges[-1] / 100 if edges else s
 
 # ---------------------------------------------------------------- voice
+# v3: stronger (Vivek, 30 Sept): RNNoise "cb" + RNNoise "sh" at 60% mix + FFT pass + gate to -20 dB between words.
+# Strongest setting before quality slipped: Whisper confidence 0.822/0.906 (v2: 0.823/0.901); the next step up lost a word
+# and turned pauses into digital silence, so it was rejected.
 CHAIN = ("pan=mono|c0=0.5*c0+0.5*c1,highpass=f=100:poles=2,highpass=f=100:poles=2,"
-         "arnndn=m=local/models/rnnoise/cb.rnnn,afftdn=nr=12:nf=-45:tn=0,"
-         "agate=threshold=0.02:ratio=2:range=0.3:attack=5:release=200:knee=4,"
+         "arnndn=m=local/models/rnnoise/cb.rnnn,arnndn=m=local/models/rnnoise/sh.rnnn:mix=0.6,afftdn=nr=18:nf=-45:tn=0,"
+         "agate=threshold=0.025:ratio=3:range=0.1:attack=5:release=200:knee=4,"
          "equalizer=f=250:t=q:w=1.2:g=-2,equalizer=f=3000:t=q:w=1.0:g=2,deesser=i=0.3:m=0.5:f=0.5,"
          "acompressor=threshold=-20dB:ratio=2:attack=10:release=150")
 SRC_A = {1: f'{ROOT}/Audio/vachna part1.mp3', 2: f'{ROOT}/Audio/vachna part2.mp3'}
