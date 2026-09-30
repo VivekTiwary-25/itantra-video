@@ -6,3 +6,6 @@ GRADE_A="curves=master='0/0.03 0.15/0.12 0.5/0.51 0.85/0.87 1/0.95',colorbalance
 GRADE_B="curves=master='0/0 0.2/0.12 0.5/0.5 0.8/0.88 1/0.97',eq=saturation=1.14,unsharp=5:5:0.5:5:5:0,vignette=a=PI/6"
 # C: cool / muted - lifted blacks, cooler balance, much lower saturation
 GRADE_C="curves=master='0/0.07 0.5/0.49 1/0.93',colorbalance=rs=-0.03:gs=0.01:bs=0.05:rm=-0.03:bm=0.04:rh=-0.02:bh=0.03,eq=saturation=0.7,vignette=a=PI/6"
+# V1: the original gentle grade from scene 1 v1 (Vivek's choice for the whole film, 30 Sept). Gentle S-curve with
+# highlight roll-off, slightly warm mids / cool shadows, -10% saturation, soft vignette. Keeps a cooler feel.
+GRADE_V1="curves=master='0/0.02 0.12/0.10 0.5/0.5 0.82/0.84 0.94/0.92 1/0.955',colorbalance=rs=-0.02:bs=0.035:rm=0.025:bm=-0.02:rh=0.01:bh=-0.01,eq=saturation=0.9,vignette=a=PI/7"
