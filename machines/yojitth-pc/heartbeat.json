@@ -1,8 +1,8 @@
 {
   "machine": "yojitth-pc",
-  "time": "2026-09-30T06:37:21Z",
-  "status": "busy",
-  "current_task": "T0004",
+  "time": "2026-09-30T06:39:32Z",
+  "status": "idle",
+  "current_task": null,
   "workers": [
     "claude-second"
   ],
