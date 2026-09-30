@@ -324,6 +324,8 @@ def audio_tracks(root, T, slots, app, stage):
     base = sum((tracks[k] for k in tracks if k != "music"), np.zeros(n, np.float32))
     wav(OUT / "mix_nomusic.wav", base)
     wav(OUT / "mix_music.wav", base + music)
+    shutil.copyfile(OUT / "mix_nomusic.wav", OUT / "scene2_dialogue_sfx.wav")
+    shutil.copyfile(OUT / "music.wav", OUT / "scene2_music.wav")
 
 
 def finalize(raw, mix, output):

@@ -1,0 +1,71 @@
+{
+  "fps": 30,
+  "duration": 60.2,
+  "segments": [
+    {
+      "name": "s3_open",
+      "start": 0.0,
+      "end": 4.1,
+      "source": "FOOTAGE:Video/sospart1.mp4",
+      "source_in": 0
+    },
+    {
+      "name": "vachana_sos",
+      "start": 4.1,
+      "end": 18.1
+    },
+    {
+      "name": "sos_in",
+      "start": 18.1,
+      "end": 20.1
+    },
+    {
+      "name": "sos_sonar",
+      "start": 20.1,
+      "end": 29.1
+    },
+    {
+      "name": "sos_dive",
+      "start": 29.1,
+      "end": 30.6
+    },
+    {
+      "name": "lab_a",
+      "start": 30.6,
+      "end": 32.2,
+      "source": "FOOTAGE:Video/sospart2.mp4",
+      "source_in": 3.0
+    },
+    {
+      "name": "vivek_sos",
+      "start": 32.2,
+      "end": 44.2
+    },
+    {
+      "name": "lab_b",
+      "start": 44.2,
+      "end": 47.7,
+      "source": "FOOTAGE:Video/sospart2.mp4",
+      "source_in": 7.3
+    },
+    {
+      "name": "vivek_reply",
+      "start": 47.7,
+      "end": 52.7
+    },
+    {
+      "name": "vachana_response",
+      "start": 52.7,
+      "end": 59.7
+    },
+    {
+      "name": "end_hold",
+      "start": 59.7,
+      "end": 60.2
+    }
+  ],
+  "narration_starts": {
+    "N5": 0.3,
+    "N6": 21.1
+  }
+}
