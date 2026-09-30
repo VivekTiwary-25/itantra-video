@@ -1,14 +1,14 @@
 {
   "machine": "vivek-pc",
-  "time": "2026-09-30T04:31:34Z",
-  "status": "restarting",
+  "time": "2026-09-30T04:31:40Z",
+  "status": "idle",
   "current_task": null,
   "workers": [
     "codex-vivek"
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 3232,
+  "listener_pid": 28888,
   "last_task_usage": null,
   "codex_rate_limits": null
 }
