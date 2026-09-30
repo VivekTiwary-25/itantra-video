@@ -1,6 +1,6 @@
 {
   "machine": "yojitth-pc",
-  "time": "2026-09-30T00:02:06Z",
+  "time": "2026-09-30T03:16:14Z",
   "status": "idle",
   "current_task": null,
   "workers": [
@@ -8,7 +8,7 @@
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 36600,
+  "listener_pid": 20612,
   "last_task_usage": null,
   "codex_rate_limits": null
 }
