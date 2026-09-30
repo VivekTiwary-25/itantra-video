@@ -1,0 +1,172 @@
+{
+ "sonar_a": {
+  "file": "sonar_a_sfx.wav",
+  "len_s": 7.0,
+  "lufs": -29.6,
+  "peak_dbfs": -18.0,
+  "cues": [
+   [
+    "sonar pulse",
+    0.35
+   ],
+   [
+    "sonar pulse",
+    2.25
+   ],
+   [
+    "sonar pulse",
+    4.3
+   ],
+   [
+    "point V lights",
+    3.0
+   ],
+   [
+    "point R1 lights",
+    3.14
+   ],
+   [
+    "point R2 lights",
+    3.28
+   ],
+   [
+    "point R3 lights",
+    3.42
+   ],
+   [
+    "point Y lights",
+    3.56
+   ]
+  ]
+ },
+ "relay_1": {
+  "file": "relay_1_sfx.wav",
+  "len_s": 6.0,
+  "lufs": -33.8,
+  "peak_dbfs": -16.5,
+  "cues": [
+   [
+    "faint sonar ping (sonar view)",
+    0.0
+   ],
+   [
+    "dive whoosh (peak)",
+    0.55
+   ],
+   [
+    "freeze: soft air settle",
+    2.0
+   ],
+   [
+    "callout tick",
+    3.0
+   ],
+   [
+    "colour returns: soft air lift",
+    5.1
+   ]
+  ]
+ },
+ "relay_2": {
+  "file": "relay_2_sfx.wav",
+  "len_s": 6.0,
+  "lufs": -33.4,
+  "peak_dbfs": -16.6,
+  "cues": [
+   [
+    "faint sonar ping (sonar view)",
+    0.0
+   ],
+   [
+    "dive whoosh (peak)",
+    0.55
+   ],
+   [
+    "freeze: soft air settle",
+    2.0
+   ],
+   [
+    "callout tick",
+    3.0
+   ],
+   [
+    "colour returns: soft air lift",
+    5.1
+   ]
+  ]
+ },
+ "relay_3": {
+  "file": "relay_3_sfx.wav",
+  "len_s": 6.0,
+  "lufs": -33.8,
+  "peak_dbfs": -16.2,
+  "cues": [
+   [
+    "faint sonar ping (sonar view)",
+    0.0
+   ],
+   [
+    "dive whoosh (peak)",
+    0.55
+   ],
+   [
+    "freeze: soft air settle",
+    2.0
+   ],
+   [
+    "callout tick",
+    3.0
+   ],
+   [
+    "colour returns: soft air lift",
+    5.1
+   ]
+  ]
+ },
+ "sonar_b": {
+  "file": "sonar_b_sfx.wav",
+  "len_s": 6.0,
+  "lufs": -29.8,
+  "peak_dbfs": -15.4,
+  "cues": [
+   [
+    "sonar pulse",
+    0.15
+   ],
+   [
+    "packet reaches R1",
+    1.1
+   ],
+   [
+    "packet reaches R2",
+    1.72
+   ],
+   [
+    "packet reaches R3",
+    2.42
+   ],
+   [
+    "chime: packet arrives at Y (Yash)",
+    3.12
+   ]
+  ]
+ },
+ "music": {
+  "file": "sonar_music.wav",
+  "len_s": 31.0,
+  "lufs": -22.0,
+  "peak_dbfs": -9.6,
+  "narration_zones": [
+   [
+    0.0,
+    3.5,
+    "sonar_a"
+   ],
+   [
+    29.0,
+    30.8,
+    "sonar_b"
+   ]
+  ]
+ }
+}
