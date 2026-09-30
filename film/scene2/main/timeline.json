@@ -1,6 +1,6 @@
 {
   "fps": 30,
-  "duration": 98.133,
+  "duration": 98.267,
   "segments": [
     {
       "name": "doorway",
@@ -17,94 +17,94 @@
     {
       "name": "vachana_send",
       "start": 7.7,
-      "end": 20.7,
+      "end": 20.833,
       "dissolve_in": 0.5
     },
     {
       "name": "vachana_send_freeze",
-      "start": 20.7,
-      "end": 24.3
+      "start": 20.833,
+      "end": 24.433
     },
     {
       "name": "walk",
-      "start": 24.3,
-      "end": 30.3,
+      "start": 24.433,
+      "end": 30.433,
       "source": "FOOTAGE:Video/normalpart2.mp4"
     },
     {
       "name": "maps",
-      "start": 30.3,
-      "end": 33.8
+      "start": 30.433,
+      "end": 33.933
     },
     {
       "name": "yash_before_notification",
-      "start": 33.8,
-      "end": 36.467,
+      "start": 33.933,
+      "end": 36.6,
       "source": "FOOTAGE:Video/normalpart6.mp4",
       "source_in": 0
     },
     {
       "name": "yash_receive",
-      "start": 36.467,
-      "end": 45.467
+      "start": 36.6,
+      "end": 45.6
     },
     {
       "name": "yash_after_notification",
-      "start": 45.467,
-      "end": 52.533,
+      "start": 45.6,
+      "end": 52.667,
       "source": "FOOTAGE:Video/normalpart6.mp4",
       "source_in": 3.6
     },
     {
       "name": "yash_reply",
-      "start": 52.533,
-      "end": 57.033
+      "start": 52.667,
+      "end": 57.167
     },
     {
       "name": "sonar_a",
-      "start": 57.033,
-      "end": 64.033
+      "start": 57.167,
+      "end": 64.167
     },
     {
       "name": "relay_1",
-      "start": 64.033,
-      "end": 70.033
+      "start": 64.167,
+      "end": 70.167
     },
     {
       "name": "relay_2",
-      "start": 70.033,
-      "end": 76.033
+      "start": 70.167,
+      "end": 76.167
     },
     {
       "name": "relay_3",
-      "start": 76.033,
-      "end": 82.033
+      "start": 76.167,
+      "end": 82.167
     },
     {
       "name": "sonar_b",
-      "start": 82.033,
-      "end": 88.033
+      "start": 82.167,
+      "end": 88.167
     },
     {
       "name": "sonar_b_fade",
-      "start": 88.033,
-      "end": 90.633
+      "start": 88.167,
+      "end": 90.767
     },
     {
       "name": "vachana_reply",
-      "start": 90.633,
-      "end": 97.633
+      "start": 90.767,
+      "end": 97.767
     },
     {
       "name": "end_hold",
-      "start": 97.633,
-      "end": 98.133
+      "start": 97.767,
+      "end": 98.267
     }
   ],
   "narration_starts": {
-    "N1": 20.9,
-    "N2": 57.033,
-    "N3": 86.033,
-    "N4": 88.333
+    "N1": 21.033,
+    "N2": 57.167,
+    "N3": 86.167,
+    "N4": 88.467
   }
 }

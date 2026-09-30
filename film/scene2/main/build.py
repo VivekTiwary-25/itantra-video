@@ -171,9 +171,11 @@ def video_assets(root, T, slots):
         source = slot_path(spec)
         if source.exists():
             still(source, P / f"{name}_last.jpg", max(0, spec["duration"] - 1 / FPS))
-            app[name] = {"video": link_asset(source, f"{name}.mp4"), "still": link_asset(P / f"{name}_last.jpg")}
+            info = json.loads(run("ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "json", source).stdout)["streams"][0]
+            app[name] = {"video": link_asset(source, f"{name}.mp4"), "still": link_asset(P / f"{name}_last.jpg"),
+                         "width": 1080 * info["width"] / info["height"]}
         else:
-            app[name] = {"video": None, "still": None}
+            app[name] = {"video": None, "still": None, "width": 486}
     return app
 
 
@@ -203,7 +205,8 @@ def write_page(T, app):
             side = assets["bench_end"] if name == "vachana_send" else assets["yash_cut"] if name in ("yash_receive", "yash_reply") else None
             side_html = clip(assets["bench_tail"], {"start": row["start"], "end": row["start"] + 6.1}, "") if name == "vachana_send" else clip(app[name]["video"], row, "") if not side and app[name]["video"] else ""
             screen = clip(app[name]["video"], row, "") if app[name]["video"] else f'<div class="placeholder">APP: {name}</div>'
-            layers.append(f'<div class="scene" id="seg_{name}"><div class="sides"{bg(side)}>{side_html}</div><div class="screen">{screen}</div></div>')
+            width = app[name]["width"]
+            layers.append(f'<div class="scene" id="seg_{name}"><div class="sides"{bg(side)}>{side_html}</div><div class="screen" style="width:{width:.2f}px;left:{(1920-width)/2:.2f}px">{screen}</div></div>')
         elif name in ("walk", "yash_before_notification", "yash_after_notification", "sonar_a", "relay_1", "relay_2", "relay_3", "sonar_b"):
             key = "yash_a" if name == "yash_before_notification" else "yash_c" if name == "yash_after_notification" else name
             layers.append(f'<div class="scene" id="seg_{name}">{clip(assets[key], row)}</div>')
@@ -211,7 +214,8 @@ def write_page(T, app):
             slot = "vachana_send" if name == "vachana_send_freeze" else "vachana_reply"
             side = assets["bench_end"] if slot == "vachana_send" else app[slot]["still"]
             screen = f'<div class="freeze"{bg(app[slot]["still"])}></div>' if app[slot]["still"] else f'<div class="placeholder">APP: {slot}</div>'
-            layers.append(f'<div class="scene" id="seg_{name}"><div class="sides"{bg(side)}></div><div class="screen">{screen}</div></div>')
+            width = app[slot]["width"]
+            layers.append(f'<div class="scene" id="seg_{name}"><div class="sides"{bg(side)}></div><div class="screen" style="width:{width:.2f}px;left:{(1920-width)/2:.2f}px">{screen}</div></div>')
         elif name == "sonar_b_fade":
             layers.append(f'<div class="scene" id="seg_{name}" style="background:center/cover url({assets["sonar_end"]})"></div>')
     tpl = (HERE / "index.html.tpl").read_text(encoding="utf-8")
@@ -345,15 +349,6 @@ def finalize(raw, mix, output):
         "-c:v", "copy", "-c:a", "copy", "-t", T_DURATION, "-movflags", "+faststart", output)
 
 
-def previews(video, T):
-    moments = (0, 2.0, 7.2, 12.0, 26.0, 35.0, 60.0, 67.5, 84.0, T["duration"]-1)
-    dst = REPO / "results/T0007/preview"
-    dst.mkdir(parents=True, exist_ok=True)
-    for i, t in enumerate(moments):
-        run("ffmpeg", "-v", "error", "-y", "-ss", round(t, 3), "-i", video, "-frames:v", "1",
-            "-vf", "scale=960:-2", "-q:v", "3", dst / f"{i+1:02d}.jpg")
-
-
 def main():
     global T_DURATION
     OUT.mkdir(parents=True, exist_ok=True)
@@ -374,7 +369,6 @@ def main():
     audio_tracks(root, T, slots, app, stage)
     finalize(raw, OUT / "mix_music.wav", OUT / "scene2_draft_music.mp4")
     finalize(raw, OUT / "mix_nomusic.wav", OUT / "scene2_draft_nomusic.mp4")
-    previews(OUT / "scene2_draft_nomusic.mp4", T)
     print(json.dumps({"duration": T_DURATION, "drafts": ["scene2_draft_music.mp4", "scene2_draft_nomusic.mp4"]}))
 
 
