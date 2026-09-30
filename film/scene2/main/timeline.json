@@ -1,6 +1,6 @@
 {
   "fps": 30,
-  "duration": 98.267,
+  "duration": 102.5,
   "segments": [
     {
       "name": "doorway",
@@ -46,65 +46,65 @@
     {
       "name": "yash_receive",
       "start": 36.6,
-      "end": 45.6
+      "end": 48.833
     },
     {
       "name": "yash_after_notification",
-      "start": 45.6,
-      "end": 52.667,
+      "start": 48.833,
+      "end": 55.9,
       "source": "FOOTAGE:Video/normalpart6.mp4",
       "source_in": 3.6
     },
     {
       "name": "yash_reply",
-      "start": 52.667,
-      "end": 57.167
+      "start": 55.9,
+      "end": 61.4
     },
     {
       "name": "sonar_a",
-      "start": 57.167,
-      "end": 64.167
+      "start": 61.4,
+      "end": 68.4
     },
     {
       "name": "relay_1",
-      "start": 64.167,
-      "end": 70.167
+      "start": 68.4,
+      "end": 74.4
     },
     {
       "name": "relay_2",
-      "start": 70.167,
-      "end": 76.167
+      "start": 74.4,
+      "end": 80.4
     },
     {
       "name": "relay_3",
-      "start": 76.167,
-      "end": 82.167
+      "start": 80.4,
+      "end": 86.4
     },
     {
       "name": "sonar_b",
-      "start": 82.167,
-      "end": 88.167
+      "start": 86.4,
+      "end": 92.4
     },
     {
       "name": "sonar_b_fade",
-      "start": 88.167,
-      "end": 90.767
+      "start": 92.4,
+      "end": 95.0
     },
     {
       "name": "vachana_reply",
-      "start": 90.767,
-      "end": 97.767
+      "start": 95.0,
+      "end": 102.0
     },
     {
       "name": "end_hold",
-      "start": 97.767,
-      "end": 98.267
+      "start": 102.0,
+      "end": 102.5
     }
   ],
   "narration_starts": {
     "N1": 21.033,
-    "N2": 57.167,
-    "N3": 86.167,
-    "N4": 88.467
+    "N2": 61.4,
+    "N3": 90.4,
+    "N4": 92.7
   }
 }

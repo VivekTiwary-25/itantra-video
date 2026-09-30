@@ -273,8 +273,8 @@ def audio_tracks(root, T, slots, app, stage):
     normal = pcm(root / "Audio/normalpart1.mp3", CHAIN + ",loudnorm=I=-16:TP=-1.5:LRA=11")
     yash = pcm(root / "Audio/Normalpart6.mp3", CHAIN + ",loudnorm=I=-16:TP=-1.5:LRA=11")
     put(dialogue, normal, by["bench"]["start"] - 0.068)
-    put(dialogue, yash[:round((2.65 + 0.37) * SR)], by["yash_before_notification"]["start"] - 0.370)
-    put(dialogue, yash[round((3.6 + 0.37) * SR):], by["yash_after_notification"]["start"])
+    put(dialogue, yash[:round((2.65 + 0.3705) * SR)], by["yash_before_notification"]["start"] - 0.3705)
+    put(dialogue, yash[round((3.6 + 0.3705) * SR):], by["yash_after_notification"]["start"])
     tracks["dialogue"] = dialogue
     for key, start in T["narration_starts"].items():
         a = np.zeros(n, np.float32)
@@ -283,11 +283,10 @@ def audio_tracks(root, T, slots, app, stage):
     sfx = np.zeros(n, np.float32)
     sent_at = slots["vachana_send"].get("sent_at")
     put(sfx, tone(0.24, 670, 1005, 0.02), by["vachana_send"]["start"] + (12.5 if sent_at is None else sent_at))
-    notify = OUT / "app/notify.wav"
-    receive = slot_path(slots["yash_receive"])
-    own_notification = receive.exists() and bool(run("ffprobe", "-v", "error", "-select_streams", "a:0", "-show_entries", "stream=index", "-of", "csv=p=0", receive).stdout.strip())
-    if not own_notification:
-        put(sfx, pcm(notify) if notify.exists() else tone(0.22, 780, 1170, 0.02), by["yash_receive"]["start"])
+    notify = OUT / "sound_options/message_a.wav"
+    if not notify.exists():
+        run(sys.executable, REPO / "film/sound/make_options.py", "--out", notify.parent)
+    put(sfx, pcm(notify), by["yash_receive"]["start"] + slots["yash_receive"]["notification_at"])
     rng = np.random.default_rng(17)
     t = np.arange(round(1.8 * SR)) / SR
     whoosh = rng.standard_normal(len(t)).astype(np.float32)
@@ -304,6 +303,8 @@ def audio_tracks(root, T, slots, app, stage):
                 put(app_sound, pcm(source)[:round(slots[name]["duration"] * SR)], by[name]["start"])
             except RuntimeError:
                 pass  # screen recordings can be silent
+    put(app_sound, pcm(REPO / "local/renders/tts_itantra/tts_msg.wav", "loudnorm=I=-16:TP=-1.5:LRA=11"),
+        by["yash_receive"]["start"] + slots["yash_receive"]["tts_at"])
     tracks["app"] = app_sound
     music = np.zeros(n, np.float32)
     m = pcm(stage / "film/scene2/sonar/music/sonar_music.wav")
@@ -340,7 +341,7 @@ def finalize(raw, mix, output):
     for _ in range(6):
         run("ffmpeg", "-v", "error", "-y", "-i", mix, "-af",
             f"volume={gain:.3f}dB,alimiter=limit=0.78:attack=2:release=50:level=false",
-            "-c:a", "aac", "-b:a", "192k", audio)
+            "-c:a", "aac", "-b:a", "192k", "-ac", "2", audio)
         loud, peak = measure(audio)
         if abs(loud + 16) <= 0.2 and peak <= -1.5:
             break
