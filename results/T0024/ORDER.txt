@@ -1,0 +1,20 @@
+All options are 48 kHz stereo, normalized to -12 dBFS sample peak.
+The all_options.mp3 sequence uses 0.600 s of silence between choices.
+Time range indicates the sound itself; the next 0.600 s is the gap.
+
+START       END         FILE                  CATEGORY              FEEL
+00:00.000   00:00.620   message_a.mp3         Message notification  Warm, welcoming two-step chime
+00:01.220   00:01.900   message_b.mp3         Message notification  Clear, light glassy rise
+00:02.500   00:03.220   message_c.mp3         Message notification  Soft, rounded descending reply
+00:03.820   00:04.140   sent_a.mp3            Sent confirmation     Quiet upward two-note assurance
+00:04.740   00:05.080   sent_b.mp3            Sent confirmation     Mellow downward double tap
+00:05.680   00:05.980   sent_c.mp3            Sent confirmation     Crisp, small ascending blip
+00:06.580   00:06.665   tick_a.mp3            Callout tick          Barely-there clean pinpoint
+00:07.265   00:07.380   tick_b.mp3            Callout tick          Muted wooden tap
+00:07.980   00:08.080   tick_c.mp3            Callout tick          Fine airy sparkle
+00:08.680   00:09.840   sos_notice_a.mp3      SOS notification      Firm repeating paired notes; urgent but calm
+00:10.440   00:11.620   sos_notice_b.mp3      SOS notification      Measured three-step attention cue
+00:12.220   00:13.560   sos_notice_c.mp3      SOS notification      Tense descending pair, repeated gently
+00:14.160   00:15.360   sos_pulse_a.mp3       SOS sonar pulse       Soft low sweep with a long calm tail
+00:15.960   00:17.180   sos_pulse_b.mp3       SOS sonar pulse       Round low heartbeat-like bloom, one pulse
+00:17.780   00:19.020   sos_pulse_c.mp3       SOS sonar pulse       Deep, airy downward sonar wash

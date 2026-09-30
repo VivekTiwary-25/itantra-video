@@ -1,0 +1,21 @@
+[
+  {"id":"message_a","category":"Message notification","feel":"Warm, welcoming two-step chime","duration":0.62,"attack":0.007,"release":0.075,"notes":[[0.02,0.29,660,680,0.76,0.12],[0.19,0.37,880,900,0.66,0.10]]},
+  {"id":"message_b","category":"Message notification","feel":"Clear, light glassy rise","duration":0.68,"attack":0.005,"release":0.12,"notes":[[0.01,0.43,523,535,0.54,0.27],[0.105,0.43,659,670,0.49,0.24],[0.2,0.43,784,795,0.46,0.20]]},
+  {"id":"message_c","category":"Message notification","feel":"Soft, rounded descending reply","duration":0.72,"attack":0.012,"release":0.09,"notes":[[0.01,0.29,784,760,0.69,0.06],[0.18,0.30,659,640,0.64,0.05],[0.37,0.30,523,510,0.63,0.04]]},
+
+  {"id":"sent_a","category":"Sent confirmation","feel":"Quiet upward two-note assurance","duration":0.32,"attack":0.004,"release":0.055,"notes":[[0.008,0.13,659,672,0.72,0.10],[0.116,0.17,988,1000,0.58,0.07]]},
+  {"id":"sent_b","category":"Sent confirmation","feel":"Mellow downward double tap","duration":0.34,"attack":0.008,"release":0.07,"notes":[[0.008,0.17,880,855,0.66,0.05],[0.14,0.18,659,645,0.63,0.04]]},
+  {"id":"sent_c","category":"Sent confirmation","feel":"Crisp, small ascending blip","duration":0.30,"attack":0.003,"release":0.045,"notes":[[0.007,0.12,740,760,0.73,0.23],[0.103,0.155,932,945,0.59,0.18]]},
+
+  {"id":"tick_a","category":"Callout tick","feel":"Barely-there clean pinpoint","duration":0.085,"attack":0.002,"release":0.045,"notes":[[0.002,0.067,1200,1150,0.85,0.05]]},
+  {"id":"tick_b","category":"Callout tick","feel":"Muted wooden tap","duration":0.115,"attack":0.0015,"release":0.07,"notes":[[0.002,0.085,640,390,0.8,0.40]]},
+  {"id":"tick_c","category":"Callout tick","feel":"Fine airy sparkle","duration":0.10,"attack":0.0015,"release":0.065,"notes":[[0.002,0.07,1660,1510,0.68,0.16],[0.006,0.065,2180,2020,0.36,0.06]]},
+
+  {"id":"sos_notice_a","category":"SOS notification","feel":"Firm repeating paired notes; urgent but calm","duration":1.16,"attack":0.005,"release":0.09,"notes":[[0.02,0.23,587,605,0.7,0.11],[0.19,0.25,784,800,0.63,0.08],[0.57,0.23,587,605,0.7,0.11],[0.74,0.27,784,800,0.63,0.08]]},
+  {"id":"sos_notice_b","category":"SOS notification","feel":"Measured three-step attention cue","duration":1.18,"attack":0.006,"release":0.11,"notes":[[0.02,0.27,523,532,0.68,0.07],[0.32,0.27,659,669,0.64,0.07],[0.63,0.42,831,842,0.60,0.05]]},
+  {"id":"sos_notice_c","category":"SOS notification","feel":"Tense descending pair, repeated gently","duration":1.34,"attack":0.009,"release":0.105,"notes":[[0.02,0.28,880,850,0.68,0.06],[0.25,0.30,622,607,0.69,0.05],[0.67,0.28,880,850,0.68,0.06],[0.90,0.30,622,607,0.69,0.05]]},
+
+  {"id":"sos_pulse_a","category":"SOS sonar pulse","feel":"Soft low sweep with a long calm tail","duration":1.20,"attack":0.025,"release":0.28,"notes":[[0.02,1.10,150,68,0.75,0.12],[0.05,0.70,275,128,0.14,0.05]]},
+  {"id":"sos_pulse_b","category":"SOS sonar pulse","feel":"Round low heartbeat-like bloom, one pulse","duration":1.22,"attack":0.045,"release":0.30,"notes":[[0.02,1.12,95,53,0.77,0.18],[0.07,0.78,190,111,0.17,0.06]]},
+  {"id":"sos_pulse_c","category":"SOS sonar pulse","feel":"Deep, airy downward sonar wash","duration":1.24,"attack":0.03,"release":0.32,"notes":[[0.02,1.12,125,57,0.70,0.07],[0.04,0.92,222,95,0.25,0.13]]}
+]
