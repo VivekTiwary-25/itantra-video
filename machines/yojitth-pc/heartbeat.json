@@ -1,8 +1,8 @@
 {
   "machine": "yojitth-pc",
-  "time": "2026-09-30T12:18:27Z",
-  "status": "busy",
-  "current_task": "T0027",
+  "time": "2026-09-30T12:19:36Z",
+  "status": "idle",
+  "current_task": null,
   "workers": [
     "claude-second"
   ],
@@ -12,5 +12,5 @@
   "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-09-30T12:13:31Z"
+  "last_push_ok": "2026-09-30T12:19:36Z"
 }
