@@ -1,0 +1,97 @@
+{
+  "fps": 30,
+  "duration": 89.067,
+  "segments": [
+    {
+      "name": "doorway",
+      "start": 0,
+      "end": 3
+    },
+    {
+      "name": "bench",
+      "start": 3,
+      "end": 7.3,
+      "source": "FOOTAGE:Video/normalpart1.mp4",
+      "source_in": 0
+    },
+    {
+      "name": "vachana_split_in",
+      "start": 7.3,
+      "end": 7.8,
+      "source": "FOOTAGE:Video/normalpart1.mp4",
+      "source_in": 4.3
+    },
+    {
+      "name": "vachana_send",
+      "start": 7.8,
+      "end": 20.933,
+      "source": "FOOTAGE:Video/normalpart1.mp4",
+      "camera_in": 4.8
+    },
+    {
+      "name": "vachana_send_freeze",
+      "start": 20.933,
+      "end": 24.533
+    },
+    {
+      "name": "walk",
+      "start": 24.533,
+      "end": 30.533,
+      "source": "FOOTAGE:Video/normalpart2.mp4"
+    },
+    {
+      "name": "maps",
+      "start": 30.533,
+      "end": 34.033
+    },
+    {
+      "name": "yash_before_notification",
+      "start": 34.033,
+      "end": 36.7,
+      "source": "FOOTAGE:Video/normalpart6.mp4",
+      "source_in": 0
+    },
+    {
+      "name": "yash_app",
+      "start": 36.7,
+      "end": 57.567,
+      "source": "FOOTAGE:Video/normalpart6.mp4",
+      "camera_in": 2.65
+    },
+    {
+      "name": "sonar_a",
+      "start": 57.567,
+      "end": 64.567
+    },
+    {
+      "name": "relay_1",
+      "start": 64.567,
+      "end": 70.567
+    },
+    {
+      "name": "relay_2",
+      "start": 70.567,
+      "end": 76.567
+    },
+    {
+      "name": "relay_3",
+      "start": 76.567,
+      "end": 82.567
+    },
+    {
+      "name": "sonar_b",
+      "start": 82.567,
+      "end": 88.567
+    },
+    {
+      "name": "sonar_b_hold",
+      "start": 88.567,
+      "end": 89.067
+    }
+  ],
+  "narration_starts": {
+    "N1": 21.133,
+    "N2": 57.567,
+    "N3": 86.567
+  }
+}

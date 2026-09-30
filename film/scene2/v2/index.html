@@ -1,0 +1,78 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1920,height=1080">
+<script src="./gsap.min.js"></script>
+<style>
+@font-face{font-family:Segoe;src:local('Segoe UI Variable')}*{box-sizing:border-box}
+html,body{margin:0;width:1920px;height:1080px;background:#05070a;color:#f3f5f8;font-family:Segoe,'Segoe UI',sans-serif;overflow:hidden}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:#05070a}
+.scene{position:absolute;inset:0;display:none;overflow:hidden}.full{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover}
+#bench video,#yashFull video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#door{position:absolute;overflow:hidden;border:1px solid rgba(255,255,255,.24);background:rgba(5,7,10,.97);box-shadow:0 28px 80px rgba(0,0,0,.45)}
+#door .picture{position:absolute;inset:-60px;background:center/cover url('assets/bench_start.jpg');filter:blur(40px) brightness(.42);opacity:.94}
+#door .matte{position:absolute;inset:0;background:rgba(10,13,18,.72)}
+#door .title{position:absolute;inset:0;display:grid;place-items:center;font-size:64px;font-weight:600;letter-spacing:-.015em;text-shadow:0 2px 16px #000;opacity:0}
+.split{position:absolute;inset:0;display:none;background:#0a0d12}.camera{position:absolute;left:0;top:0;width:1232px;height:1080px;overflow:hidden;background:#080b0f}
+.camera video,.camera .cam-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background-size:cover;background-position:center}
+.camera video{transform-origin:center center}.camera:after{content:'';position:absolute;right:0;top:0;width:24px;height:100%;background:linear-gradient(90deg,transparent,rgba(4,7,11,.85));pointer-events:none}
+.right{position:absolute;right:0;top:0;width:688px;height:1080px;background:#0a0d12}.phone{position:absolute;top:40px;left:50%;width:472px;height:1000px;transform:translateX(-50%);border-radius:32px;overflow:hidden;background:#0c131b;border:1px solid rgba(255,255,255,.14);box-shadow:0 22px 65px rgba(0,0,0,.65)}
+.phone video,.phone .screen-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background-size:cover;background-position:center}
+.empty-app{position:absolute;inset:0;background:linear-gradient(180deg,#17242e,#0b151e);color:#d5e2ea;padding:54px 36px;display:none;font-size:27px}
+.empty-app .brand{font-size:32px;font-weight:600;letter-spacing:-.02em}.empty-app .bubble{height:90px;border:1px solid #71869755;border-radius:22px;background:#1c2c38;margin-top:80px}.empty-app .bubble.b2{width:75%;margin-top:18px}
+.app-only .sides{position:absolute;inset:-60px;background:center/cover url('assets/maps_last.jpg');filter:blur(40px) brightness(.55);transform:scale(1.04)}
+.app-only .phone{left:50%;top:0;height:1080px;border-radius:28px}.app-only .phone video{object-fit:contain}
+#mapLabel{position:absolute;bottom:90px;left:30px;right:30px;padding:30px;border-radius:22px;background:#1d303d;color:#ecf2f4;font-size:27px;display:none;text-align:center}
+.sonar video{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover}
+</style></head><body>
+<div id="root" data-composition-id="scene2" data-start="0" data-duration="89.067" data-width="1920" data-height="1080">
+  <div class="scene" id="bench"><video id="benchFullVideo" class="clip" src="assets/bench.mp4" data-start="3" data-duration="4.3" data-media-start="0" muted playsinline></video></div>
+  <div id="door"><div class="picture"></div><div class="matte"></div><div class="title">How the app works</div></div>
+  <div class="split" id="vachanaSplit"><div class="camera"><div class="cam-bg" style="background-image:url('assets/bench_end.jpg')"></div><video id="vachanaCameraVideo" class="clip" src="assets/bench.mp4" data-start="7.3" data-duration="6.53" data-media-start="4.3" muted playsinline></video></div><div class="right"><div class="phone"><div class="screen-bg" style="background-image:url('assets/vachana_send_last.jpg')"></div><video id="vachanaAppVideo" class="clip" src="assets/vachana_send.mp4" data-start="7.8" data-duration="13.133" data-media-start="0" muted playsinline></video><div class="empty-app"><div class="brand">iTantra</div><div class="bubble"></div><div class="bubble b2"></div></div></div></div></div>
+  <div class="scene" id="walk"><video id="walkVideo" class="clip full" src="assets/walk.mp4" data-start="24.533" data-duration="6" data-media-start="0" muted playsinline></video></div>
+  <div class="scene app-only" id="maps"><div class="sides"></div><div class="phone"><video id="mapsVideo" class="clip" src="assets/maps.mp4" data-start="30.533" data-duration="3.5" data-media-start="0" muted playsinline></video><div id="mapLabel">~300 m, walking distance</div></div></div>
+  <div class="scene" id="yashFull"><video id="yashFullVideo" class="clip" src="assets/yash.mp4" data-start="34.033" data-duration="2.65" data-media-start="0" muted playsinline></video></div>
+  <div class="split" id="yashSplit"><div class="camera"><div class="cam-bg" id="yashBg" style="background-image:url('assets/yash_mid.jpg')"></div><video id="yashEarly" class="clip" src="assets/yash.mp4" data-start="36.7" data-duration="5.58" data-media-start="2.65" muted playsinline></video><video id="yashReply" class="clip" src="assets/yash.mp4" data-start="48.93" data-duration="4.417" data-media-start="8.23" muted playsinline></video></div><div class="right"><div class="phone"><video id="yashAppVideo" class="clip" src="assets/yash_app.mp4" data-start="36.7" data-duration="20.867" data-media-start="0" muted playsinline></video><div class="empty-app"><div class="brand">iTantra</div><div class="bubble"></div><div class="bubble b2"></div></div></div></div></div>
+  <div class="scene sonar" id="sonar_a"><video id="sonarAVideo" class="clip" src="assets/sonar_a.mp4" data-start="57.567" data-duration="7" data-media-start="0" muted playsinline></video></div>
+  <div class="scene sonar" id="relay_1"><video id="relay1Video" class="clip" src="assets/relay_1.mp4" data-start="64.567" data-duration="6" data-media-start="0" muted playsinline></video></div>
+  <div class="scene sonar" id="relay_2"><video id="relay2Video" class="clip" src="assets/relay_2.mp4" data-start="70.567" data-duration="6" data-media-start="0" muted playsinline></video></div>
+  <div class="scene sonar" id="relay_3"><video id="relay3Video" class="clip" src="assets/relay_3.mp4" data-start="76.567" data-duration="6" data-media-start="0" muted playsinline></video></div>
+  <div class="scene sonar" id="sonar_b"><video id="sonarBVideo" class="clip" src="assets/sonar_b.mp4" data-start="82.567" data-duration="6" data-media-start="0" muted playsinline></video></div>
+  <div class="scene" id="sonarHold" style="background:center/cover url('assets/sonar_end.jpg')"></div>
+</div>
+<script>
+const T={"fps":30,"duration":89.067,"segments":[{"name":"doorway","start":0,"end":3},{"name":"bench","start":3,"end":7.3,"source":"FOOTAGE:Video/normalpart1.mp4","source_in":0},{"name":"vachana_split_in","start":7.3,"end":7.8,"source":"FOOTAGE:Video/normalpart1.mp4","source_in":4.3},{"name":"vachana_send","start":7.8,"end":20.933,"source":"FOOTAGE:Video/normalpart1.mp4","camera_in":4.8},{"name":"vachana_send_freeze","start":20.933,"end":24.533},{"name":"walk","start":24.533,"end":30.533,"source":"FOOTAGE:Video/normalpart2.mp4"},{"name":"maps","start":30.533,"end":34.033},{"name":"yash_before_notification","start":34.033,"end":36.7,"source":"FOOTAGE:Video/normalpart6.mp4","source_in":0},{"name":"yash_app","start":36.7,"end":57.567,"source":"FOOTAGE:Video/normalpart6.mp4","camera_in":2.65},{"name":"sonar_a","start":57.567,"end":64.567},{"name":"relay_1","start":64.567,"end":70.567},{"name":"relay_2","start":70.567,"end":76.567},{"name":"relay_3","start":76.567,"end":82.567},{"name":"sonar_b","start":82.567,"end":88.567},{"name":"sonar_b_hold","start":88.567,"end":89.067}],"narration_starts":{"N1":21.133,"N2":57.567,"N3":86.567}},S={"vachana_send":{"video":"assets/vachana_send.mp4","last":"assets/vachana_send_last.jpg","width":472,"placeholder":true},"maps":{"video":"assets/maps.mp4","last":"assets/maps_last.jpg","width":450,"placeholder":true},"yash_app":{"video":"assets/yash_app.mp4","last":"assets/yash_app_last.jpg","width":472,"placeholder":true}},rows=T.segments,by=Object.fromEntries(rows.map(r=>[r.name,r]));
+const el=id=>document.getElementById(id),clamp=(x)=>Math.max(0,Math.min(1,x)),ease=gsap.parseEase('power2.inOut');
+el('vachanaSplit').querySelector('.phone').style.width=S.vachana_send.width+'px';
+el('yashSplit').querySelector('.phone').style.width=S.yash_app.width+'px';
+el('maps').querySelector('.phone').style.width=(S.maps.width*1.08)+'px';
+for(const n of ['vachana_send','yash_app'])if(S[n].placeholder)el(n==='vachana_send'?'vachanaSplit':'yashSplit').querySelector('.empty-app').style.display='block';
+if(S.maps.placeholder)el('mapLabel').style.display='block';
+function render(t){
+  for(const n of ['bench','walk','maps','yashFull','sonar_a','relay_1','relay_2','relay_3','sonar_b','sonarHold'])el(n).style.display='none';
+  for(const n of ['vachanaSplit','yashSplit'])el(n).style.display='none';
+  if(t<3.4){const grow=ease(clamp((t-.2)/1.2)),shrink=ease(clamp((t-2.6)/.8)),f=t<2.6?grow:1-shrink,d=el('door');
+    d.style.display='block';d.style.left=(734*(1-f))+'px';d.style.top=(70*(1-f))+'px';d.style.width=(452+1468*f)+'px';d.style.height=(940+140*f)+'px';d.style.borderRadius=(64*(1-f))+'px';d.style.opacity=t<2.6?1:1-shrink;
+    d.querySelector('.title').style.opacity=clamp((t-1)/.35)*clamp((2.6-t)/.3);
+  }else el('door').style.display='none';
+  if(t>=2.6&&t<by.vachana_split_in.start)el('bench').style.display='block';
+  if(t>=by.vachana_split_in.start&&t<by.vachana_send_freeze.end){
+    const sp=el('vachanaSplit');sp.style.display='block';
+    const f=t<by.vachana_send.start?ease(clamp((t-by.vachana_split_in.start)/.5)):1;
+    sp.querySelector('.camera').style.width=(1920-688*f)+'px';sp.querySelector('.right').style.transform=`translateX(${688*(1-f)}px)`;sp.querySelector('.right').style.opacity=f;
+    const v=sp.querySelector('.camera video'),a=sp.querySelector('.phone video');
+    v.style.display=t<by.vachana_send.start+6.03?'block':'none';
+    a.style.display=t>=by.vachana_send.start&&t<by.vachana_send.end?'block':'none';
+    sp.querySelector('.empty-app').style.opacity=t<by.vachana_send.end?1:0;
+  }
+  if(t>=by.walk.start&&t<by.walk.end)el('walk').style.display='block';
+  if(t>=by.maps.start&&t<by.maps.end)el('maps').style.display='block';
+  if(t>=by.yash_before_notification.start&&t<by.yash_before_notification.end)el('yashFull').style.display='block';
+  if(t>=by.yash_app.start&&t<by.yash_app.end){const sp=el('yashSplit');sp.style.display='block';
+    const dt=t-by.yash_app.start,f=ease(clamp(dt/.5));sp.querySelector('.camera').style.width=(1920-688*f)+'px';sp.querySelector('.right').style.transform=`translateX(${688*(1-f)}px)`;sp.querySelector('.right').style.opacity=f;
+    el('yashEarly').style.display=dt<5.58?'block':'none';el('yashReply').style.display=dt>=12.23&&dt<16.647?'block':'none';
+    el('yashBg').style.backgroundImage=dt>=16.647?"url('assets/yash_end.jpg')":"url('assets/yash_mid.jpg')";
+  }
+  for(const n of ['sonar_a','relay_1','relay_2','relay_3','sonar_b'])if(t>=by[n].start&&t<by[n].end)el(n).style.display='block';
+  if(t>=by.sonar_b_hold.start)el('sonarHold').style.display='block';
+}
+const tl=gsap.timeline({paused:true,onUpdate:()=>render(tl.time())});tl.to({}, {duration:T.duration},0);
+window.addEventListener('hf-seek',e=>render(e.detail.time));window.__timelines=window.__timelines||{};window.__timelines.scene2=tl;render(0);
+</script></body></html>

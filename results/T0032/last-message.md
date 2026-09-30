@@ -1,0 +1,3 @@
+The scene 2 v2 code, [timeline](<REPO>/film/scene2/v2/timeline.json), and ten preview stills are ready. `hyperframes.cmd check` passed. I recorded **status: failed** in [REPORT.md](<REPO>/results/T0032/REPORT.md): this sandbox could not launch Chrome for the final picture and mixes, and the required narration config is outside T0032’s allowed write paths.
+
+TLDR: The first version is ready for the render machine; final renders remain.
