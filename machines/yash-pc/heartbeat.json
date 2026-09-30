@@ -1,7 +1,7 @@
 {
   "machine": "yash-pc",
-  "time": "2026-09-30T04:34:40Z",
-  "status": "idle",
+  "time": "2026-09-30T04:36:38Z",
+  "status": "restarting",
   "current_task": null,
   "workers": [
     "codex-f1"
