@@ -1,14 +1,14 @@
 {
   "machine": "yojitth-pc",
-  "time": "2026-09-30T03:27:10Z",
-  "status": "restarting",
+  "time": "2026-09-30T03:27:14Z",
+  "status": "idle",
   "current_task": null,
   "workers": [
     "claude-second"
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 20612,
+  "listener_pid": 21316,
   "last_task_usage": null,
   "codex_rate_limits": null
 }
