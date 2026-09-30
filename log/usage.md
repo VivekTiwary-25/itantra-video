@@ -24,3 +24,4 @@
 | 30 Sep 18:45 | v2 fixes: T0033 scene 3 split screen + intro card (xhigh), T0035 sound set, T0036 narration tool | codex-f2 | gpt-6-sol / xhigh, high, high | heavy, light, medium | |
 | 30 Sep 18:45 | T0040 v2 slot prep, renders, full_film_v2, QC | codex-vivek | gpt-6-sol / high | heavy | |
 | 30 Sep 18:45 | T0039 reviewer for v2 | claude-second | opus / high | heavy | |
+| 30 Sep 19:25 | T0041 reviewer for v2 (redo of T0039; notes only, no edits, no tasks to f1/f2) | claude-second | opus / high | medium | |
