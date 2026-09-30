@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080, height=2400">
+  <script src="./gsap.min.js"></script>
+  <script src="./geo.js"></script>
+  <style>
+    @font-face { font-family: "Segoe UI Variable"; src: local("Segoe UI Variable"); }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 1080px; height: 2400px; overflow: hidden; background: #101214; }
+    #root { position: relative; width: 1080px; height: 2400px; overflow: hidden; color: #f1f2f2; font-family: "Segoe UI Variable", "Segoe UI", sans-serif; }
+    #map { position: absolute; inset: 0; width: 1080px; height: 2400px; }
+    .road { fill: none; stroke: #343a3d; stroke-linecap: round; stroke-linejoin: round; }
+    .road.secondary { stroke: #454b4e; stroke-width: 8; }
+    .road.tertiary { stroke: #3b4144; stroke-width: 6; }
+    .road.residential { stroke-width: 4; }
+    .road.service { stroke-width: 2.5; }
+    .building { fill: #22272a; stroke: #333a3d; stroke-width: 1.5; }
+    .ground { fill: #1c2224; stroke: #343c3e; stroke-width: 1.5; }
+    #connection { stroke: #e9eded; stroke-width: 2.5; fill: none; stroke-linecap: round; }
+    .halo { fill: #f5f6f5; opacity: .10; }
+    .dot { fill: #f4f5f4; stroke: #101214; stroke-width: 3; }
+    .leader { stroke: #a5adae; stroke-width: 1.5; }
+    .marker-label { fill: #f5f6f5; font-size: 48px; font-weight: 600; letter-spacing: .01em; }
+    #heading { position: absolute; left: 80px; top: 180px; font-size: 43px; font-weight: 600; letter-spacing: .10em; color: #d7dbdb; }
+    #subheading { position: absolute; left: 80px; top: 242px; font-size: 36px; color: #a5adae; letter-spacing: .02em; }
+    #distance { position: absolute; left: 555px; top: 1700px; padding: 20px 26px; background: #191e20; border: 1px solid #8f989a; border-radius: 7px; color: #f3f5f4; font-size: 46px; font-weight: 600; letter-spacing: .01em; opacity: 0; }
+    #north { position: absolute; right: 82px; top: 385px; color: #aeb6b7; font-size: 32px; letter-spacing: .12em; }
+    #north::before { content: "↑"; display: block; text-align: center; font-size: 55px; line-height: 56px; color: #c7cece; }
+    #footer { position: absolute; left: 80px; bottom: 155px; color: #a5adae; font-size: 31px; letter-spacing: .08em; }
+  </style>
+</head>
+<body>
+<div id="root" data-composition-id="mapcard" data-start="0" data-duration="3.5" data-width="1080" data-height="2400">
+  <svg id="map" viewBox="0 0 1080 2400" aria-label="Map of NIE North Campus showing Vachana and Yash"><g id="roads" data-layout-allow-overflow></g><g id="buildings"></g><path id="connection"></path><g id="markers"></g></svg>
+  <div id="heading">NIE NORTH CAMPUS</div>
+  <div id="subheading">Vachana and Yash</div>
+  <div id="distance">about 190 m</div>
+  <div id="north">N</div>
+  <div id="footer">STRAIGHT-LINE DISTANCE</div>
+</div>
+<script>
+  // Equirectangular drawing at campus scale. North is up.
+  const bounds = { west: 76.5838, east: 76.5876, north: 12.3747, south: 12.3696 };
+  const frame = { left: 80, right: 1000, top: 365, bottom: 2140 };
+  const xy = (lat, lon) => [
+    frame.left + (lon - bounds.west) / (bounds.east - bounds.west) * (frame.right - frame.left),
+    frame.top + (bounds.north - lat) / (bounds.north - bounds.south) * (frame.bottom - frame.top)
+  ];
+  const path = pts => pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+  const node = (tag, attrs, parent) => {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, value);
+    parent.appendChild(el);
+    return el;
+  };
+  const roads = document.getElementById('roads');
+  const buildings = document.getElementById('buildings');
+  for (const e of MAP_GEO.osm.elements) {
+    if (!e.tags || !e.tags.highway || !e.geometry) continue;
+    node('path', { d: path(e.geometry.map(p => xy(p.lat, p.lon))), class: `road ${e.tags.highway}` }, roads);
+  }
+  // The supplementary campus buildings were traced in Web-Mercator z18 pixels.
+  const pixelToLatLon = ([px, py]) => {
+    const scale = 256 * 2 ** 18;
+    const wx = MAP_GEO.outlines.frame.origin_world_px[0] + px;
+    const wy = MAP_GEO.outlines.frame.origin_world_px[1] + py;
+    const lon = wx / scale * 360 - 180;
+    const lat = Math.atan(Math.sinh(Math.PI * (1 - 2 * wy / scale))) * 180 / Math.PI;
+    return [lat, lon];
+  };
+  const outlineXY = p => { const [lat, lon] = pixelToLatLon(p); return xy(lat, lon); };
+  for (const shape of MAP_GEO.outlines.campus) {
+    node('path', { d: path(shape.pts.map(outlineXY)) + ' Z', class: 'building' }, buildings);
+    if (shape.court) node('path', { d: path(shape.court.map(outlineXY)) + ' Z', fill: '#171b1d' }, buildings);
+  }
+  for (const shape of MAP_GEO.outlines.features) {
+    if (shape.pts) node('path', { d: path(shape.pts.map(outlineXY)) + ' Z', class: 'ground' }, buildings);
+    else if (shape.center) {
+      const [x, y] = outlineXY(shape.center);
+      node('ellipse', { cx: x, cy: y, rx: shape.rx * 1.24, ry: shape.ry * 1.12, class: 'ground' }, buildings);
+    }
+  }
+  const V = xy(12.37247, 76.58497), Y = xy(12.37125, 76.58620);
+  const line = document.getElementById('connection');
+  line.setAttribute('d', path([V, Y]));
+  const length = line.getTotalLength();
+  line.style.strokeDasharray = length;
+  line.style.strokeDashoffset = length;
+  const markers = document.getElementById('markers');
+  const addMarker = (id, point, label, dx, dy) => {
+    const group = node('g', { id, opacity: 0 }, markers);
+    node('circle', { cx: point[0], cy: point[1], r: 25, class: 'halo' }, group);
+    node('circle', { cx: point[0], cy: point[1], r: 9, class: 'dot' }, group);
+    node('path', { d: path([point, [point[0] + dx * .5, point[1] + dy * .5]]), class: 'leader' }, group);
+    const text = node('text', { x: point[0] + dx, y: point[1] + dy, class: 'marker-label' }, group);
+    text.textContent = label;
+  };
+  addMarker('vachana', V, 'Vachana', -225, -65);
+  addMarker('yash', Y, 'Yash', 54, 76);
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo('#map', { opacity: 0 }, { opacity: 1, duration: .5 }, 0);
+  tl.fromTo('#vachana', { opacity: 0 }, { opacity: 1, duration: .35 }, .45);
+  tl.to(line, { strokeDashoffset: 0, duration: 1.25, ease: 'power1.inOut' }, .85);
+  tl.fromTo('#yash', { opacity: 0 }, { opacity: 1, duration: .35 }, 1.85);
+  tl.fromTo('#distance', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .4 }, 2.3);
+  tl.to({}, { duration: .8 }, 2.7);
+  window.__timelines = window.__timelines || {};
+  window.__timelines.mapcard = tl;
+  tl.seek(0);
+</script>
+</body>
+</html>

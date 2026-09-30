@@ -1,0 +1,3 @@
+Completed S0001. Both map card compositions pass HyperFrames checks, and the 3.0 s JPG previews are in [preview](</<REPO>/results/S0001/preview>). The dashed OSM boundary is removed; the portrait version is framed for the phone slot.
+
+The [report](</<REPO>/results/S0001/REPORT.md>) includes the render command. No MP4 was produced because HyperFrames’ render preflight could not start Chrome on this machine.
