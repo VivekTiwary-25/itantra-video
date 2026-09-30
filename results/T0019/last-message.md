@@ -1,0 +1,3 @@
+T0019 is complete. The [report](/<REPO>/results/T0019/REPORT.md) recommends ending the bench push-in at **1.8×**. It keeps her face, hand, and phone in frame with a clearer image than the current 8.5× ending.
+
+The [six comparison stills](/<REPO>/results/T0019/preview/) and [one-line patch](/<REPO>/results/T0019/pushin.patch) are ready. I verified that all stills are 1920×1080 and that the patch applies cleanly.

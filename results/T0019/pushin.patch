@@ -1,0 +1,11 @@
+--- a/film/scene2/main/index.html.tpl
++++ b/film/scene2/main/index.html.tpl
+@@ -46,7 +46,7 @@ function render(t){
+   }else door.style.display='none';
+   if(t>=2.6&&t<by.vachana_send.start+.5){
+     bench.style.display='block';
+-    const f=ease(clamp((t-5.4)/2.3)), scale=1+7.5*f;
++    const f=ease(clamp((t-5.4)/2.3)), scale=1+0.8*f;
+     const cx=820+80*f,cy=930-350*f;
+     bv.style.transform=`translate(${f*(960-scale*cx)}px,${f*(540-scale*cy)}px) scale(${scale})`;
+   }
