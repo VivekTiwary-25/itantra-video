@@ -13,3 +13,7 @@
 | 30 Sep 11:00 | T0005 narration computer-voice (4 lines, installed Windows voices) | codex-vivek | gpt-6-sol / medium | light | |
 | 30 Sep 11:00 | T0006 walk clip: find bench + garden in normalpart2, speed-ramp plan + preview | codex-f2 | gpt-6-sol / high | medium | |
 | 30 Sep 12:05 | T0007 scene 2 assembly from lead's cut list (slots for app screens) | codex-vivek | gpt-6-sol / high | heavy | 5h 64%, 7d 69% |
+| 30 Sep 14:55 | T0014 SECTION: scene 3 red SOS sonar (sos_in, sos_sonar, sos_dive) | claude-second | opus / high | heavy | 5h 17%, 7d 76% |
+| 30 Sep 14:55 | T0016 scene 3 assembly + audio layers for scenes 2-3 | codex-vivek | gpt-6-sol / high | heavy | |
+| 30 Sep 14:55 | T0017 title card; T0019 push-in softness fix proposal | codex-f1 | gpt-6-sol / high, medium | medium, light | |
+| 30 Sep 14:55 | T0018 final assembly script; T0020 lip-sync audit | codex-f2 | gpt-6-sol / high, medium | medium, light | |
