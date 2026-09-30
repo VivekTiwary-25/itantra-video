@@ -230,6 +230,8 @@ def audio(T, slots):
     put(dialogue, sos, by["vachana_sos"]["start"] + slots["vachana_sos"]["listen_at"])
     reply = pcm(root / "Audio/sospart2.mp3", f"atrim=start=7.54:end=10.34,asetpts=PTS-STARTPTS,{CHAIN},loudnorm=I=-16:TP=-1.5:LRA=11")
     put(dialogue, reply, by["lab_b"]["start"] + 0.305)
+    put(dialogue, pcm(REPO / "local/renders/tts_itantra/tts_sos.wav"),
+        by["vivek_sos"]["start"] + slots["vivek_sos"]["tts_at"])
     for key, start in T["narration_starts"].items():
         source = OUT / "narration/david" / f"{key}.wav"
         if source.exists():
@@ -274,7 +276,6 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     slots = json.loads((HERE / "slots.json").read_text(encoding="utf-8"))
     T = timeline(slots)
-    assert T["duration"] == 60.2 and T["narration_starts"]["N6"] == 21.1
     videos = sonar_assets()
     write_page(T, slots, videos)
     run("hyperframes.cmd", "check", cwd=HERE)

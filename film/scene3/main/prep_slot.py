@@ -25,12 +25,13 @@ def main():
     parser.add_argument("--dur", type=float)
     parser.add_argument("--crop-top", type=int, default=110)
     parser.add_argument("--audio", choices=("keep", "drop"), default="keep")
+    parser.add_argument("--hold-last", type=float, default=0)
     args = parser.parse_args()
     raw = args.raw.resolve()
     if not raw.is_relative_to(RENDERS.resolve()) or raw.suffix.lower() not in (".mkv", ".mp4") or not raw.is_file():
         parser.error("raw must be an existing .mkv or .mp4 under local/renders/")
     duration = args.dur if args.dur is not None else json.loads((HERE / "slots.json").read_text(encoding="utf-8"))[args.slot]["duration"]
-    if not math.isfinite(args.start) or not math.isfinite(duration) or args.start < 0 or duration <= 0 or args.crop_top < 0 or round(duration * 30) < 1:
+    if not math.isfinite(args.start) or not math.isfinite(duration) or not math.isfinite(args.hold_last) or args.start < 0 or duration <= 0 or args.crop_top < 0 or args.hold_last < 0 or args.hold_last >= duration or round(duration * 30) < 1:
         parser.error("--in and --crop-top must be nonnegative; duration must be positive")
     streams = probe(raw)
     video = next((s for s in streams if s["codec_type"] == "video"), None)
@@ -44,9 +45,9 @@ def main():
         parser.error("raw source cannot be the prepared slot output")
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_name(f".{args.slot}.prep.mp4")
-    vf = (f"trim=start={args.start}:duration={duration},setpts=PTS-STARTPTS,"
+    vf = (f"trim=start={args.start}:duration={duration - args.hold_last},setpts=PTS-STARTPTS,"
           f"crop=iw-mod(iw\\,2):ih-{args.crop_top}-mod(ih-{args.crop_top}\\,2):0:{args.crop_top},"
-          "fps=30,format=yuv420p")
+          f"fps=30,tpad=stop_mode=clone:stop_duration={args.hold_last},format=yuv420p")
     cmd = ["ffmpeg", "-v", "error", "-y", "-i", str(raw), "-map", "0:v:0", "-vf", vf,
            "-frames:v", str(frames), "-c:v", "libx264", "-preset", "medium", "-crf", "16",
            "-pix_fmt", "yuv420p"]

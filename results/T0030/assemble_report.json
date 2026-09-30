@@ -1,0 +1,110 @@
+{
+  "total_duration_seconds": 241.8,
+  "total_frames": 7254,
+  "video_assembly": "stream_copy",
+  "scenes": [
+    {
+      "scene": "scene1",
+      "start_seconds": 0.0,
+      "end_seconds": 56.466667,
+      "duration_seconds": 56.466667,
+      "frames": 1694,
+      "source_video_duration_seconds": 56.466667,
+      "resolution": "1920x1080",
+      "fps": 30.0
+    },
+    {
+      "scene": "scene2",
+      "start_seconds": 56.466667,
+      "end_seconds": 158.966667,
+      "duration_seconds": 102.5,
+      "frames": 3075,
+      "source_video_duration_seconds": 102.5,
+      "resolution": "1920x1080",
+      "fps": 30.0
+    },
+    {
+      "scene": "scene3",
+      "start_seconds": 158.966667,
+      "end_seconds": 221.8,
+      "duration_seconds": 62.833333,
+      "frames": 1885,
+      "source_video_duration_seconds": 62.833333,
+      "resolution": "1920x1080",
+      "fps": 30.0
+    },
+    {
+      "scene": "title",
+      "start_seconds": 221.8,
+      "end_seconds": 241.8,
+      "duration_seconds": 20.0,
+      "frames": 600,
+      "source_video_duration_seconds": 20.0,
+      "resolution": "1920x1080",
+      "fps": 30.0
+    }
+  ],
+  "loudness": {
+    "mix_first_pass": {
+      "input_i": "-17.43",
+      "input_tp": "-2.58",
+      "input_lra": "10.10",
+      "input_thresh": "-28.15",
+      "output_i": "-17.07",
+      "output_tp": "-1.80",
+      "output_lra": "7.30",
+      "output_thresh": "-27.83",
+      "normalization_type": "dynamic",
+      "target_offset": "1.07"
+    },
+    "mix_second_pass": {
+      "normalization_type": "peak_limited",
+      "output_i": "-16.00",
+      "output_tp": "-2.14"
+    },
+    "encoded_film": {
+      "input_i": "-16.01",
+      "input_tp": "-2.05",
+      "input_lra": "10.20",
+      "input_thresh": "-26.75",
+      "output_i": "-17.08",
+      "output_tp": "-1.80",
+      "output_lra": "7.30",
+      "output_thresh": "-27.83",
+      "normalization_type": "dynamic",
+      "target_offset": "1.08"
+    },
+    "dialogue_gain_db": 1.43,
+    "dialogue_before": {
+      "input_i": "-16.67",
+      "input_tp": "-3.38",
+      "input_lra": "18.50",
+      "input_thresh": "-28.39",
+      "output_i": "-16.77",
+      "output_tp": "-1.80",
+      "output_lra": "15.30",
+      "output_thresh": "-28.36",
+      "normalization_type": "dynamic",
+      "target_offset": "0.77"
+    },
+    "dialogue_after": {
+      "input_i": "-15.24",
+      "input_tp": "-1.95",
+      "input_lra": "18.60",
+      "input_thresh": "-26.98",
+      "output_i": "-16.80",
+      "output_tp": "-1.80",
+      "output_lra": "15.30",
+      "output_thresh": "-28.36",
+      "normalization_type": "dynamic",
+      "target_offset": "0.80"
+    }
+  },
+  "outputs": [
+    "full_film_v1.mp4",
+    "full_film_v1_nomusic.mp4",
+    "full_film_v1_music_only.wav",
+    "full_film_v1_dialogue_sfx.wav",
+    "full_film_v1_mix.wav"
+  ]
+}

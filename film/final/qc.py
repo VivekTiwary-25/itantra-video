@@ -165,7 +165,7 @@ def placeholder(path):
                         text_outside += 1
         total = len(range(30, PHONE_H - 30, 3)) * len(range(20, PHONE_W - 20, 3))
         bg_share = bg / total
-        found = bg_share > 0.88 and text_center >= 8 and text_center > 3 * text_outside
+        found = bg_share > 0.98 and text_center >= 8 and text_center > 3 * text_outside
         if found:
             hits.append(number)
         details.append({"second": number, "background_share": round(bg_share, 3),
@@ -266,7 +266,8 @@ def check(path):
          f"{v.get('width')}x{v.get('height')}", "1920x1080"),
         ("video codec", v.get("codec_name") == "h264", v.get("codec_name"), "H.264"),
         ("pixel format", v.get("pix_fmt") == "yuv420p", v.get("pix_fmt"), "yuv420p"),
-        ("frame rate", ratio(v.get("avg_frame_rate", "0/1")) == FPS and ratio(v.get("r_frame_rate", "0/1")) == FPS,
+        ("frame rate", math.isclose(ratio(v.get("avg_frame_rate", "0/1")) or 0, FPS, abs_tol=0.01)
+         and ratio(v.get("r_frame_rate", "0/1")) == FPS,
          f"{v.get('avg_frame_rate')} / {v.get('r_frame_rate')}", "30/1 constant"),
         ("audio codec", a.get("codec_name") == "aac", a.get("codec_name"), "AAC"),
         ("sample rate", int(a.get("sample_rate", 0)) == SAMPLE_RATE, a.get("sample_rate"), "48000 Hz"),

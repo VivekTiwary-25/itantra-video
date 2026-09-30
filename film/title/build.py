@@ -1,7 +1,7 @@
 """Build the closing card. Run from anywhere: python film/title/build.py."""
 from pathlib import Path
 
-DISTANCE = "~400 m"
+DISTANCE = "~200 m"
 
 HERE = Path(__file__).resolve().parent
 template = (HERE / "index.html.tpl").read_text(encoding="utf-8")

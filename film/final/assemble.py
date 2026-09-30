@@ -117,7 +117,9 @@ def make_video(paths, streams, frames, output):
                  "-safe", "0", "-i", listing, "-map", "0:v:0", "-an", "-c:v", "copy", output])
             info = probe(output, count_frames=True)
             outv = next(s for s in info["streams"] if s["codec_type"] == "video")
-            if int(outv["nb_read_frames"]) == sum(frames) and abs(media_duration(info, outv) - sum(frames) / FPS) < 1 / FPS:
+            if (int(outv["nb_read_frames"]) == sum(frames)
+                    and abs(media_duration(info, outv) - sum(frames) / FPS) < 1 / FPS
+                    and math.isclose(rate(outv["avg_frame_rate"]), FPS, abs_tol=0.000001)):
                 return "stream_copy"
             print("Stream copy did not preserve exact frame count/timing; encoding once instead.")
             output.unlink()
@@ -126,10 +128,10 @@ def make_video(paths, streams, frames, output):
     inputs = [x for p in videos for x in ("-i", p)]
     filters = [f"[{i}:v:0]setpts=PTS-STARTPTS,setsar=1[v{i}]" for i in range(len(videos))]
     filters.append("".join(f"[v{i}]" for i in range(len(videos))) +
-                   f"concat=n={len(videos)}:v=1:a=0,format=yuv420p[out]")
+                   f"concat=n={len(videos)}:v=1:a=0,setpts=N/({FPS}*TB),format=yuv420p[out]")
     run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y", *inputs,
          "-filter_complex", ";".join(filters), "-map", "[out]", "-an",
-         "-c:v", "libx264", "-preset", "slow", "-crf", "16", "-pix_fmt", "yuv420p",
+         "-c:v", "libx264", "-preset", "slow", "-crf", "16", "-pix_fmt", "yuv420p", "-frames:v", str(sum(frames)),
          "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", output])
     return "libx264_crf16"
 
@@ -208,10 +210,21 @@ def main():
          "-i", raw_music, "-filter_complex", "[0:a][1:a]amix=inputs=2:normalize=0:duration=first[out]",
          "-map", "[out]", "-c:a", "pcm_s24le", raw_mix])
     first_pass = loudnorm(raw_mix)
-    second_pass = loudnorm(raw_mix, output=mix, values=first_pass)
-    if second_pass.get("normalization_type") != "linear":
-        raise ValueError("Mix cannot meet -16 LUFS and -1.5 dBTP with linear loudnorm; inspect the input peaks.")
-    gain = float(second_pass["output_i"]) - float(second_pass["input_i"])
+    gain = TARGET_I - float(first_pass["input_i"])
+    if float(first_pass["input_tp"]) + gain > TARGET_TP:
+        run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-i", raw_mix,
+             "-af", f"volume={gain:.6f}dB,alimiter=limit=0.78:attack=2:release=50:level=false",
+             "-ar", str(RATE), "-ac", "2", "-c:a", "pcm_s24le", mix])
+        measured = loudnorm(mix)
+        second_pass = {"normalization_type": "peak_limited", "output_i": measured["input_i"],
+                       "output_tp": measured["input_tp"]}
+        if abs(float(measured["input_i"]) - TARGET_I) > 0.3 or float(measured["input_tp"]) > TARGET_TP:
+            raise ValueError("Peak-limited mix missed loudness or true-peak target")
+    else:
+        second_pass = loudnorm(raw_mix, output=mix, values=first_pass)
+        if second_pass.get("normalization_type") != "linear":
+            raise ValueError("Linear loudnorm unexpectedly failed")
+        gain = float(second_pass["output_i"]) - float(second_pass["input_i"])
     for source, destination in ((raw_dialogue, dialogue), (raw_music, music)):
         run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-i", source,
              "-af", f"volume={gain:.6f}dB", "-c:a", "pcm_s24le", destination])
