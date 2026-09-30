@@ -27,6 +27,7 @@ You pick the worker, model and effort for every task (MODELS.md). Never assign G
 ## Usage
 - Read `local/claude-usage.json` (status-line data: 5-hour and 7-day percentages) before allocating a batch. If it's missing, take control of the screen, run `/usage`, and read the screenshot.
 - Codex limits: read the heartbeats. On this PC you can open Codex, run `/status`, and read a screenshot.
+- Run swarm_status.py at least every 30 minutes while tasks are running. If it shows any ⚠, tell Vivek in bold straight away.
 - Follow the thresholds in MODELS.md. Log every allocation in `log/usage.md`.
 
 ## How the film gets made

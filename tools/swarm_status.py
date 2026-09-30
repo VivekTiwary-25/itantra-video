@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import REPO_ROOT, now_iso, read_json, sync_warnings, write_json  # noqa: E402
 
 ONLINE_MINUTES = 10
+UNPUSHED_WARN_MINUTES = 10
 WIDTH = 55
 NODE_W, AGENT_W, MODEL_W = 13, 15, 16
 
@@ -55,6 +56,36 @@ def usage_cell(label, pct):
     if not isinstance(pct, (int, float)):
         return f"{label} no data"
     return f"{label} {bar(pct)} {(f'{pct:.0f}%').ljust(4)}"
+
+
+def push_warning(info, now):
+    """Return a visible warning when a machine has been unable to publish commits for ten minutes."""
+    hb = read_json(REPO_ROOT / "machines" / info["machine"] / "heartbeat.json") or {}
+    try:
+        count = int(hb.get("unpushed_commits") or 0)
+    except (TypeError, ValueError):
+        count = 0
+    last_ok = parse_time(hb.get("last_push_ok"))
+    overdue = count > 0 and (last_ok is None or (now - last_ok).total_seconds() > UNPUSHED_WARN_MINUTES * 60)
+    return f"⚠ {count} unpushed commit(s)" if overdue else ""
+
+
+def overdue_tasks(now):
+    """Return tasks claimed by a listener but still missing a report past their declared deadline."""
+    overdue = []
+    for started in sorted((REPO_ROOT / "results").glob("*/STARTED.json")):
+        if (started.parent / "REPORT.md").exists():
+            continue
+        info = read_json(started, {}) or {}
+        began = parse_time(info.get("time"))
+        try:
+            timeout_min = int(info.get("timeout_min") or 60)
+        except (TypeError, ValueError):
+            timeout_min = 60
+        if began and (now - began).total_seconds() > timeout_min * 60:
+            late_min = (now - began).total_seconds() / 60 - timeout_min
+            overdue.append(f"⚠ OVERDUE {started.parent.name} ({info.get('worker', '?')}@{info.get('machine', '?')}, {late_min:.0f}m past {timeout_min}m timeout)")
+    return overdue
 
 
 def agent_state(worker, info, now, usage):
@@ -100,6 +131,9 @@ def main() -> None:
                        {"worker": "claude-lead", "machine": lead_machine, "time": now_iso(), "status": "active", "pid": os.getppid()})
     usage = read_json(REPO_ROOT / "local" / "claude-usage.json")
     now = dt.datetime.now(dt.timezone.utc)
+    sync_state = read_json(REPO_ROOT / "local" / "sync-state.json") or {}
+    last_pull = parse_time(sync_state.get("last_pull_ok"))
+    data_age = ago(last_pull, now) if last_pull else "unknown"
     heavy, light = "═" * WIDTH, "─" * WIDTH
 
     rows = []
@@ -107,10 +141,14 @@ def main() -> None:
         if info.get("swarm") is False:
             continue
         online, detail = agent_state(worker, info, now, usage)
+        warning = push_warning(info, now)
+        if warning:
+            detail = f"{detail}  {warning}"
         rows.append((info["machine"], worker, info.get("display_model", "?"), online, detail))
 
     pull_stale, sync_msgs = sync_warnings(now)
     out = [heavy,
+           f"  data as of {data_age} since last successful git pull",
            "  iTANTRA CREATIVE SWARM · Team chmod 777",
            "  ▸ activating agent swarm...",
            heavy,
@@ -118,6 +156,7 @@ def main() -> None:
     for node, agent, model, online, detail in rows:
         status = ("● ONLINE  " if online else ("? UNKNOWN " if pull_stale else "○ OFFLINE ")) + detail
         out.append(f"  {node:<{NODE_W}}{agent:<{AGENT_W}}{model:<{MODEL_W}}{status}")
+    out += ["  " + task for task in overdue_tasks(now)]
     out.append(light)
 
     rl = (usage or {}).get("rate_limits") or {}

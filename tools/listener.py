@@ -31,7 +31,7 @@ SYNC_EVERY_S = 30
 HEARTBEAT_EVERY_S = 300
 MAX_FILE_MB = 20
 MAX_PREVIEW_MB = 10
-PUSH_TRIES = 5
+PUSH_TRIES = 8
 NET_TIMEOUT = 45  # seconds for any single network git call: a half-dead connection must not block the listener for minutes
 NET = ["-c", "http.lowSpeedLimit=1000", "-c", "http.lowSpeedTime=20"]  # abort a transfer that has stalled for 20 s
 DEFAULT_TIMEOUT_MIN = 60
@@ -173,6 +173,15 @@ def count_unpushed() -> int | None:
         return None
 
 
+def has_unpushed_results() -> bool:
+    """Whether a result commit still needs delivery to GitHub."""
+    rc, out = git("rev-list", "--count", f"origin/{branch()}..HEAD", "--", "results")
+    try:
+        return rc == 0 and int(out.strip()) > 0
+    except ValueError:
+        return False
+
+
 def sync() -> bool:
     if OFFLINE:
         return True
@@ -188,22 +197,26 @@ def sync() -> bool:
     return True
 
 
-def push_with_retries(tries: int = PUSH_TRIES) -> bool:
-    """Push HEAD. `tries` is small (2) for heartbeats, which repeat every 5 minutes anyway, so a bad connection
-    never blocks the listener for long; results use the full PUSH_TRIES."""
+def push_with_retries(tries: int = PUSH_TRIES, quiet: bool = False) -> bool:
+    """Pull/rebase then push, retrying transient network errors and concurrent pushes."""
     if OFFLINE:
         return True
     for attempt in range(1, tries + 1):
-        rc, out = git(*NET, "push", "origin", "HEAD", timeout=NET_TIMEOUT)
-        if rc == 0:
-            update_sync_state(last_push_ok=now_iso(), unpushed=0)
-            return True
-        log(f"push attempt {attempt}/{tries} failed: {out.strip()[:200]}")
-        rc2, out2 = git(*NET, "pull", "--rebase", "--autostash", "origin", branch(), timeout=NET_TIMEOUT)
-        if rc2 != 0 and "couldn't find remote ref" not in out2:
+        rc, out = git(*NET, "pull", "--rebase", "--autostash", "origin", branch(), timeout=NET_TIMEOUT)
+        if rc != 0:
+            log(f"push attempt {attempt}/{tries}: pull/rebase failed: {out.strip()[:200]}")
             git("rebase", "--abort")
-        time.sleep(random.uniform(1, 4))
-    log("push gave up after retries; the commit stays local and will go out with the next push")
+        else:
+            rc, out = git(*NET, "push", "origin", "HEAD", timeout=NET_TIMEOUT)
+            if rc == 0:
+                update_sync_state(last_push_ok=now_iso(), unpushed=0)
+                log(f"push succeeded on attempt {attempt}/{tries}")
+                return True
+            log(f"push attempt {attempt}/{tries} failed: {out.strip()[:200]}")
+        if attempt < tries:
+            time.sleep(random.uniform(3, 15))
+    if not quiet:
+        log("push gave up after retries; the commit stays local and will be retried on later cycles")
     update_sync_state(last_push_error_at=now_iso(), unpushed=count_unpushed())
     return False
 
@@ -231,6 +244,7 @@ def write_heartbeat(status: str | None = None, push: bool = True) -> None:
     paused = paused_workers()
     if status is None:
         status = "busy" if current_task else ("rate_limited" if paused and len(paused) == len(MY_WORKERS) else "idle")
+    sync_state = read_json(REPO_ROOT / "local" / "sync-state.json", {}) or {}
     hb = {
         "machine": MACHINE,
         "time": now_iso(),
@@ -242,13 +256,15 @@ def write_heartbeat(status: str | None = None, push: bool = True) -> None:
         "listener_pid": os.getpid(),
         "last_task_usage": last_usage or None,
         "codex_rate_limits": last_codex_rate_limits,
+        "unpushed_commits": count_unpushed() or 0,
+        "last_push_ok": sync_state.get("last_push_ok"),
     }
     rel = f"machines/{MACHINE}/heartbeat.json"
     write_json(REPO_ROOT / rel, hb)
     last_heartbeat = time.time()
     update_sync_state(listener_seen=now_iso(), listener_status=status)
     if commit_paths([rel], f"heartbeat {MACHINE} {status}") and push:
-        push_with_retries(tries=2)
+        push_with_retries(quiet=True)
 
 
 def heartbeat_due() -> bool:
@@ -870,6 +886,9 @@ def main() -> None:
                 break
             if ran:
                 sync()
+                if has_unpushed_results():
+                    log("unpushed result commit detected; retrying delivery")
+                    push_with_retries()
                 check_for_update()
                 continue
             wait = SYNC_EVERY_S + random.uniform(0, 8)
@@ -879,6 +898,9 @@ def main() -> None:
                 if heartbeat_due():
                     write_heartbeat()
             sync()
+            if has_unpushed_results():
+                log("unpushed result commit detected; retrying delivery")
+                push_with_retries()
             check_for_update()
     except KeyboardInterrupt:
         log("Ctrl+C: stopping")
