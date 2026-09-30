@@ -1,0 +1,3 @@
+Completed S0004. The 20-second closing card passes `hyperframes.cmd check`, and all six lines have preview stills in [results/S0004/preview](</<REPO>/results/S0004/preview>). Timings and rebuild steps are in [REPORT.md](</<REPO>/results/S0004/REPORT.md>).
+
+**TLDR:** The card is ready for the render machine. The MP4 here is a still-based timing preview because this sandbox could not start Chrome for a direct HyperFrames render.
