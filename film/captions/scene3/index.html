@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=1920,height=1080">
+<script src="./gsap.min.js"></script>
+<style>
+@font-face{font-family:CaptionSans;src:local('Segoe UI Variable Display'),local('Segoe UI Variable'),local('Segoe UI');font-weight:100 900}
+*{box-sizing:border-box}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:transparent}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:transparent}
+#caption{position:absolute;bottom:42px;left:50%;transform:translateX(-50%);
+  max-width:1200px;width:max-content;padding:12px 20px;border-radius:18px;
+  color:#f3f5f8;background:rgba(5,7,10,.82);font:600 46px/1.16 CaptionSans,'Segoe UI',sans-serif;
+  white-space:pre-line;text-align:center;box-shadow:0 3px 16px rgba(0,0,0,.2);
+  visibility:hidden;opacity:0;pointer-events:none}
+#caption.left{left:42px;right:auto;transform:none;max-width:650px;text-align:left}
+#caption.right{left:auto;right:42px;transform:none;max-width:650px;text-align:right}
+</style></head><body>
+<div id="root" data-composition-id="scene3_captions" data-start="0" data-duration="60.1"
+  data-width="1920" data-height="1080"><div id="caption" aria-live="off"></div></div>
+<script>
+const rows=[{"scene":"scene3","start":0.3,"end":3.9,"text":"What if you need help,\nbut don't know who's nearby?","position":"bottom"},{"scene":"scene3","start":4.271,"end":6.871,"text":"I'm lost somewhere near\nthe construction site.","position":"left"},{"scene":"scene3","start":7.191,"end":7.931,"text":"Please reach me out.","position":"left"},{"scene":"scene3","start":8.371,"end":8.991,"text":"Help me anyone.","position":"left"},{"scene":"scene3","start":21.1,"end":24.3,"text":"iTantra searches nearby for help.","position":"bottom"},{"scene":"scene3","start":24.3,"end":27.6,"text":"If someone accepts, they can hear\nthe SOS and reply.","position":"bottom"},{"scene":"scene3","start":44.505,"end":44.985,"text":"Wait,","position":"bottom"},{"scene":"scene3","start":44.985,"end":46.065,"text":"I'm in the chemistry lab.","position":"bottom"},{"scene":"scene3","start":46.065,"end":47.305,"text":"I'll come get you, wait.","position":"bottom"}];
+const caption=document.getElementById('caption');
+function render(t){
+  const row=rows.find(r=>t>=r.start&&t<r.end);
+  if(!row){caption.style.visibility='hidden';caption.style.opacity='0';return}
+  caption.className=row.position==='bottom'?'':row.position;
+  caption.textContent=row.text;
+  caption.style.visibility='visible';
+  const alpha=Math.min(1,(t-row.start)/.12,(row.end-t)/.12);
+  caption.style.opacity=String(Math.max(0,alpha));
+}
+const tl=gsap.timeline({paused:true,onUpdate:()=>render(tl.time())});
+tl.to({},{duration:60.1},0);
+window.__timelines=window.__timelines||{};
+window.__timelines['scene3_captions']=tl;
+window.addEventListener('hf-seek',e=>render(e.detail.time));
+render(0);
+</script></body></html>

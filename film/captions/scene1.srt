@@ -1,0 +1,107 @@
+1
+00:00:00,490 --> 00:00:01,620
+Hello, dear viewers.
+
+2
+00:00:01,850 --> 00:00:03,360
+We are from team chmod 777
+
+3
+00:00:03,360 --> 00:00:05,430
+from the National Institute
+of Engineering.
+
+4
+00:00:05,930 --> 00:00:06,440
+I am Vachana.
+
+5
+00:00:07,070 --> 00:00:08,820
+We are discussing on
+the problem statement
+
+6
+00:00:08,820 --> 00:00:10,480
+iTantra from ISRO.
+
+7
+00:00:10,990 --> 00:00:12,800
+So, it's Indian multilingual TTS
+
+8
+00:00:13,260 --> 00:00:14,510
+and STT aided neural transceiver
+
+9
+00:00:14,510 --> 00:00:17,250
+radio access for low bit rate
+communication.
+
+10
+00:00:18,020 --> 00:00:19,640
+What does that actually mean?
+
+11
+00:00:19,940 --> 00:00:21,140
+Our system, iTantra,
+
+12
+00:00:21,380 --> 00:00:23,250
+lets two Android devices communicate
+
+13
+00:00:23,250 --> 00:00:24,780
+even when there is no SIM,
+
+14
+00:00:24,920 --> 00:00:27,200
+no internet, no router,
+connections, nothing.
+
+15
+00:00:27,720 --> 00:00:29,690
+Our on-device speech-to-text model
+
+16
+00:00:29,690 --> 00:00:31,430
+takes the speech and converts
+
+17
+00:00:31,430 --> 00:00:33,050
+the speech into compact text.
+
+18
+00:00:33,500 --> 00:00:35,870
+The Bluetooth-based transport
+and relay layer
+
+19
+00:00:35,870 --> 00:00:38,850
+will send this text
+into another device.
+
+20
+00:00:39,420 --> 00:00:42,300
+The text-to-speech model will again
+
+21
+00:00:42,300 --> 00:00:44,750
+convert text into speech,
+
+22
+00:00:44,800 --> 00:00:46,390
+which is in the message's language.
+
+23
+00:00:46,390 --> 00:00:47,400
+So, in short,
+
+24
+00:00:47,840 --> 00:00:50,130
+the speech becomes text
+and text is sent
+
+25
+00:00:50,560 --> 00:00:53,080
+locally, and the text
+again becomes speech.

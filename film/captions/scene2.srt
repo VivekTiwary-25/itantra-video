@@ -1,0 +1,42 @@
+1
+00:00:07,882 --> 00:00:11,202
+Hey dude, I'm in the campus
+near the entry benches,
+
+2
+00:00:11,202 --> 00:00:12,462
+where are you?
+
+3
+00:00:21,033 --> 00:00:22,533
+Let's see how far
+that message
+
+4
+00:00:22,533 --> 00:00:24,133
+actually has to travel.
+
+5
+00:00:33,933 --> 00:00:36,283
+Oh, it's too hot here.
+
+6
+00:00:50,230 --> 00:00:52,270
+I'm in the garden.
+I'll come to you.
+
+7
+00:00:57,167 --> 00:00:59,367
+But how did that happen?
+
+8
+00:00:59,367 --> 00:01:01,367
+Bluetooth doesn't reach that far.
+
+9
+00:01:26,167 --> 00:01:27,567
+And that's how it gets there.
+
+10
+00:01:28,467 --> 00:01:30,467
+His reply comes back the same way.

@@ -1,0 +1,38 @@
+1
+00:00:00,300 --> 00:00:03,900
+What if you need help,
+but don't know who's nearby?
+
+2
+00:00:04,271 --> 00:00:06,871
+I'm lost somewhere near
+the construction site.
+
+3
+00:00:07,191 --> 00:00:07,931
+Please reach me out.
+
+4
+00:00:08,371 --> 00:00:08,991
+Help me anyone.
+
+5
+00:00:21,100 --> 00:00:24,300
+iTantra searches nearby for help.
+
+6
+00:00:24,300 --> 00:00:27,600
+If someone accepts, they can hear
+the SOS and reply.
+
+7
+00:00:44,505 --> 00:00:44,985
+Wait,
+
+8
+00:00:44,985 --> 00:00:46,065
+I'm in the chemistry lab.
+
+9
+00:00:46,065 --> 00:00:47,305
+I'll come get you, wait.
