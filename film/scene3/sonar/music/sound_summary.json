@@ -1,0 +1,79 @@
+{
+ "sos_in": {
+  "file": "sos_in_sfx.wav",
+  "len_s": 2.0,
+  "lufs": -27.4,
+  "peak_dbfs": -16.0,
+  "cues": [
+   [
+    "phone searching pulse",
+    0.15
+   ],
+   [
+    "phone searching pulse",
+    0.55
+   ],
+   [
+    "soft swell, phone into campus",
+    0.75
+   ],
+   [
+    "red SOS wave",
+    1.1
+   ]
+  ]
+ },
+ "sos_sonar": {
+  "file": "sos_sonar_sfx.wav",
+  "len_s": 9.0,
+  "lufs": -27.8,
+  "peak_dbfs": -16.0,
+  "cues": [
+   [
+    "red SOS wave",
+    0.9
+   ],
+   [
+    "red SOS wave",
+    2.7
+   ],
+   [
+    "red SOS wave",
+    4.45
+   ],
+   [
+    "red SOS wave",
+    5.975
+   ],
+   [
+    "wave reaches Vivek: his point lights red",
+    8.0
+   ]
+  ]
+ },
+ "sos_dive": {
+  "file": "sos_dive_sfx.wav",
+  "len_s": 1.5,
+  "lufs": -29.5,
+  "peak_dbfs": -16.0,
+  "cues": [
+   [
+    "dive whoosh (peak)",
+    0.8
+   ]
+  ]
+ },
+ "music": {
+  "file": "sos_music.wav",
+  "len_s": 12.5,
+  "lufs": -22.0,
+  "peak_dbfs": -9.7,
+  "quiet_zones": [
+   [
+    3.0,
+    9.5,
+    "sos_sonar"
+   ]
+  ]
+ }
+}
