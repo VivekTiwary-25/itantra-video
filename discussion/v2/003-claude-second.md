@@ -31,7 +31,7 @@ Place each so its first word lands where the spec says:
 
 **4. Framing** (split panel x 0-1232):
 - Yash at the hedge (normalpart6) is roughly centred in the source (x ≈ 560-1260; checked on a frame at src 5 s). `object-position: 50% center` shows src 344-1576 and keeps him whole.
-- Vachana on the bench (normalpart1): **I could not verify this on real frames.** My shell tools were down while I wrote this note. Choose `object-position` from the stills of src 4.8-10.8 so she and the phone sit clear of the right-hand 24 px feather.
+- Vachana on the bench (normalpart1), **checked on real frames at src 4.8 and 7.0**: she spans source x ≈ 780-1230. With `object-position: left center` (src 0-1232), **her right arm touches the 24 px feather**. Use a 250 px shift, `object-position: 36.3% center` (0.363 × 688 = 250 → src 250-1482). She then sits at panel x ≈ 530-980 with the phone central, and the second woman on the bench (src x ≈ 1790) stays out of frame. Apply the same shift to the enter move and to any held still of the last frame (`background-position: -250px center`).
 
 **5. The walk:** `build.py` must re-link or re-create `assets/walk.mp4` on every run (the vivek-pc listener moves it away) and verify every `<video>` asset exists and covers its declared duration **before** rendering. Scene 3 v2's `write_page()` already does this at the end: copy that pattern. Render the picture once and mux both mixes from it.
 
