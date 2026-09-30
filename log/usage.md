@@ -17,3 +17,5 @@
 | 30 Sep 14:55 | T0016 scene 3 assembly + audio layers for scenes 2-3 | codex-vivek | gpt-6-sol / high | heavy | |
 | 30 Sep 14:55 | T0017 title card; T0019 push-in softness fix proposal | codex-f1 | gpt-6-sol / high, medium | medium, light | |
 | 30 Sep 14:55 | T0018 final assembly script; T0020 lip-sync audit | codex-f2 | gpt-6-sol / high, medium | medium, light | |
+| 30 Sep 15:15 | T0021 captions layer (xhigh), T0022 QC script, T0023 title option B + poster | codex-f1 | gpt-6-sol / xhigh, high, high | heavy | 5h ~30%, 7d ~78% |
+| 30 Sep 15:15 | T0024 sound options pack, T0025 rule audit, T0026 style.md draft | codex-f2 | gpt-6-sol / high | medium each | |
