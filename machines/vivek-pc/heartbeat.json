@@ -1,7 +1,7 @@
 {
   "machine": "vivek-pc",
-  "time": "2026-09-30T04:26:41Z",
-  "status": "idle",
+  "time": "2026-09-30T04:31:34Z",
+  "status": "restarting",
   "current_task": null,
   "workers": [
     "codex-vivek"
