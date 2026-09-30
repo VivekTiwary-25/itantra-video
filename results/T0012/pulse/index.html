@@ -1,0 +1,83 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<link rel="stylesheet" href="./pulse.css">
+<script src="./gsap.min.js"></script>
+<script src="./three.min.js"></script>
+<script src="./geo.js"></script>
+<script src="./sonar.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="sos_pulse" data-start="0" data-duration="3.2" data-width="1920" data-height="1080">
+  <canvas id="sonar" class="clip" data-start="0" data-duration="3.2" width="1920" height="1080" data-layout-allow-overflow></canvas>
+  <svg id="pulse" width="1920" height="1080" viewBox="0 0 1920 1080" aria-hidden="true">
+    <path id="wake"></path><path id="glow"></path><path id="ring"></path>
+  </svg>
+  <div id="sender" class="point"><i class="halo"></i><i class="core"></i><span>Vachana</span></div>
+  <div id="responder" class="point"><i class="halo"></i><i class="core"></i><span>Vivek</span></div>
+</div>
+<script>
+/* Scene 3 look test. The Scene 2 campus renderer and geometry stay untouched.
+   All positions are illustrative map-pixel points; verify Vivek's location before final edit. */
+(() => {
+  'use strict';
+  const canvas = document.getElementById('sonar');
+  const sonar = window.Sonar(canvas, window.GEO);
+  const camera = { tx: 448, tz: 712, D: 690, pitch: 57, yaw: 0 };
+  const V = [330, 598], RESPONDER = [285, 700];
+  const start = 0.2, speed = 70;
+  const arrival = start + Math.hypot(RESPONDER[0] - V[0], RESPONDER[1] - V[1]) / speed;
+  const ring = document.getElementById('ring');
+  const glow = document.getElementById('glow');
+  const wake = document.getElementById('wake');
+  const sender = document.getElementById('sender');
+  const responder = document.getElementById('responder');
+  const clamp = v => Math.max(0, Math.min(1, v));
+
+  function circlePath(radius) {
+    let d = '';
+    for (let i = 0; i <= 180; i++) {
+      const a = i * Math.PI / 90;
+      const p = sonar.project(V[0] + radius * Math.cos(a), V[1] + radius * Math.sin(a), 0);
+      d += `${i ? 'L' : 'M'}${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+    }
+    return d + 'Z';
+  }
+
+  function draw(t) {
+    // A prior, spent blue scan leaves the same revealed campus as the end of Scene 2.
+    // Its ring is fully hidden, so the SOS beat contains exactly one visible pulse.
+    sonar.render(t, { cam: camera, pulses: [{x: V[0], y: V[1], t0: -20, speed: 300}], floor: 0.6, ringFade: 0 });
+    const v = sonar.project(...V, 0), r = sonar.project(...RESPONDER, 0);
+    sender.style.transform = `translate(${v.x}px,${v.y}px)`;
+    responder.style.transform = `translate(${r.x}px,${r.y}px)`;
+    const age = t - start;
+    const radius = Math.max(0, age * speed);
+    const fade = clamp(age / 0.3) * (1 - 0.35 * clamp((age - 1.8) / 1.2));
+    const path = age > 0 ? circlePath(radius) : '';
+    ring.setAttribute('d', path); glow.setAttribute('d', path); wake.setAttribute('d', path);
+    ring.style.opacity = (0.82 * fade).toFixed(3);
+    glow.style.opacity = (0.31 * fade).toFixed(3);
+    wake.style.opacity = (0.13 * fade).toFixed(3);
+    const hit = clamp((t - arrival + 0.12) / 0.12);
+    responder.style.opacity = hit.toFixed(3);
+    responder.querySelector('.halo').style.transform = `scale(${(1 + 0.7 * hit).toFixed(3)})`;
+  }
+
+  const tl = gsap.timeline({ paused: true, onUpdate: () => draw(tl.time()) });
+  tl.to({}, { duration: 3.2 }, 0);
+  window.addEventListener('hf-seek', e => draw(e.detail.time));
+  window.__timelines = window.__timelines || {};
+  window.__timelines.sos_pulse = tl;
+  window.SOS_PULSE = { draw, arrival };
+  draw(0);
+})();
+
+</script>
+
+</body>
+</html>
+
+
