@@ -19,3 +19,4 @@
 | 30 Sep 14:55 | T0018 final assembly script; T0020 lip-sync audit | codex-f2 | gpt-6-sol / high, medium | medium, light | |
 | 30 Sep 15:15 | T0021 captions layer (xhigh), T0022 QC script, T0023 title option B + poster | codex-f1 | gpt-6-sol / xhigh, high, high | heavy | 5h ~30%, 7d ~78% |
 | 30 Sep 15:15 | T0024 sound options pack, T0025 rule audit, T0026 style.md draft | codex-f2 | gpt-6-sol / high | medium each | |
+| 30 Sep 15:50 | T0027 DISPATCHER until 18:00; T0028 title render, T0029 scene 2 final pass, T0030 full film assembly (codex-vivek); app recordings to a Sonnet helper | claude-second / codex-vivek / claude-helper | opus high / gpt-6-sol / sonnet | heavy | 5h ~45%, 7d ~80% |
