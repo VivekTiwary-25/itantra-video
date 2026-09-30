@@ -1,0 +1,17 @@
+{
+  "source": "FOOTAGE:Video/normalpart2.mp4",
+  "fps": 30,
+  "grade": "film/scene1/grades.sh:GRADE_V1",
+  "pieces": [
+    { "src_start": 25.50, "src_end": 26.00, "speed": 1 },
+    { "src_start": 26.00, "src_end": 28.00, "speed": 4 },
+    { "src_start": 40.00, "src_end": 191.00, "speed": 38 },
+    { "src_start": 199.00, "src_end": 201.55, "speed": 6 },
+    { "src_start": 201.55, "src_end": 202.15, "speed": 1 }
+  ],
+  "skipped_source_ranges": [
+    { "src_start": 28.00, "src_end": 40.00, "reason": "umbrellas and walkers obstruct the near foreground" },
+    { "src_start": 191.00, "src_end": 199.00, "reason": "crossing pedestrians obstruct the garden path" }
+  ],
+  "total_output_length": 5.9987
+}
