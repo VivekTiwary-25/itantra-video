@@ -39,28 +39,32 @@ RELAY_SHAPE = {
     'text_in': (3.00, 3.35),     # text fades in at the end of the line; fully visible 3.35-5.15 (1.8 s)
     'text_out': (5.15, 5.40),
     'undrain': (5.10, 5.60),     # colour returns
-    'whoosh_peak': 0.55,
+    'whoosh_peak': 0.65,
 }
 
 # Freeze time F is in source-clip seconds. Phone position, callout path and text are in 1920x1080 frame pixels
 # at the freeze frame. `side` = which way the flat part of the line runs. `island` = [cx, cy, rx, ry] of the soft area
 # that keeps its colour during the drain (kept tight so the red/pink shirts in relay_2/3 stay grey: red is for SOS).
+# `dive_to` = where the person is when the clip fades up (the sonar point's flare lands there).
 RELAYS = {
     'relay_1': {
         'point': 'R1', 'who': 'Vaishnavi', 'clip': 'Video/normalpart5.mp4', 'F': 3.0,
         'phone': [1022, 705], 'glow_r': 80, 'island': [1022, 705, 64, 64],
+        'dive_to': [1000, 612],
         'path': [[1052, 688], [1212, 440], [1302, 440]], 'side': 'right',
         'text': ['Her phone passes the message on.', 'She just keeps walking.'],
     },
     'relay_2': {
         'point': 'R2', 'who': 'Utkarsh', 'clip': 'Video/normalpart4.mp4', 'F': 2.2,
         'phone': [936, 498], 'glow_r': 78, 'island': [938, 492, 46, 46],
+        'dive_to': [936, 498],
         'path': [[912, 486], [806, 352], [716, 352]], 'side': 'left',
         'text': ['His phone relays it in the background.', 'His call carries on.'],
     },
     'relay_3': {
         'point': 'R3', 'who': 'Thrisha', 'clip': 'Video/normalpart3.mp4', 'F': 6.5,
         'phone': [672, 828], 'glow_r': 72, 'island': [668, 842, 40, 36],
+        'dive_to': [110, 760],
         'path': [[652, 810], [548, 648], [458, 648]], 'side': 'left',
         'text': ['Her phone hands it forward.', 'She keeps going.'],
     },

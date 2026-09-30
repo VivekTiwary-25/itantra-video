@@ -90,7 +90,7 @@
   const gr = R.glow_r;
   Object.assign(glow.style, { left: (R.phone[0] - gr) + 'px', top: (R.phone[1] - gr) + 'px', width: 2 * gr + 'px', height: 2 * gr + 'px' });
   document.getElementById('push').style.transformOrigin = `${R.phone[0]}px ${R.phone[1]}px`;
-  document.getElementById('dive').style.transformOrigin = '960px 540px';
+  document.getElementById('dive').style.transformOrigin = `${R.dive_to[0]}px ${R.dive_to[1]}px`;
   function placeShade() {
     const w = txt.offsetWidth, h = txt.offsetHeight;
     const cx = R.side === 'right' ? tx0 + w / 2 : tx0 - w / 2;
@@ -104,7 +104,9 @@
     const fS = U.span(t, S.dive[0], S.dive[1]);
     const layerA = 1 - E.sine(U.span(t, 0.62, 0.86));
     sonarL.style.opacity = layerA.toFixed(3);
-    const q = ov.screen(CFG.focus);
+    // the point's flare slides onto the phone as the clip comes up, so the sonar point becomes the phone
+    const q0 = ov.screen(CFG.focus), m = E.inOut(U.span(t, 0.5, 0.86));
+    const q = { x: U.lerp(q0.x, R.dive_to[0], m), y: U.lerp(q0.y, R.dive_to[1], m) };
     const fa = t < 0.72 ? E.in(U.span(t, 0.38, 0.72)) : 1 - E.sine(U.span(t, 0.72, 1.08));
     flare.style.opacity = (0.95 * fa).toFixed(3);
     const fsz = 0.15 + 2.6 * E.in(U.span(t, 0.38, 0.95));
