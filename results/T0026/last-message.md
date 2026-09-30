@@ -1,0 +1,1 @@
+T0026 is done. I wrote the source-linked style draft at [style.md](<REPO>/results/T0026/style.md) and the required [REPORT.md](<REPO>/results/T0026/REPORT.md). The draft flags scene differences and marks title-card and caption values that are not yet built as unset or proposed.
