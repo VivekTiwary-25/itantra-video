@@ -1,0 +1,1331 @@
+{
+  "method": "Absolute normalized waveform cross-correlation of 300-3400 Hz filtered mono audio, 2 s clean windows every 0.5 s searched across full camera audio; peaks compared with all lags more than 50 ms away.",
+  "clips": [
+    {
+      "clip": "normalpart6",
+      "video": "FOOTAGE:Video/normalpart6.mp4",
+      "clean_audio": "FOOTAGE:Audio/Normalpart6.mp3",
+      "video_duration_s": 12.646678,
+      "clean_duration_s": 12.00965,
+      "window_length_s": 2,
+      "step_s": 0.5,
+      "bandpass_hz": [
+        300,
+        3400
+      ],
+      "sample_rate_hz": 4000,
+      "peak_exclusion_ms": 50,
+      "threshold_ratio": 2,
+      "window_count": 20,
+      "confident_window_count": 10,
+      "confirmed_offset_s": -0.3705,
+      "offset_min_s": -0.37525,
+      "offset_max_s": -0.36925,
+      "offset_spread_ms": 6,
+      "offset_mad_ms": 0.25,
+      "windows": [
+        {
+          "clean_window_s": [
+            0,
+            2
+          ],
+          "video_window_s": [
+            0.84325,
+            2.84325
+          ],
+          "offset_s": 0.84325,
+          "peak": 0.12719,
+          "next_peak": 0.10442,
+          "peak_ratio": 1.218,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            0.5,
+            2.5
+          ],
+          "video_window_s": [
+            0.1295,
+            2.1295
+          ],
+          "offset_s": -0.3705,
+          "peak": 0.5561,
+          "next_peak": 0.14399,
+          "peak_ratio": 3.862,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            1,
+            3
+          ],
+          "video_window_s": [
+            0.6295,
+            2.6295
+          ],
+          "offset_s": -0.3705,
+          "peak": 0.60475,
+          "next_peak": 0.12318,
+          "peak_ratio": 4.909,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            1.5,
+            3.5
+          ],
+          "video_window_s": [
+            1.1295,
+            3.1295
+          ],
+          "offset_s": -0.3705,
+          "peak": 0.61827,
+          "next_peak": 0.13109,
+          "peak_ratio": 4.716,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            2,
+            4
+          ],
+          "video_window_s": [
+            1.6295,
+            3.6295
+          ],
+          "offset_s": -0.3705,
+          "peak": 0.48991,
+          "next_peak": 0.1427,
+          "peak_ratio": 3.433,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            2.5,
+            4.5
+          ],
+          "video_window_s": [
+            2.12425,
+            4.12425
+          ],
+          "offset_s": -0.37575,
+          "peak": 0.44623,
+          "next_peak": 0.24455,
+          "peak_ratio": 1.825,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            3,
+            5
+          ],
+          "video_window_s": [
+            2.61625,
+            4.61625
+          ],
+          "offset_s": -0.38375,
+          "peak": 0.13754,
+          "next_peak": 0.08016,
+          "peak_ratio": 1.716,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            3.5,
+            5.5
+          ],
+          "video_window_s": [
+            3.1175,
+            5.1175
+          ],
+          "offset_s": -0.3825,
+          "peak": 0.15798,
+          "next_peak": 0.10439,
+          "peak_ratio": 1.513,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            4,
+            6
+          ],
+          "video_window_s": [
+            3.6175,
+            5.6175
+          ],
+          "offset_s": -0.3825,
+          "peak": 0.1513,
+          "next_peak": 0.118,
+          "peak_ratio": 1.282,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            4.5,
+            6.5
+          ],
+          "video_window_s": [
+            4.1175,
+            6.1175
+          ],
+          "offset_s": -0.3825,
+          "peak": 0.10584,
+          "next_peak": 0.10388,
+          "peak_ratio": 1.019,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            5,
+            7
+          ],
+          "video_window_s": [
+            4.65,
+            6.65
+          ],
+          "offset_s": -0.35,
+          "peak": 0.09305,
+          "next_peak": 0.0914,
+          "peak_ratio": 1.018,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            5.5,
+            7.5
+          ],
+          "video_window_s": [
+            0.4175,
+            2.4175
+          ],
+          "offset_s": -5.0825,
+          "peak": 0.11086,
+          "next_peak": 0.08496,
+          "peak_ratio": 1.305,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            6,
+            8
+          ],
+          "video_window_s": [
+            5.61875,
+            7.61875
+          ],
+          "offset_s": -0.38125,
+          "peak": 0.09773,
+          "next_peak": 0.09355,
+          "peak_ratio": 1.045,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            6.5,
+            8.5
+          ],
+          "video_window_s": [
+            6.11875,
+            8.11875
+          ],
+          "offset_s": -0.38125,
+          "peak": 0.1078,
+          "next_peak": 0.07714,
+          "peak_ratio": 1.398,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            7,
+            9
+          ],
+          "video_window_s": [
+            6.62475,
+            8.62475
+          ],
+          "offset_s": -0.37525,
+          "peak": 0.58815,
+          "next_peak": 0.2051,
+          "peak_ratio": 2.868,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            7.5,
+            9.5
+          ],
+          "video_window_s": [
+            7.13075,
+            9.13075
+          ],
+          "offset_s": -0.36925,
+          "peak": 0.64504,
+          "next_peak": 0.10452,
+          "peak_ratio": 6.172,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            8,
+            10
+          ],
+          "video_window_s": [
+            7.62975,
+            9.62975
+          ],
+          "offset_s": -0.37025,
+          "peak": 0.63052,
+          "next_peak": 0.09387,
+          "peak_ratio": 6.717,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            8.5,
+            10.5
+          ],
+          "video_window_s": [
+            8.12475,
+            10.12475
+          ],
+          "offset_s": -0.37525,
+          "peak": 0.60799,
+          "next_peak": 0.09952,
+          "peak_ratio": 6.109,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            9,
+            11
+          ],
+          "video_window_s": [
+            8.62975,
+            10.62975
+          ],
+          "offset_s": -0.37025,
+          "peak": 0.58341,
+          "next_peak": 0.13095,
+          "peak_ratio": 4.455,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            9.5,
+            11.5
+          ],
+          "video_window_s": [
+            9.12475,
+            11.12475
+          ],
+          "offset_s": -0.37525,
+          "peak": 0.6933,
+          "next_peak": 0.18117,
+          "peak_ratio": 3.827,
+          "confident": true
+        }
+      ],
+      "phrases": [
+        {
+          "text": "Oh, it's too hot here.",
+          "clean_start_s": 0,
+          "clean_end_s": 2.72,
+          "video_start_s": -0.3705,
+          "video_end_s": 2.3495,
+          "fully_inside_video": false
+        },
+        {
+          "text": "I'm in the garden.",
+          "clean_start_s": 8.6,
+          "clean_end_s": 9.4,
+          "video_start_s": 8.2295,
+          "video_end_s": 9.0295,
+          "fully_inside_video": true
+        },
+        {
+          "text": "I'll come to you",
+          "clean_start_s": 9.52,
+          "clean_end_s": 10.64,
+          "video_start_s": 9.1495,
+          "video_end_s": 10.2695,
+          "fully_inside_video": true
+        }
+      ],
+      "words": [
+        {
+          "word": "Oh,",
+          "clean_start_s": 0,
+          "clean_end_s": 0.38,
+          "video_start_s": -0.3705,
+          "video_end_s": 0.0095,
+          "fully_inside_video": false
+        },
+        {
+          "word": "it's",
+          "clean_start_s": 1.8,
+          "clean_end_s": 1.92,
+          "video_start_s": 1.4295,
+          "video_end_s": 1.5495,
+          "fully_inside_video": true
+        },
+        {
+          "word": "too",
+          "clean_start_s": 1.92,
+          "clean_end_s": 2.04,
+          "video_start_s": 1.5495,
+          "video_end_s": 1.6695,
+          "fully_inside_video": true
+        },
+        {
+          "word": "hot",
+          "clean_start_s": 2.04,
+          "clean_end_s": 2.24,
+          "video_start_s": 1.6695,
+          "video_end_s": 1.8695,
+          "fully_inside_video": true
+        },
+        {
+          "word": "here.",
+          "clean_start_s": 2.24,
+          "clean_end_s": 2.72,
+          "video_start_s": 1.8695,
+          "video_end_s": 2.3495,
+          "fully_inside_video": true
+        },
+        {
+          "word": "I'm",
+          "clean_start_s": 8.6,
+          "clean_end_s": 9,
+          "video_start_s": 8.2295,
+          "video_end_s": 8.6295,
+          "fully_inside_video": true
+        },
+        {
+          "word": "in",
+          "clean_start_s": 9,
+          "clean_end_s": 9.1,
+          "video_start_s": 8.6295,
+          "video_end_s": 8.7295,
+          "fully_inside_video": true
+        },
+        {
+          "word": "the",
+          "clean_start_s": 9.1,
+          "clean_end_s": 9.22,
+          "video_start_s": 8.7295,
+          "video_end_s": 8.8495,
+          "fully_inside_video": true
+        },
+        {
+          "word": "garden.",
+          "clean_start_s": 9.22,
+          "clean_end_s": 9.4,
+          "video_start_s": 8.8495,
+          "video_end_s": 9.0295,
+          "fully_inside_video": true
+        },
+        {
+          "word": "I'll",
+          "clean_start_s": 9.52,
+          "clean_end_s": 9.74,
+          "video_start_s": 9.1495,
+          "video_end_s": 9.3695,
+          "fully_inside_video": true
+        },
+        {
+          "word": "come",
+          "clean_start_s": 9.74,
+          "clean_end_s": 9.94,
+          "video_start_s": 9.3695,
+          "video_end_s": 9.5695,
+          "fully_inside_video": true
+        },
+        {
+          "word": "to",
+          "clean_start_s": 9.94,
+          "clean_end_s": 10.08,
+          "video_start_s": 9.5695,
+          "video_end_s": 9.7095,
+          "fully_inside_video": true
+        },
+        {
+          "word": "you",
+          "clean_start_s": 10.08,
+          "clean_end_s": 10.64,
+          "video_start_s": 9.7095,
+          "video_end_s": 10.2695,
+          "fully_inside_video": true
+        }
+      ]
+    },
+    {
+      "clip": "sospart1",
+      "video": "FOOTAGE:Video/sospart1.mp4",
+      "clean_audio": "FOOTAGE:Audio/sospart1.mp3",
+      "video_duration_s": 10.640233,
+      "clean_duration_s": 5.495125,
+      "window_length_s": 2,
+      "step_s": 0.5,
+      "bandpass_hz": [
+        300,
+        3400
+      ],
+      "sample_rate_hz": 4000,
+      "peak_exclusion_ms": 50,
+      "threshold_ratio": 2,
+      "window_count": 7,
+      "confident_window_count": 7,
+      "confirmed_offset_s": 4.271,
+      "offset_min_s": 4.271,
+      "offset_max_s": 4.27125,
+      "offset_spread_ms": 0.25,
+      "offset_mad_ms": 0,
+      "windows": [
+        {
+          "clean_window_s": [
+            0,
+            2
+          ],
+          "video_window_s": [
+            4.27125,
+            6.27125
+          ],
+          "offset_s": 4.27125,
+          "peak": 0.61578,
+          "next_peak": 0.11894,
+          "peak_ratio": 5.177,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            0.5,
+            2.5
+          ],
+          "video_window_s": [
+            4.77125,
+            6.77125
+          ],
+          "offset_s": 4.27125,
+          "peak": 0.7083,
+          "next_peak": 0.12898,
+          "peak_ratio": 5.492,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            1,
+            3
+          ],
+          "video_window_s": [
+            5.27125,
+            7.27125
+          ],
+          "offset_s": 4.27125,
+          "peak": 0.70704,
+          "next_peak": 0.14866,
+          "peak_ratio": 4.756,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            1.5,
+            3.5
+          ],
+          "video_window_s": [
+            5.771,
+            7.771
+          ],
+          "offset_s": 4.271,
+          "peak": 0.72208,
+          "next_peak": 0.1394,
+          "peak_ratio": 5.18,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            2,
+            4
+          ],
+          "video_window_s": [
+            6.271,
+            8.271
+          ],
+          "offset_s": 4.271,
+          "peak": 0.74513,
+          "next_peak": 0.14487,
+          "peak_ratio": 5.144,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            2.5,
+            4.5
+          ],
+          "video_window_s": [
+            6.771,
+            8.771
+          ],
+          "offset_s": 4.271,
+          "peak": 0.82774,
+          "next_peak": 0.13649,
+          "peak_ratio": 6.064,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            3,
+            5
+          ],
+          "video_window_s": [
+            7.271,
+            9.271
+          ],
+          "offset_s": 4.271,
+          "peak": 0.7832,
+          "next_peak": 0.15751,
+          "peak_ratio": 4.972,
+          "confident": true
+        }
+      ],
+      "phrases": [
+        {
+          "text": "I'm lost somewhere near the construction site.",
+          "clean_start_s": 0,
+          "clean_end_s": 2.6,
+          "video_start_s": 4.271,
+          "video_end_s": 6.871,
+          "fully_inside_video": true
+        },
+        {
+          "text": "Please reach me out.",
+          "clean_start_s": 2.92,
+          "clean_end_s": 3.66,
+          "video_start_s": 7.191,
+          "video_end_s": 7.931,
+          "fully_inside_video": true
+        },
+        {
+          "text": "Help me anyone.",
+          "clean_start_s": 4.1,
+          "clean_end_s": 4.72,
+          "video_start_s": 8.371,
+          "video_end_s": 8.991,
+          "fully_inside_video": true
+        }
+      ],
+      "words": [
+        {
+          "word": "I'm",
+          "clean_start_s": 0,
+          "clean_end_s": 0.24,
+          "video_start_s": 4.271,
+          "video_end_s": 4.511,
+          "fully_inside_video": true
+        },
+        {
+          "word": "lost",
+          "clean_start_s": 0.24,
+          "clean_end_s": 0.48,
+          "video_start_s": 4.511,
+          "video_end_s": 4.751,
+          "fully_inside_video": true
+        },
+        {
+          "word": "somewhere",
+          "clean_start_s": 0.48,
+          "clean_end_s": 0.96,
+          "video_start_s": 4.751,
+          "video_end_s": 5.231,
+          "fully_inside_video": true
+        },
+        {
+          "word": "near",
+          "clean_start_s": 0.96,
+          "clean_end_s": 1.44,
+          "video_start_s": 5.231,
+          "video_end_s": 5.711,
+          "fully_inside_video": true
+        },
+        {
+          "word": "the",
+          "clean_start_s": 1.44,
+          "clean_end_s": 1.76,
+          "video_start_s": 5.711,
+          "video_end_s": 6.031,
+          "fully_inside_video": true
+        },
+        {
+          "word": "construction",
+          "clean_start_s": 1.76,
+          "clean_end_s": 2.18,
+          "video_start_s": 6.031,
+          "video_end_s": 6.451,
+          "fully_inside_video": true
+        },
+        {
+          "word": "site.",
+          "clean_start_s": 2.18,
+          "clean_end_s": 2.6,
+          "video_start_s": 6.451,
+          "video_end_s": 6.871,
+          "fully_inside_video": true
+        },
+        {
+          "word": "Please",
+          "clean_start_s": 2.92,
+          "clean_end_s": 3,
+          "video_start_s": 7.191,
+          "video_end_s": 7.271,
+          "fully_inside_video": true
+        },
+        {
+          "word": "reach",
+          "clean_start_s": 3,
+          "clean_end_s": 3.22,
+          "video_start_s": 7.271,
+          "video_end_s": 7.491,
+          "fully_inside_video": true
+        },
+        {
+          "word": "me",
+          "clean_start_s": 3.22,
+          "clean_end_s": 3.4,
+          "video_start_s": 7.491,
+          "video_end_s": 7.671,
+          "fully_inside_video": true
+        },
+        {
+          "word": "out.",
+          "clean_start_s": 3.4,
+          "clean_end_s": 3.66,
+          "video_start_s": 7.671,
+          "video_end_s": 7.931,
+          "fully_inside_video": true
+        },
+        {
+          "word": "Help",
+          "clean_start_s": 4.1,
+          "clean_end_s": 4.22,
+          "video_start_s": 8.371,
+          "video_end_s": 8.491,
+          "fully_inside_video": true
+        },
+        {
+          "word": "me",
+          "clean_start_s": 4.22,
+          "clean_end_s": 4.46,
+          "video_start_s": 8.491,
+          "video_end_s": 8.731,
+          "fully_inside_video": true
+        },
+        {
+          "word": "anyone.",
+          "clean_start_s": 4.46,
+          "clean_end_s": 4.72,
+          "video_start_s": 8.731,
+          "video_end_s": 8.991,
+          "fully_inside_video": true
+        }
+      ]
+    },
+    {
+      "clip": "sospart2",
+      "video": "FOOTAGE:Video/sospart2.mp4",
+      "clean_audio": "FOOTAGE:Audio/sospart2.mp3",
+      "video_duration_s": 10.700533,
+      "clean_duration_s": 16.62535,
+      "window_length_s": 2,
+      "step_s": 0.5,
+      "bandpass_hz": [
+        300,
+        3400
+      ],
+      "sample_rate_hz": 4000,
+      "peak_exclusion_ms": 50,
+      "threshold_ratio": 2,
+      "window_count": 30,
+      "confident_window_count": 6,
+      "confirmed_offset_s": 0.066,
+      "offset_min_s": 0.066,
+      "offset_max_s": 0.066,
+      "offset_spread_ms": 0,
+      "offset_mad_ms": 0,
+      "windows": [
+        {
+          "clean_window_s": [
+            0,
+            2
+          ],
+          "video_window_s": [
+            0.0635,
+            2.0635
+          ],
+          "offset_s": 0.0635,
+          "peak": 0.12708,
+          "next_peak": 0.08791,
+          "peak_ratio": 1.446,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            0.5,
+            2.5
+          ],
+          "video_window_s": [
+            0.56475,
+            2.56475
+          ],
+          "offset_s": 0.06475,
+          "peak": 0.15821,
+          "next_peak": 0.08655,
+          "peak_ratio": 1.828,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            1,
+            3
+          ],
+          "video_window_s": [
+            1.06475,
+            3.06475
+          ],
+          "offset_s": 0.06475,
+          "peak": 0.14839,
+          "next_peak": 0.08356,
+          "peak_ratio": 1.776,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            1.5,
+            3.5
+          ],
+          "video_window_s": [
+            1.56475,
+            3.56475
+          ],
+          "offset_s": 0.06475,
+          "peak": 0.14087,
+          "next_peak": 0.08708,
+          "peak_ratio": 1.618,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            2,
+            4
+          ],
+          "video_window_s": [
+            2.066,
+            4.066
+          ],
+          "offset_s": 0.066,
+          "peak": 0.1246,
+          "next_peak": 0.09576,
+          "peak_ratio": 1.301,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            2.5,
+            4.5
+          ],
+          "video_window_s": [
+            0.2265,
+            2.2265
+          ],
+          "offset_s": -2.2735,
+          "peak": 0.07845,
+          "next_peak": 0.07038,
+          "peak_ratio": 1.115,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            3,
+            5
+          ],
+          "video_window_s": [
+            6.90725,
+            8.90725
+          ],
+          "offset_s": 3.90725,
+          "peak": 0.08029,
+          "next_peak": 0.07537,
+          "peak_ratio": 1.065,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            3.5,
+            5.5
+          ],
+          "video_window_s": [
+            6.6555,
+            8.6555
+          ],
+          "offset_s": 3.1555,
+          "peak": 0.08464,
+          "next_peak": 0.07421,
+          "peak_ratio": 1.141,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            4,
+            6
+          ],
+          "video_window_s": [
+            8.17125,
+            10.17125
+          ],
+          "offset_s": 4.17125,
+          "peak": 0.07577,
+          "next_peak": 0.07526,
+          "peak_ratio": 1.007,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            4.5,
+            6.5
+          ],
+          "video_window_s": [
+            4.57,
+            6.57
+          ],
+          "offset_s": 0.07,
+          "peak": 0.09475,
+          "next_peak": 0.07983,
+          "peak_ratio": 1.187,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            5,
+            7
+          ],
+          "video_window_s": [
+            5.07,
+            7.07
+          ],
+          "offset_s": 0.07,
+          "peak": 0.09398,
+          "next_peak": 0.08915,
+          "peak_ratio": 1.054,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            5.5,
+            7.5
+          ],
+          "video_window_s": [
+            5.52875,
+            7.52875
+          ],
+          "offset_s": 0.02875,
+          "peak": 0.11705,
+          "next_peak": 0.08553,
+          "peak_ratio": 1.369,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            6,
+            8
+          ],
+          "video_window_s": [
+            6.066,
+            8.066
+          ],
+          "offset_s": 0.066,
+          "peak": 0.47871,
+          "next_peak": 0.16492,
+          "peak_ratio": 2.903,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            6.5,
+            8.5
+          ],
+          "video_window_s": [
+            6.566,
+            8.566
+          ],
+          "offset_s": 0.066,
+          "peak": 0.51179,
+          "next_peak": 0.1625,
+          "peak_ratio": 3.149,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            7,
+            9
+          ],
+          "video_window_s": [
+            7.066,
+            9.066
+          ],
+          "offset_s": 0.066,
+          "peak": 0.49205,
+          "next_peak": 0.12131,
+          "peak_ratio": 4.056,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            7.5,
+            9.5
+          ],
+          "video_window_s": [
+            7.566,
+            9.566
+          ],
+          "offset_s": 0.066,
+          "peak": 0.5168,
+          "next_peak": 0.10916,
+          "peak_ratio": 4.734,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            8,
+            10
+          ],
+          "video_window_s": [
+            8.066,
+            10.066
+          ],
+          "offset_s": 0.066,
+          "peak": 0.48834,
+          "next_peak": 0.10573,
+          "peak_ratio": 4.619,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            8.5,
+            10.5
+          ],
+          "video_window_s": [
+            8.566,
+            10.566
+          ],
+          "offset_s": 0.066,
+          "peak": 0.47512,
+          "next_peak": 0.07815,
+          "peak_ratio": 6.08,
+          "confident": true
+        },
+        {
+          "clean_window_s": [
+            9,
+            11
+          ],
+          "video_window_s": [
+            8.55025,
+            10.55025
+          ],
+          "offset_s": -0.44975,
+          "peak": 0.09281,
+          "next_peak": 0.07599,
+          "peak_ratio": 1.221,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            9.5,
+            11.5
+          ],
+          "video_window_s": [
+            8.6765,
+            10.6765
+          ],
+          "offset_s": -0.8235,
+          "peak": 0.11287,
+          "next_peak": 0.11154,
+          "peak_ratio": 1.012,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            10,
+            12
+          ],
+          "video_window_s": [
+            7.10475,
+            9.10475
+          ],
+          "offset_s": -2.89525,
+          "peak": 0.12099,
+          "next_peak": 0.09896,
+          "peak_ratio": 1.223,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            10.5,
+            12.5
+          ],
+          "video_window_s": [
+            7.60475,
+            9.60475
+          ],
+          "offset_s": -2.89525,
+          "peak": 0.09432,
+          "next_peak": 0.08979,
+          "peak_ratio": 1.05,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            11,
+            13
+          ],
+          "video_window_s": [
+            3.8475,
+            5.8475
+          ],
+          "offset_s": -7.1525,
+          "peak": 0.07988,
+          "next_peak": 0.07819,
+          "peak_ratio": 1.022,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            11.5,
+            13.5
+          ],
+          "video_window_s": [
+            8.6035,
+            10.6035
+          ],
+          "offset_s": -2.8965,
+          "peak": 0.08199,
+          "next_peak": 0.0726,
+          "peak_ratio": 1.129,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            12,
+            14
+          ],
+          "video_window_s": [
+            7.117,
+            9.117
+          ],
+          "offset_s": -4.883,
+          "peak": 0.07421,
+          "next_peak": 0.07143,
+          "peak_ratio": 1.039,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            12.5,
+            14.5
+          ],
+          "video_window_s": [
+            8.136,
+            10.136
+          ],
+          "offset_s": -4.364,
+          "peak": 0.08122,
+          "next_peak": 0.07689,
+          "peak_ratio": 1.056,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            13,
+            15
+          ],
+          "video_window_s": [
+            7.46475,
+            9.46475
+          ],
+          "offset_s": -5.53525,
+          "peak": 0.09145,
+          "next_peak": 0.07649,
+          "peak_ratio": 1.196,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            13.5,
+            15.5
+          ],
+          "video_window_s": [
+            6.34575,
+            8.34575
+          ],
+          "offset_s": -7.15425,
+          "peak": 0.12949,
+          "next_peak": 0.10574,
+          "peak_ratio": 1.225,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            14,
+            16
+          ],
+          "video_window_s": [
+            8.2995,
+            10.2995
+          ],
+          "offset_s": -5.7005,
+          "peak": 0.11352,
+          "next_peak": 0.11219,
+          "peak_ratio": 1.012,
+          "confident": false
+        },
+        {
+          "clean_window_s": [
+            14.5,
+            16.5
+          ],
+          "video_window_s": [
+            8.6715,
+            10.6715
+          ],
+          "offset_s": -5.8285,
+          "peak": 0.13215,
+          "next_peak": 0.09226,
+          "peak_ratio": 1.432,
+          "confident": false
+        }
+      ],
+      "phrases": [
+        {
+          "text": "wait",
+          "clean_start_s": 7.54,
+          "clean_end_s": 8.02,
+          "video_start_s": 7.606,
+          "video_end_s": 8.086,
+          "fully_inside_video": true
+        },
+        {
+          "text": "I'm in the chemistry lab",
+          "clean_start_s": 8.02,
+          "clean_end_s": 9.1,
+          "video_start_s": 8.086,
+          "video_end_s": 9.166,
+          "fully_inside_video": true
+        },
+        {
+          "text": "I'll come get you",
+          "clean_start_s": 9.1,
+          "clean_end_s": 9.82,
+          "video_start_s": 9.166,
+          "video_end_s": 9.886,
+          "fully_inside_video": true
+        },
+        {
+          "text": "wait",
+          "clean_start_s": 9.82,
+          "clean_end_s": 10.34,
+          "video_start_s": 9.886,
+          "video_end_s": 10.406,
+          "fully_inside_video": true
+        }
+      ],
+      "words": [
+        {
+          "word": "wait",
+          "clean_start_s": 7.54,
+          "clean_end_s": 8.02,
+          "video_start_s": 7.606,
+          "video_end_s": 8.086,
+          "fully_inside_video": true
+        },
+        {
+          "word": "I'm",
+          "clean_start_s": 8.02,
+          "clean_end_s": 8.3,
+          "video_start_s": 8.086,
+          "video_end_s": 8.366,
+          "fully_inside_video": true
+        },
+        {
+          "word": "in",
+          "clean_start_s": 8.3,
+          "clean_end_s": 8.4,
+          "video_start_s": 8.366,
+          "video_end_s": 8.466,
+          "fully_inside_video": true
+        },
+        {
+          "word": "the",
+          "clean_start_s": 8.4,
+          "clean_end_s": 8.54,
+          "video_start_s": 8.466,
+          "video_end_s": 8.606,
+          "fully_inside_video": true
+        },
+        {
+          "word": "chemistry",
+          "clean_start_s": 8.54,
+          "clean_end_s": 8.86,
+          "video_start_s": 8.606,
+          "video_end_s": 8.926,
+          "fully_inside_video": true
+        },
+        {
+          "word": "lab",
+          "clean_start_s": 8.86,
+          "clean_end_s": 9.1,
+          "video_start_s": 8.926,
+          "video_end_s": 9.166,
+          "fully_inside_video": true
+        },
+        {
+          "word": "I'll",
+          "clean_start_s": 9.1,
+          "clean_end_s": 9.34,
+          "video_start_s": 9.166,
+          "video_end_s": 9.406,
+          "fully_inside_video": true
+        },
+        {
+          "word": "come",
+          "clean_start_s": 9.34,
+          "clean_end_s": 9.48,
+          "video_start_s": 9.406,
+          "video_end_s": 9.546,
+          "fully_inside_video": true
+        },
+        {
+          "word": "get",
+          "clean_start_s": 9.48,
+          "clean_end_s": 9.66,
+          "video_start_s": 9.546,
+          "video_end_s": 9.726,
+          "fully_inside_video": true
+        },
+        {
+          "word": "you",
+          "clean_start_s": 9.66,
+          "clean_end_s": 9.82,
+          "video_start_s": 9.726,
+          "video_end_s": 9.886,
+          "fully_inside_video": true
+        },
+        {
+          "word": "wait",
+          "clean_start_s": 9.82,
+          "clean_end_s": 10.34,
+          "video_start_s": 9.886,
+          "video_end_s": 10.406,
+          "fully_inside_video": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+Completed T0020. The [sync audit](/<REPO>/results/T0020/sync_audit.md) and [machine-readable results](/<REPO>/results/T0020/sync_audit.json) include the window measurements, confirmed offsets, and phrase times. The required [report](/<REPO>/results/T0020/REPORT.md) records the outcome.
+
+**TLDR:** The offsets are −0.37050 s for normalpart6, +4.27100 s for sospart1, and +0.06600 s for sospart2. By the supplied word timing, 0.37050 s of Yash’s opening “Oh” falls before video zero.
