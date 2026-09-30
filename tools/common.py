@@ -106,3 +106,51 @@ def worker_path(cfg: dict, current: str) -> str:
             seen.add(key)
             out.append(x)
     return os.pathsep.join(out)
+
+
+# ---------------------------------------------------------------- sync state (what this PC can and cannot do with GitHub)
+SYNC_FILE = REPO_ROOT / "local" / "sync-state.json"
+
+
+def update_sync_state(**fields) -> None:
+    st = read_json(SYNC_FILE, {}) or {}
+    st.update(fields)
+    try:
+        write_json(SYNC_FILE, st)
+    except OSError:
+        pass
+
+
+def _t(s):
+    try:
+        return dt.datetime.fromisoformat(str(s).replace("Z", "+00:00"))
+    except (ValueError, TypeError):
+        return None
+
+
+def sync_warnings(now=None, pull_stale_min: int = 3, push_stale_min: int = 10) -> tuple[bool, list[str]]:
+    """What this PC's own listener knows about its connection to GitHub, from local/sync-state.json.
+    Returns (pull_is_stale, warning lines). pull_is_stale means: this PC's copy of the heartbeats is out of date, so
+    'OFFLINE' for other machines cannot be trusted (show UNKNOWN). Nothing is reported if the file does not exist yet."""
+    st = read_json(SYNC_FILE)
+    if not st:
+        return False, []
+    now = now or dt.datetime.now(dt.timezone.utc)
+    msgs: list[str] = []
+    seen = _t(st.get("listener_seen"))
+    listener_alive = bool(seen and (now - seen).total_seconds() < 15 * 60)
+    if not listener_alive:
+        return False, ["⚠ The listener on this PC is not running, so this view is not being refreshed."]
+    busy = st.get("listener_status") == "busy"  # during a long task the listener deliberately does not pull
+    pull = _t(st.get("last_pull_ok"))
+    pull_stale = bool(pull and not busy and (now - pull).total_seconds() > pull_stale_min * 60)
+    if pull_stale:
+        msgs.append(f"⚠ This PC has not synced with GitHub for {(now - pull).total_seconds() / 60:.0f} min. "
+                    "Machines shown as UNKNOWN may actually be online.")
+    push = _t(st.get("last_push_ok"))
+    waiting = st.get("unpushed") or 0
+    if waiting and (not push or (now - push).total_seconds() > push_stale_min * 60):
+        ago = f"{(now - push).total_seconds() / 60:.0f} min ago" if push else "never today"
+        msgs.append(f"⚠ This PC cannot push to GitHub ({waiting} commit(s) waiting, last push OK {ago}). "
+                    "Other machines see this PC as OFFLINE.")
+    return pull_stale, msgs

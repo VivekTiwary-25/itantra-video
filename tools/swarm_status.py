@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import REPO_ROOT, now_iso, read_json, write_json  # noqa: E402
+from common import REPO_ROOT, now_iso, read_json, sync_warnings, write_json  # noqa: E402
 
 ONLINE_MINUTES = 10
 WIDTH = 55
@@ -109,13 +109,14 @@ def main() -> None:
         online, detail = agent_state(worker, info, now, usage)
         rows.append((info["machine"], worker, info.get("display_model", "?"), online, detail))
 
+    pull_stale, sync_msgs = sync_warnings(now)
     out = [heavy,
            "  iTANTRA CREATIVE SWARM · Team chmod 777",
            "  ▸ activating agent swarm...",
            heavy,
            f"  {'NODE':<{NODE_W}}{'AGENT':<{AGENT_W}}{'MODEL':<{MODEL_W}}STATUS"]
     for node, agent, model, online, detail in rows:
-        status = ("● ONLINE  " if online else "○ OFFLINE ") + detail
+        status = ("● ONLINE  " if online else ("? UNKNOWN " if pull_stale else "○ OFFLINE ")) + detail
         out.append(f"  {node:<{NODE_W}}{agent:<{AGENT_W}}{model:<{MODEL_W}}{status}")
     out.append(light)
 
@@ -138,8 +139,9 @@ def main() -> None:
         tail = f"0/{total} agents online. Swarm offline."
     else:
         down = ", ".join(r[1] for r in rows if not r[3])
-        tail = f"{n_on}/{total} agents online. Offline: {down}."
+        tail = f"{n_on}/{total} agents online. " + (f"Unknown: {down}." if pull_stale else f"Offline: {down}.")
     out.append("  " + tail)
+    out += ["  " + m for m in sync_msgs]
     print("\n".join(out))
 
 

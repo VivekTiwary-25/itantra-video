@@ -10,10 +10,12 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import REPO_ROOT, read_json  # noqa: E402
+from common import REPO_ROOT, read_json, sync_warnings  # noqa: E402
 
 
 def main() -> None:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # the warning symbol crashes old Windows code pages
     ap = argparse.ArgumentParser()
     ap.add_argument("--minutes", type=int, default=15)
     args = ap.parse_args()
@@ -36,5 +38,12 @@ def main() -> None:
         print(f"{m:<12} {state:<13} {age:>6.1f}m  {str(hb.get('current_task') or '-'):<8} {note}")
 
 
-if __name__ == "__main__":
+def main_with_warnings() -> None:
     main()
+    _, msgs = sync_warnings()
+    for m in msgs:
+        print(m)
+
+
+if __name__ == "__main__":
+    main_with_warnings()

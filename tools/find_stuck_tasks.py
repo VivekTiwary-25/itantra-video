@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import REPO_ROOT, read_json  # noqa: E402
+from common import REPO_ROOT, read_json, sync_warnings  # noqa: E402
 
 
 def parse_time(s):
@@ -46,12 +46,20 @@ def machine_health(machine: str, worker: str, minutes: int, now):
 
 
 def main() -> None:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # the warning symbol crashes old Windows code pages
     ap = argparse.ArgumentParser()
     ap.add_argument("--minutes", type=int, default=15)
     args = ap.parse_args()
     reg = read_json(REPO_ROOT / "machines" / "registry.json", {})
     workers = reg.get("workers", {})
     now = dt.datetime.now(dt.timezone.utc)
+    pull_stale, msgs = sync_warnings(now)
+    for m in msgs:
+        print(m)
+    if pull_stale:
+        print("Not judging stuck tasks: this PC's copy of the heartbeats is out of date, so a machine may only look silent.")
+        return
 
     health = {}
     for w, info in workers.items():
