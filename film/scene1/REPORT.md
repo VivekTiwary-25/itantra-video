@@ -1,100 +1,91 @@
 ---
 status: done
 ---
-# Scene 1 report (lead foreman, 30 Sept 2026)
+# Scene 1 report, v2 (lead foreman, 30 Sept 2026)
 
-Scene 1 is built, start to finish, up to the doorway into scene 2. It ends on the empty phone shape, as agreed.
+This version applies Vivek's review of v1. It still ends on the empty phone shape, which is the doorway into scene 2.
 
 ## Files on Vivek's PC (not in git)
-- `RENDERS:scene1/scene1_draft.mp4`: the watchable draft. 1080p, 30 fps, 58.0 s, voice at -16 LUFS.
-- `RENDERS:scene1/voice_before_after.mp3`: before/after of her voice, about 40 s. The order is: part 1 before, part 1 after, part 2 before, part 2 after. Both versions are set to the same loudness, so you're comparing clarity, not volume.
-- `RENDERS:scene1/grade_before_after.jpg`: the colour draft. The top row is part 1 (before | after) and the bottom row is part 2 (before | after).
-- `RENDERS:scene1/scene1_render_raw.mp4`: the HyperFrames render before I replaced its audio. Keep it only for debugging.
+- `RENDERS:scene1/scene1_draft_v2.mp4`: the new draft. 1080p, 30 fps, 56.5 s (1.5 s of pauses removed), voice at -16 LUFS.
+- `RENDERS:scene1/voice_before_after.mp3`: an updated sample, about 47 s. The order is: part 1 before, part 1 after, part 2 before, part 2 after. Both versions are set to the same loudness, so you're comparing clarity, not volume.
+- `RENDERS:scene1/grade_option_A.jpg`, `grade_option_B.jpg`, `grade_option_C.jpg`: three looks, each shown as before and after on the same two frames. **A is applied to the draft for now.**
+- `RENDERS:scene1/scene1_draft.mp4` is v1, kept for comparison. `grade_before_after.jpg` is v1's grade and has been replaced by the options above.
 
-## Which clips are which
-- **Part 1 = `FOOTAGE:Video/vachna part1.mp4` + `FOOTAGE:Audio/vachna part1.mp3`** (19.7 s). She greets, names the team and NIE, then reads the problem-statement title.
-- **Part 2 = `FOOTAGE:Video/vachna part2.mp4` + `FOOTAGE:Audio/vachna part2.mp3`** (37.1 s). She explains what it means in her own words.
-- **What the footage looks like.** Both are handheld, outdoors, in daylight, in front of the blue "NIE (N)" sign. There's a white building under construction behind her, with trees on the right. She stands centre-left, holding a phone. There's no HDR (8-bit bt709), and the two clips were already close in colour. Part 2 is a little tighter and about 3.5% brighter on the same wall and sign. A finger covers the lens for the first ~0.8 s of part 1, so the scene starts at 0.8 s.
+## Changes, point by point
+1. **Stronger noise removal (the AI denoiser now runs).** It's RNNoise, a neural speech denoiser built into ffmpeg (the "conjoined-burgers" general model), followed by a light FFT pass and a gentle gate between words.
+   - Part 1: background between words went from -32 dB (original) to -40 dB (v1) to **-73 dB** (v2). Voice-to-noise went from 17.7 to 25 to **52 dB**.
+   - Part 2: background between words went from -35 to -48 to **-66 dB**. Voice-to-noise went from 19.3 to 31 to **46 dB**.
+   - Her words aren't damaged: Whisper's confidence on the denoised audio stayed the same as the original (part 2: 0.908 vs 0.911).
+   - The gate stops short of dead silence between words, because fully silent gaps sound unnatural.
+   - This time it wasn't blocked, so no permission change was needed. The model file lives in `local/models/rnnoise/cb.rnnn` (from github.com/GregorR/rnnoise-models).
+2. **The pause at ~0:42 is cut** (cut 2 below). "…will again convert text into speech" now runs on without the gap.
+3. **Other pauses** are listed in the cuts table below. Every cut sits inside a measured silence and is hidden by a small punch-in.
+4. **The finger** is in shot from 1.2 to 1.9 s of the original, which is over "Hello dear viewers", so it couldn't be trimmed without cutting her first words. Instead, all of part 1 has one gentle crop (1640x922 from x 280, y 79, which is 1.17x). The finger reached x 275 / y 473, so none of it shows, and because the whole shot is cropped there's no jump.
+5. **Team intro panel.** It's in the top area, over the building and trees, clear of her head (the panel's bottom edge is about 120 px above the top of her head). It reads TEAM **chmod 777** (in a code font), INSTITUTE **The National Institute of Engineering, Mysuru**, PRESENTING **Vachana**, and each item appears on its word.
+6. **The problem-statement details** moved into the same top panel: **SIH26173** (ISRO · iTantra), TTS: text → speech, STT: speech → text, LOW-BITRATE LINK: too little bandwidth for voice.
+7. **The part 2 explanation** stays on the right side.
+8. **"No infrastructure"** is unchanged, as approved. Only its timing follows the new word timings.
+9. **The connector line** now sits behind solid, opaque icon boxes, so it stops at each box's edge. When a step dims, only its text and icon fade; the box stays solid. The packet passes behind the Bluetooth box.
+10. **Timing.** Every cue is now computed by `build.py` from her word timings (Whisper words, with each start re-measured from the sound so it isn't late) and shifted for the cuts. Each step starts appearing 0.12 s before its word and is fully visible within 0.3 s. **"Text → speech" now appears at 39.30 s, just as she starts "The text-to-speech" (39.42 s).** In v1 it started 0.4 s after the word began and took half a second to fade in, which is why it felt late. The full cue table is below.
+11. **"Through relays" and "in the message's language"** are both kept.
+12. **Colour:** three options.
+   - **A, warm cinematic:** warm mid-tones and highlights, teal-leaning shadows, soft contrast with gentle highlight roll-off, and a vignette. **Applied.**
+   - **B, punchy contrast:** a deep S-curve, +14% saturation and a little extra crispness.
+   - **C, cool / muted:** lifted blacks, a cooler balance and -30% saturation.
+   - Why A: it flatters skin in harsh midday sun without making the loud blue sign even louder (which B does), and a warm live-action look will contrast well with the dark sonar scenes later. C looks washed out in this light.
+   - To switch: set `GRADE = 'B'` or `'C'` in `film/scene1/build.py` and rebuild.
+14. **Lip sync (a fix I found myself).** I measured the final file's voice against the camera's own sound at 7 points across all five segments. It's now within 0-1 ms everywhere. v1 was actually about 50 ms late: I had nudged the voice 25 ms the wrong way. That's fixed in `mux.sh`.
+13. **The ending** is kept exactly as it was: the panel folds into the phone, "Let's see it work.", then the empty phone. Its timing is tied to her last word.
 
-## What she says compared with the official problem statement
-- **The official title (SIH26173, ISRO):** "iTantra - Indian Multilingual TTS & STT Aided Neural Transceiver Radio Access for low bitrate links".
-- **What she says:** "...Indian multilingual TTS and STT aided neural transceiver radio access for low bit rate communication."
-- **The only wording change** is that she says "communication" instead of "links".
-- **One word to listen to:** Whisper heard "STT" as "STD" (at about 13.8 s into the scene). It may just be her accent. The panel spells "STT" correctly at that moment anyway.
+## Every cut
+Times are in the v2 scene. Each cut is inside a silence measured from the denoised audio.
 
-## What I built, and why
-**Scene timeline (58.0 s):** part 1 runs 0-18.0 s, then there's a hard cut to part 2, which runs 18.0-55.1 s. The last frame is then held to 58.0 s for the doorway. The cut sits in a natural 0.8 s pause ("...low bit rate communication." / "What does that actually mean?"), and it's hidden by the panel changing its content at the same moment.
+| # | Scene time | Removed | Where (source) | What | How it's hidden |
+|---|---|---|---|---|---|
+| 1 | 12.80 s | 0.37 s | part 1, video 13.60-13.97 s | reading pause between "TTS" and "and STT" | 8% punch-in to a tighter frame; her face stays in the same spot (measured 0 px shift) |
+| 2 | 42.30 s | 0.80 s | part 2, video 24.67-25.47 s | **Vivek's note:** the pause after "again" (she continues "convert text into speech") | 8% punch-in. She moved 63 px during the pause, so the tighter frame is shifted to keep her face in the same spot (measured 0 px) |
+| 3 | 50.13 s | 0.37 s | part 2, video 33.30-33.67 s | hesitation in "text is sent … locally" | punch back out to the full frame; the tighter frame drifts slowly (57 px over 7.8 s, hidden in the handheld movement) so her face lines up here too (measured 0 px) |
 
-**Voice:**
-- **Sync:** each clean audio file was lined up with its camera sound by cross-correlation. Part 1 is +0.571 s and part 2 is +0.389 s. I checked 3-second windows across both clips and found no drift. In the final render the voice lands within 25 ms of the picture at four points I measured, and I then nudged it to 0 ms.
-- **Problem:** heavy low rumble from traffic or wind, plus steady tones, probably from the construction site behind her. Background noise was only 18-19 dB below her voice.
-- **Clean-up chain:** high-pass at 100 Hz, then FFT denoise, then a gentle gate between words, then -2 dB at 250 Hz (mud), then +2 dB at 3 kHz (clarity), then de-ess, then light compression, then -16 LUFS with peaks at -1.5.
-- **Result:** noise is now 25 dB below her voice in part 1 and 31 dB in part 2.
-- **Checking for damage:** I can't hear, so I re-transcribed the cleaned audio. Whisper's word confidence stayed the same as the original (part 2: 0.908 cleaned vs 0.911 original), so the clean-up isn't hurting her words.
-- **What to listen for:** a slight "underwater" or watery sound in part 1, which is the noisier take.
+**Skipped (the cut would visibly jump):**
+- The 0.43 s pause in "the text-to-speech model … will" at ~41.2 s. It's only 1.5 s before cut 2, so it would need a second framing change right next to another one, and the frame would bounce back and forth.
+- Sentence breaks ("…nothing. Our on-device…", "…another device. The text-to-speech…"). These are natural breathing pauses, so I left them.
 
-**Colour (draft):**
-- Part 2 is matched to part 1 using the grey brick wall as the neutral reference.
-- Then one look goes over both:
-  - a gentle S-curve that rolls off the bright building
-  - slightly warm mid-tones and cool shadows
-  - saturation down 10% (the sign's blue and her dress were loud)
-  - a soft vignette
-- It's deliberately subtle ("natural, cinematic").
-
-**The panel.** It's a solid, dark card (86% opaque, not see-through glass) on the right third of the frame. That area stays clear of her face in both takes. It floats a few pixels and has a slight 3D tilt. Every change is timed to her exact words:
-
-| Scene time | She says | Panel shows |
+## Cue table (scene time; each step starts 0.12 s before its word)
+| Panel event | On her word | Starts |
 |---|---|---|
-| 7.1 s | "the problem statement iTantra from ISRO" | PROBLEM STATEMENT · ISRO / **SIH26173** · iTantra |
-| 12.5 s | "TTS" | TTS: text becomes speech |
-| 13.7 s | "STT" | STT: speech becomes text |
-| 16.3 s | "low bit rate" | Low-bitrate link: too little bandwidth for voice |
-| 18.4 s | "What does that actually mean?" | NO INFRASTRUCTURE, plus three icons (mobile signal, internet, Wi-Fi router) |
-| 21.6 s | "lets two Android devices communicate" | **Phone to phone. Nothing in between.** |
-| 24.6 / 25.3 / 26.1 s | "no SIM, no internet, no router" | each icon is struck through and fades (brief item 4) |
-| 28.4 s | "on-device speech-to-text" | HOW A MESSAGE TRAVELS / Speech → text, on the phone itself |
-| 32.4 s | "compact text" | a voice waveform squeezes down into a small TEXT tag |
-| 33.9 s | "Bluetooth... relay layer" | Sent over Bluetooth, phone to phone, through relays; a small packet travels down the line |
-| 39.9 s | "text-to-speech" | Text → speech, in the message's language |
-| 47.6 s | "So in short, speech becomes text, text is sent..., becomes speech" | IN SHORT: three icons (mic → Aa → speaker) light up one by one |
-| 54.7 s | (she has finished) | the panel folds into a phone shape in the centre, and the footage darkens and blurs behind it |
-| 56.0 s | - | "Let's see it work." appears inside the phone and fades out |
-| 57.3-58.0 s | - | the empty phone. Scene 2 starts inside it. |
-
-- **Why this content:** the panel explains what she leaves unclear (the jargon in the title: TTS, STT, low-bitrate). It highlights her key words as pictures (the icons, the waveform shrinking, the packet), rather than repeating her sentences.
-- **Claims:**
-  - The panel adds no feature claims beyond the official problem statement and her own words.
-  - I deliberately left out anything I can't confirm works on a real phone: the 10 languages, encryption, speed and size numbers, "offline" as a claim.
-- **Readability:** the text is 24-50 px on a dark backing. HyperFrames' contrast check passed 22 of 22 text checks. I also checked it scaled down to 640x360 (phone size), where every main line still reads.
-
-**The doorway into scene 2 (the missing "let's show you the demo" line).**
-- Her real last phrase, "So in short, the speech becomes text, and text is sent locally, and the text again becomes speech", works well as a wrap-up, so I kept it.
-- The panel collapses into the phone, a soft sound plays, and a short on-screen line hands over.
-- The sound is made from scratch (in `make_sfx.py`, so there are no licence issues): a quiet airy swell plus a soft two-note glass tone, kept well below the voice (its peak is about 15 dB under hers).
-- There's no music, as decided.
+| Top panel appears | "We are from team" | 1.60 s |
+| Team: chmod 777 | "team" | 2.09 s |
+| Institute | "National" | 3.99 s |
+| Presenting: Vachana | "Vachana" | 5.99 s |
+| Panel switches to the problem statement | "We are discussing" | 6.87 s |
+| SIH26173 · ISRO · iTantra | "problem statement" | 8.03 s |
+| TTS | "TTS" | 12.49 s |
+| STT | "STT" | 13.32 s |
+| Low-bitrate link | "low bit rate" | 15.96 s |
+| Right panel, NO INFRASTRUCTURE | "What does that actually mean?" | 17.82 s |
+| Phone to phone. Nothing in between. | "lets two Android devices" | 21.26 s |
+| Mobile signal / Internet / Wi-Fi struck | "SIM" / "internet" / "router" | 24.32 / 24.92 / 25.54 s |
+| HOW A MESSAGE TRAVELS | "Our on-device…" | 27.43 s |
+| Speech → text | "on-device" | 28.09 s |
+| Waveform, then it squeezes into TEXT | "speech" / "compact" | 28.54 / 32.02 s |
+| Sent over Bluetooth | "Bluetooth" | 33.48 s |
+| Packet travels to Text → speech | "relay" … "device" | 35.25 to 38.82 s |
+| **Text → speech** | **"The text-to-speech"** | **39.30 s** |
+| IN SHORT | "So in short" | 46.16 s |
+| Mic / Aa / Speaker light up | "speech" / "text" / "speech." | 47.85 / 48.50 / 52.64 s |
+| Doorway into the phone | 0.11 s after her last word | 53.17 s (the scene ends at 56.47 s) |
 
 ## Build (reproducible, in git)
-- `film/scene1/prep.sh`: trims, grades and conforms the clips to a constant 30 fps, and builds the cleaned voice track. Its outputs go to `film/scene1/assets/`, which is git-ignored.
-- `film/scene1/make_sfx.py`: the doorway sound.
-- `film/scene1/index.html`: the HyperFrames composition. `hyperframes check` passes.
-- `film/scene1/mux.sh`: swaps in the exact audio mix after rendering. HyperFrames' own mix came out 3 dB hot, because it copies the mono voice onto both channels.
-- **To rebuild everything:** `bash film/scene1/prep.sh && python film/scene1/make_sfx.py`, then run `hyperframes.cmd render -q high -f 30 -o <raw>.mp4` in `film/scene1`, then `bash film/scene1/mux.sh <raw>.mp4 <final>.mp4`.
-
-## What I was unsure about (small decisions I made)
-1. **The on-screen handoff line is "Let's see it work."** Other options: "Here's how it works." or "Let's show you." It's a one-word change.
-2. **The panel sub-lines "through relays" and "in the message's language"** follow what she says. If multi-hop relaying or multilingual TTS isn't confirmed working on a real phone yet, those sub-lines should go. Tell me and I'll remove them; it's a 4-minute re-render.
-3. **The accent colour is a soft teal (#8FE3D4).** It's a placeholder until `brief/style.md` is written in batch 3. Red is reserved for SOS.
-4. **Loudness:** -16 LUFS for now. The final film loudness gets set in batch 5.
-5. **Font:** Segoe UI Variable, which is installed on this PC. It isn't in the repo, because the licence doesn't allow redistribution. Renders must happen on a Windows PC (vivek-pc), which is already the rule.
-6. **I didn't stabilise the handheld shake.** It's mild and feels natural. Say if you want it steadier.
-7. **RNNoise:** I tried a stronger neural denoiser, which needed downloaded model files. Claude Code's safety check blocked running them, so I didn't use it. The files sit unused in `local/models/rnnoise/` and can be deleted.
+- `film/scene1/build.py`: the single build script. It holds the denoise chain, the cut list (EDL), the crop and punch-ins, the grade, and the voice assembly, and it computes the cues and fills in `index.html` from `index.html.tpl`. `--html-only` re-fills the page without re-rendering the media. It replaces v1's `prep.sh`.
+- `film/scene1/grades.sh`: the three looks. `film/scene1/words_p1.json` and `words_p2.json`: her word timings. `film/scene1/cues.json`: the computed cues and segments.
+- `film/scene1/make_sfx.py`: the doorway sound (unchanged).
+- `film/scene1/mux.sh`: swaps in the exact audio mix after rendering. It now reads its timings from `cues.json`.
+- **To rebuild:** run `python film/scene1/build.py`, then `hyperframes.cmd render -q high -f 30 -o <raw>.mp4` in `film/scene1`, then `bash film/scene1/mux.sh <raw>.mp4 <final>.mp4`.
 
 ## What Vivek needs to decide
-- Listen to `voice_before_after.mp3`. Is the voice clean enough, or does it sound watery? I can go gentler or stronger.
-- Look at `grade_before_after.jpg`. Keep this look, or make it warmer, punchier, or more muted?
-- Should "through relays" and "in the message's language" stay on the panel (point 2 above)?
-- Is "Let's see it work." OK as the handoff line?
+- Listen to the new `voice_before_after.mp3`. Is it clean enough now, and is there any watery or robotic sound? RNNoise can do that on some words. If you hear it, I can blend in some of the original.
+- Pick grade A, B or C, or ask for a mix.
+- Check the three cuts at 12.8 s, 42.3 s and 50.1 s. Does any of them feel like a jump?
 
 ---
 

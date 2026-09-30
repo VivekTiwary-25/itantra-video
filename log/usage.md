@@ -8,3 +8,4 @@
 | 30 Sep 02:25 | Scene 1 build (audio, grade, panel, render) | claude-lead (+ Sonnet helpers if needed) | opus / high | heavy | 5h 47%, 7d 52% |
 | 30 Sep 04:15 | T0001-T0003 reviewed: all accepted (T0002 drift figures corrected by lead) | claude-lead | opus / high | light | 5h 8% (window reset), 7d 57% |
 | 30 Sep 04:15 | Scene 1 finished: draft render, voice sample, grade still, report | claude-lead | opus / high | heavy (done without helpers) | 5h 8%, 7d 57% |
+| 30 Sep 10:10 | Scene 1 v2 corrections (RNNoise, 3 cuts, top panel, cue engine, 3 grades) | claude-lead | opus / high | heavy (done without helpers) | 5h 24%, 7d 63% |

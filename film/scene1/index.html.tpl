@@ -108,16 +108,16 @@
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="scene1" data-start="0" data-duration="56.466" data-width="1920" data-height="1080">
+<div id="root" data-composition-id="scene1" data-start="0" data-duration="{{TOTAL}}" data-width="1920" data-height="1080">
 
   <div id="stage">
-    <video id="v1" class="clip" src="assets/part1.mp4" data-start="0" data-duration="17.633" data-media-start="0" muted playsinline></video>
-    <video id="v2" class="clip" src="assets/part2.mp4" data-start="17.633" data-duration="38.833" data-media-start="0" muted playsinline></video>
+    <video id="v1" class="clip" src="assets/part1.mp4" data-start="0" data-duration="{{P1DUR}}" data-media-start="0" muted playsinline></video>
+    <video id="v2" class="clip" src="assets/part2.mp4" data-start="{{P2START}}" data-duration="{{P2DUR}}" data-media-start="0" muted playsinline></video>
   </div>
   <div id="dim"></div>
 
-  <audio id="voice" class="clip" src="assets/voice.wav" data-start="0" data-duration="56.466" data-volume="1"></audio>
-  <audio id="sfx" class="clip" src="assets/doorway.wav" data-start="53.116" data-duration="2.4" data-volume="1"></audio>
+  <audio id="voice" class="clip" src="assets/voice.wav" data-start="0" data-duration="{{TOTAL}}" data-volume="1"></audio>
+  <audio id="sfx" class="clip" src="assets/doorway.wav" data-start="{{SFX_START}}" data-duration="2.4" data-volume="1"></audio>
 
   <!-- TOP panel: team intro, then the problem statement (part 1) -->
   <div id="floatTop">
@@ -210,7 +210,7 @@
 <script>
   // Cue times (seconds, scene time) computed by build.py from her word timings, already shifted for the cuts.
   // Each step lands ~0.12 s before the word starts, so the graphic arrives with the word.
-  const C = {"team_in": 1.601, "team": 2.091, "inst": 3.991, "name": 5.991, "ps_in": 6.871, "psid": 8.031, "tts": 12.491, "stt": 13.324, "lowbit": 15.964, "p1_end": 17.224, "cut_p2": 17.633, "mean": 17.822, "phone": 21.262, "sim": 24.322, "net": 24.922, "router": 25.542, "travels": 27.432, "ondevice": 28.092, "speech_wave": 28.542, "compact": 32.022, "bt": 33.482, "relay": 35.252, "device_end": 38.822, "tts2": 39.302, "inshort": 46.162, "n1": 47.852, "n2": 48.502, "n3": 52.636, "speech_end": 53.056, "door": 53.166, "total": 56.466};
+  const C = {{CUES}};
 
   (function () {
     const h = [14,26,38,22,44,30,18,40,34,20,42,28,16,36,24,40,22,32,14,26];
