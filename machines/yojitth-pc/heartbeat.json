@@ -1,7 +1,7 @@
 {
   "machine": "yojitth-pc",
-  "time": "2026-09-30T06:39:32Z",
-  "status": "idle",
+  "time": "2026-09-30T06:39:36Z",
+  "status": "restarting",
   "current_task": null,
   "workers": [
     "claude-second"
