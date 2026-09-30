@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<script src="./gsap.min.js"></script>
+<style>
+  @font-face { font-family: 'SceneSans'; src: local('Segoe UI Variable Display'), local('Segoe UI Variable'), local('Segoe UI'); font-weight: 100 900; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; }
+  body { background: #090b0c; color: #f3f5f8; font-family: 'SceneSans', sans-serif; }
+  main { position: relative; width: 1920px; height: 1080px;
+    background: radial-gradient(ellipse 1350px 800px at 38% 48%, #141918 0%, #0c0f0f 57%, #090b0c 100%); }
+  .rule { position: absolute; left: 255px; top: 275px; width: 2px; height: 500px; background: #8fe3d4; opacity: 0.62; }
+  .title { position: absolute; left: 330px; top: 245px; width: 1270px; height: 570px;
+    display: flex; align-items: center; text-align: left; font-size: 91px;
+    line-height: 1.15; letter-spacing: -0.032em; font-weight: 630; }
+  .brand { display: block; color: #8fe3d4; font-size: 125px; margin-bottom: 14px; }
+  .team { position: absolute; left: 330px; bottom: 74px; color: #c1c8c5;
+    font-size: 29px; font-weight: 540; letter-spacing: 0.018em; }
+</style>
+</head>
+<body>
+<main data-composition-id="poster" data-width="1920" data-height="1080" data-fps="30" data-duration="1">
+  <div class="rule"></div>
+  <div class="title"><div><span class="brand">iTantra</span>Speak. Send. Be heard.</div></div>
+  <div class="team">Team chmod 777 · SIH26173</div>
+</main>
+<script>
+  const tl = gsap.timeline({ paused: true });
+  tl.to({}, { duration: 1 }, 0);
+  window.__timelines = window.__timelines || {};
+  window.__timelines['poster'] = tl;
+  tl.seek(0);
+</script>
+</body>
+</html>
