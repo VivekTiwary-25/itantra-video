@@ -1,0 +1,88 @@
+{
+  "fps": 30,
+  "duration": 61.93333333333333,
+  "segments": [
+    {
+      "name": "intro",
+      "start": 0,
+      "end": 3,
+      "source": "FOOTAGE:Video/sospart1.mp4"
+    },
+    {
+      "name": "s3_open",
+      "start": 3,
+      "end": 5.866666666666666,
+      "source": "FOOTAGE:Video/sospart1.mp4",
+      "source_in": 0
+    },
+    {
+      "name": "vachana_sos",
+      "start": 5.866666666666666,
+      "end": 18.833333333333332,
+      "camera": "FOOTAGE:Video/sospart1.mp4",
+      "camera_in": 2.866667
+    },
+    {
+      "name": "sos_in",
+      "start": 18.833333333333332,
+      "end": 20.833333333333332
+    },
+    {
+      "name": "sos_sonar",
+      "start": 20.833333333333332,
+      "end": 29.833333333333332
+    },
+    {
+      "name": "sos_dive",
+      "start": 29.833333333333332,
+      "end": 31.333333333333332
+    },
+    {
+      "name": "lab_open",
+      "start": 31.333333333333332,
+      "end": 33.1,
+      "source": "FOOTAGE:Video/sospart2.mp4",
+      "source_in": 3
+    },
+    {
+      "name": "vivek_app",
+      "start": 33.1,
+      "end": 54.46666666666667,
+      "camera": "FOOTAGE:Video/sospart2.mp4",
+      "camera_in": 4.75
+    },
+    {
+      "name": "vachana_response",
+      "start": 54.46666666666667,
+      "end": 61.43333333333333
+    },
+    {
+      "name": "end_hold",
+      "start": 61.43333333333333,
+      "end": 61.93333333333333
+    }
+  ],
+  "narration_starts": {
+    "N5": 3.3,
+    "N6": 21.833333333333332
+  },
+  "slot_fields": {
+    "vachana_sos": {
+      "duration": 12.966667,
+      "listen_at": 1.4,
+      "send_at": 11.23
+    },
+    "vivek_app": {
+      "duration": 21.366667,
+      "accept_at": 2.6,
+      "play_at": 7.63,
+      "ptt_down": 12.76,
+      "ptt_up": 16.22,
+      "sent_at": 19.77
+    },
+    "vachana_response": {
+      "duration": 6.966667,
+      "opened_at": 4.96
+    }
+  }
+}

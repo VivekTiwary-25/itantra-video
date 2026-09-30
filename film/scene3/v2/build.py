@@ -1,0 +1,383 @@
+"""Build scene 3 v2: python film/scene3/v2/build.py [--page-only].
+
+The three app recordings are swappable RENDERS: slots. Missing recordings get
+temporary portrait videos and restrained UI placeholders for layout review.
+"""
+import argparse
+import html
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import wave
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[2]
+MACHINE = json.loads((REPO / "machine.local.json").read_text(encoding="utf-8"))
+RENDERS = Path(MACHINE["renders_dir"])
+OUT = RENDERS / "scene3/v2"
+FPS = 30
+SR = 48000
+SONAR = {"sos_in": 2.0, "sos_sonar": 9.0, "sos_dive": 1.5}
+CHAIN = ("pan=mono|c0=0.5*c0+0.5*c1,highpass=f=100:poles=2,highpass=f=100:poles=2,"
+         "arnndn=m=local/models/rnnoise/cb.rnnn,arnndn=m=local/models/rnnoise/sh.rnnn:mix=0.6,"
+         "afftdn=nr=18:nf=-45:tn=0,agate=threshold=0.025:ratio=3:range=0.1:attack=5:release=200:knee=4,"
+         "equalizer=f=250:t=q:w=1.2:g=-2,equalizer=f=3000:t=q:w=1.0:g=2,deesser=i=0.3:m=0.5:f=0.5,"
+         "acompressor=threshold=-20dB:ratio=2:attack=10:release=150,loudnorm=I=-16:TP=-1.5:LRA=11")
+
+
+def run(*args, cwd=REPO):
+    p = subprocess.run([str(x) for x in args], cwd=cwd, capture_output=True, text=True)
+    if p.returncode:
+        raise RuntimeError(f"{args[0]} failed:\n{p.stdout[-1500:]}\n{p.stderr[-2000:]}")
+    return p.stdout
+
+
+def render_path(ref):
+    if not ref.startswith("RENDERS:"):
+        raise ValueError("slot path must start RENDERS:")
+    relative = Path(ref[8:])
+    if relative.is_absolute() or ".." in relative.parts:
+        raise ValueError("slot path must be relative to renders_dir")
+    return RENDERS / relative
+
+
+def timeline(slots):
+    rows, frame = [], 0
+    def add(name, seconds, **extra):
+        nonlocal frame
+        length = round(seconds * FPS)
+        rows.append(dict(name=name, start=frame / FPS, end=(frame + length) / FPS, **extra))
+        frame += length
+    add("intro", 3.0, source="FOOTAGE:Video/sospart1.mp4")
+    add("s3_open", 2.866667, source="FOOTAGE:Video/sospart1.mp4", source_in=0)
+    add("vachana_sos", slots["vachana_sos"]["duration"], camera="FOOTAGE:Video/sospart1.mp4", camera_in=2.866667)
+    for name, duration in SONAR.items():
+        add(name, duration)
+    add("lab_open", 53 / FPS, source="FOOTAGE:Video/sospart2.mp4", source_in=3.0)
+    add("vivek_app", slots["vivek_app"]["duration"], camera="FOOTAGE:Video/sospart2.mp4", camera_in=4.75)
+    add("vachana_response", slots["vachana_response"]["duration"])
+    add("end_hold", 0.5)
+    by = {row["name"]: row for row in rows}
+    return {"fps": FPS, "duration": frame / FPS, "segments": rows,
+            "narration_starts": {"N5": by["s3_open"]["start"] + .3,
+                                 "N6": by["sos_sonar"]["start"] + 1.0},
+            "slot_fields": {k: {a: b for a, b in v.items() if a != "path"} for k, v in slots.items()}}
+
+
+def grade():
+    source = (REPO / "film/scene1/grades.sh").read_text(encoding="utf-8")
+    match = re.search(r'^GRADE_V1="(.*)"$', source, re.M)
+    if not match:
+        raise RuntimeError("GRADE_V1 missing")
+    return match.group(1)
+
+
+def probe(path):
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    return json.loads(run("ffprobe", "-v", "error", "-show_entries",
+                          "format=duration:stream=codec_type,width,height,r_frame_rate", "-of", "json", path))
+
+
+def check_video(path, seconds):
+    info = probe(path)
+    streams = [s for s in info.get("streams", []) if s.get("codec_type") == "video"]
+    if not streams or int(streams[0].get("width", 0)) < 2 or int(streams[0].get("height", 0)) < 2:
+        raise RuntimeError(f"unplayable video: {path}")
+    if float(info.get("format", {}).get("duration", 0)) + .07 < seconds:
+        raise RuntimeError(f"video shorter than {seconds:.3f}s: {path}")
+    return streams[0]
+
+
+def camera_plate(source, destination, start, seconds):
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if not destination.exists() or destination.stat().st_mtime < source.stat().st_mtime:
+        run("ffmpeg", "-v", "error", "-y", "-ss", start, "-t", seconds, "-i", source,
+            "-vf", f"fps=30,scale=1920:1080:flags=lanczos,{grade()},format=yuv420p",
+            "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "18", destination)
+    check_video(destination, seconds - 1 / FPS)
+
+
+def still(source, destination, at):
+    if not destination.exists() or destination.stat().st_mtime < source.stat().st_mtime:
+        run("ffmpeg", "-v", "error", "-y", "-ss", at, "-i", source,
+            "-frames:v", "1", "-q:v", "3", destination)
+    if not destination.is_file():
+        raise RuntimeError(f"missing still: {destination}")
+
+
+def placeholder_video(destination, seconds, height=2290):
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if not destination.exists():
+        run("ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i",
+            f"color=c=0x101820:s=1080x{height}:r=30:d={seconds:.6f}",
+            "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "26",
+            "-pix_fmt", "yuv420p", destination)
+    check_video(destination, seconds - 1 / FPS)
+
+
+def asset(source, name=None):
+    target = HERE / "assets" / (name or source.name)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if not target.exists() or target.stat().st_size != source.stat().st_size or target.stat().st_mtime < source.stat().st_mtime:
+        if target.exists():
+            target.unlink()
+        try:
+            os.link(source, target)
+        except OSError:
+            shutil.copyfile(source, target)
+    return "assets/" + target.name
+
+
+def prepare_sonar_still(slots):
+    """Supply the existing sos_in builder with the slot's searching frame."""
+    source = render_path(slots["vachana_sos"]["path"])
+    target = RENDERS / "scene3/app/vachana_sos_last.png"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if source.exists():
+        info = check_video(source, slots["vachana_sos"]["duration"] - 1 / FPS)
+        pad = "pad=iw:ih+110:0:110:color=black" if int(info["height"]) <= 2300 else "null"
+        run("ffmpeg", "-v", "error", "-y", "-ss", slots["vachana_sos"]["duration"] - 1 / FPS,
+            "-i", source, "-vf", pad, "-frames:v", "1", target)
+    else:
+        run("ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i",
+            "color=c=0x101820:s=1080x2400", "-frames:v", "1", target)
+    return target
+
+
+def sonar_assets(app_still):
+    """Use the original three sonar compositions without changing their code."""
+    source = REPO / "film/scene3/sonar"
+    stage = OUT / "sonar_work"
+    shutil.copytree(source, stage / "film/scene3/sonar", dirs_exist_ok=True)
+    for relative in ("film/scene1/grades.sh", "machine.local.json"):
+        dest = stage / relative
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(REPO / relative, dest)
+    for relative in ("film/scene2/geo", "film/vendor"):
+        shutil.copytree(REPO / relative, stage / relative, dirs_exist_ok=True)
+    run(sys.executable, stage / "film/scene3/sonar/build.py", cwd=stage)
+    for name, seconds in SONAR.items():
+        comp = stage / "film/scene3/sonar" / name
+        output = OUT / "sonar" / f"{name}.mp4"
+        stale = not output.exists() or (name == "sos_in" and output.stat().st_mtime < app_still.stat().st_mtime)
+        if stale:
+            run("hyperframes.cmd", "check", cwd=comp)
+            output.parent.mkdir(parents=True, exist_ok=True)
+            run("hyperframes.cmd", "render", "-q", "high", "-f", "30", "-o", output, cwd=comp)
+        check_video(output, seconds - 1 / FPS)
+    return {name: OUT / "sonar" / f"{name}.mp4" for name in SONAR}, stage
+
+
+def screen(slot, name, start, seconds, missing, hold=False):
+    source = render_path(slot["path"])
+    if not source.exists():
+        source = OUT / "placeholders" / f"{name}.mp4"
+        placeholder_video(source, slot["duration"])
+        missing.append(slot["path"])
+        mock = '<div class="mock" data-slot="%s"><div class="mock-brand">iTantra</div><div class="mock-content"></div></div>' % name
+    else:
+        mock = ""
+    info = check_video(source, slot["duration"] - 1 / FPS)
+    width = min(560, 1000 * info["width"] / info["height"])
+    if hold:
+        last = OUT / "plates" / f"{name}_last.jpg"
+        still(source, last, slot["duration"] - 1 / FPS)
+        contents = f'<div class="freeze" style="background-image:url({asset(last)})"></div>{mock}'
+    else:
+        video = asset(source, f"{name}{source.suffix}")
+        contents = (f'<video id="video_{name}" src="{video}" data-start="{start:.6f}" '
+                    f'data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video>{mock}')
+    return f'<div class="screen" style="width:{width:.2f}px">{contents}</div>'
+
+
+def write_page(T, slots, sonar, missing):
+    root = Path(MACHINE["footage_root"])
+    p = OUT / "plates"
+    camera_plate(root / "Video/sospart1.mp4", p / "vachana.mp4", 0, 10.64)
+    camera_plate(root / "Video/sospart2.mp4", p / "vivek.mp4", 3.0, 7.70)
+    still(p / "vachana.mp4", p / "vachana_first.jpg", 0)
+    still(p / "vachana.mp4", p / "vachana_last.jpg", 10.60)
+    still(p / "vivek.mp4", p / "vivek_first.jpg", 1.70)
+    still(p / "vivek.mp4", p / "vivek_last.jpg", 7.66)
+    pic = {"vachana": asset(p / "vachana.mp4"), "vivek": asset(p / "vivek.mp4"),
+           "vachana_first": asset(p / "vachana_first.jpg"), "vachana_last": asset(p / "vachana_last.jpg"),
+           "vivek_first": asset(p / "vivek_first.jpg"), "vivek_last": asset(p / "vivek_last.jpg")}
+    rows = T["segments"]
+    layers = []
+    for row in rows:
+        name, start, seconds = row["name"], row["start"], row["end"] - row["start"]
+        if name == "intro":
+            layers.append(f'<div class="scene" id="seg_intro"><div class="intro-picture" style="background-image:url({pic["vachana_first"]})"></div><div id="intro-door"><div class="picture" style="background-image:url({pic["vachana_first"]})"></div><div class="matte"></div><div class="title">SOS: help from anyone nearby</div></div></div>')
+        elif name in ("s3_open", "lab_open"):
+            key = "vachana" if name == "s3_open" else "vivek"
+            offset = 0 if key == "vachana" else 0
+            layers.append(f'<div class="scene" id="seg_{name}"><video id="video_{name}" class="full" src="{pic[key]}" data-start="{start:.6f}" data-duration="{seconds:.6f}" data-media-start="{offset}" muted playsinline></video></div>')
+        elif name in ("vachana_sos", "vivek_app"):
+            key = "vachana" if name == "vachana_sos" else "vivek"
+            camera_start = 2.866667 if key == "vachana" else 1.75
+            moving_from = 0 if key == "vachana" else 9.99
+            moving_end = 7.77 if key == "vachana" else 15.94
+            c = (f'<video id="video_{name}_camera" class="camera-motion" src="{pic[key]}" data-start="{start+moving_from:.6f}" '
+                 f'data-duration="{moving_end-moving_from:.6f}" data-media-start="{camera_start}" muted playsinline></video>')
+            frame = pic[key + ("_last" if key == "vachana" else "_first")]
+            last = pic[key + "_last"]
+            field_id = "vachana-field" if name == "vachana_sos" else "vivek-field"
+            layers.append(f'<div class="scene split" id="seg_{name}"><div class="camera camera-{key}"><div class="camera-still" style="background-image:url({frame})"></div>{c}<div class="camera-last" style="background-image:url({last})"></div><div class="feather"></div></div><div class="app-field" id="{field_id}">{screen(slots[name],name,start,seconds,missing)}</div></div>')
+        elif name in SONAR:
+            src = asset(sonar[name], f"{name}.mp4")
+            check_video(sonar[name], seconds - 1 / FPS)
+            layers.append(f'<div class="scene" id="seg_{name}"><video id="video_{name}" class="full" src="{src}" data-start="{start:.6f}" data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video></div>')
+        elif name == "vachana_response":
+            contents = screen(slots[name], name, start, seconds, missing)
+            source = render_path(slots[name]["path"])
+            if not source.exists():
+                source = OUT / "placeholders" / f"{name}.mp4"
+            side = p / "response_side.jpg"
+            still(source, side, max(0, slots[name]["opened_at"] + .2))
+            pic["response_side"] = asset(side)
+            layers.append(f'<div class="scene app-only" id="seg_{name}"><div class="sides" style="background-image:url({pic["response_side"]})"></div>{contents}</div>')
+        elif name == "end_hold":
+            contents = screen(slots["vachana_response"], "vachana_response", start, seconds, missing, True)
+            layers.append(f'<div class="scene app-only" id="seg_end_hold"><div class="sides" style="background-image:url({pic["response_side"]})"></div>{contents}</div>')
+    page = (HERE / "index.html.tpl").read_text(encoding="utf-8")
+    page = page.replace("{{DURATION}}", f'{T["duration"]:.6f}').replace("{{TIMELINE}}", json.dumps(T, separators=(",", ":")))
+    page = page.replace("{{LAYERS}}", "\n".join(layers))
+    (HERE / "index.html").write_text(page, encoding="utf-8", newline="\n")
+    (HERE / "timeline.json").write_text(json.dumps(T, indent=2) + "\n", encoding="utf-8")
+    # Every generated media reference must exist and each video must cover its declared span.
+    for src, duration in re.findall(r'<video[^>]*src="([^"]+)"[^>]*data-duration="([^"]+)"', page):
+        check_video(HERE / src, float(duration) - 1 / FPS)
+    for ref in re.findall(r'url\((assets/[^)]+)\)', page):
+        if not (HERE / ref).is_file():
+            raise RuntimeError(f"missing image asset: {ref}")
+
+
+def pcm(path, filt=None):
+    import numpy as np
+    command = ["ffmpeg", "-v", "error", "-i", str(path)]
+    if filt:
+        command += ["-af", filt]
+    command += ["-ar", str(SR), "-ac", "1", "-f", "f32le", "-"]
+    p = subprocess.run(command, cwd=REPO, capture_output=True)
+    if p.returncode:
+        raise RuntimeError(p.stderr.decode(errors="replace")[-1800:])
+    return np.frombuffer(p.stdout, "<f4").copy()
+
+
+def put(track, clip, at):
+    i = round(at * SR)
+    a, b = max(0, -i), max(0, i)
+    n = min(len(clip) - a, len(track) - b)
+    if n > 0:
+        track[b:b+n] += clip[a:a+n]
+
+
+def spoken(path, first, last):
+    """Only the word window is audible, with 30 ms edge fades and 0.30 s tail."""
+    import numpy as np
+    source = pcm(path, CHAIN)
+    left, right = max(0, round((first - .12) * SR)), min(len(source), round((last + .30) * SR))
+    clip = source[left:right].copy()
+    if first < .12:
+        clip = np.pad(clip, (round((.12 - first) * SR), 0))
+    fade = min(round(.03 * SR), len(clip) // 2)
+    if fade:
+        clip[:fade] *= np.linspace(0, 1, fade)
+        clip[-fade:] *= np.linspace(1, 0, fade)
+    return clip
+
+
+def wav(path, samples):
+    import numpy as np
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with wave.open(str(path), "wb") as output:
+        output.setparams((1, 2, SR, 0, "NONE", "not compressed"))
+        output.writeframes((np.clip(samples, -1, 1) * 32767).astype("<i2").tobytes())
+
+
+def narration_file(key):
+    config = REPO / "film/common/narration.json"
+    voice = json.loads(config.read_text(encoding="utf-8")).get("voice", "david") if config.exists() else "david"
+    if voice not in ("david", "vivek"):
+        raise ValueError("film/common/narration.json voice must be david or vivek")
+    return (RENDERS / "narration/vivek" / f"{key}.wav") if voice == "vivek" else (RENDERS / "scene3/narration/david" / f"{key}.wav")
+
+
+def audio(T, slots, stage):
+    import numpy as np
+    by = {r["name"]: r for r in T["segments"]}
+    dialogue = np.zeros(round(T["duration"] * SR), dtype=np.float32)
+    music = np.zeros_like(dialogue)
+    missing = []
+    root = Path(MACHINE["footage_root"])
+    put(dialogue, spoken(root / "Audio/sospart1.mp3", 0.0, 4.72),
+        by["vachana_sos"]["start"] + slots["vachana_sos"]["listen_at"] - .12)
+    put(dialogue, spoken(root / "Audio/sospart2.mp3", 7.54, 10.34),
+        by["vivek_app"]["start"] + slots["vivek_app"]["ptt_down"] + .1 - .12)
+    tts = RENDERS / "tts_itantra/tts_sos.wav"
+    if tts.exists():
+        put(dialogue, pcm(tts, "loudnorm=I=-16:TP=-1.5:LRA=11"),
+            by["vivek_app"]["start"] + slots["vivek_app"]["play_at"] + .15)
+    else:
+        missing.append("RENDERS:tts_itantra/tts_sos.wav")
+    for key, at in T["narration_starts"].items():
+        path = narration_file(key)
+        if path.exists():
+            clip = pcm(path, "loudnorm=I=-16:TP=-1.5:LRA=11")
+            limit = 3.4 if key == "N5" else 7.2
+            if len(clip) / SR > limit:
+                print(f"WARNING: {key} narration exceeds {limit:.1f} s", file=sys.stderr)
+            put(dialogue, clip, at)
+        else:
+            missing.append("RENDERS:" + path.relative_to(RENDERS).as_posix())
+    sounds = OUT / "sound_options"
+    if not all((sounds / f"{name}.wav").exists() for name in ("message_a", "sent_a", "sos_notice_a", "sos_pulse_a")):
+        run(sys.executable, REPO / "film/sound/make_options.py", "--out", sounds)
+    cues = [("sos_pulse_a", "vachana_sos", slots["vachana_sos"]["send_at"], .35),
+            ("sos_notice_a", "lab_open", .1, .28),
+            ("sent_a", "vivek_app", slots["vivek_app"]["sent_at"], .32),
+            ("message_a", "vachana_response", .15, .28)]
+    for sound, segment, offset, gain in cues:
+        put(dialogue, pcm(sounds / f"{sound}.wav") * gain, by[segment]["start"] + offset)
+    for name, seconds in SONAR.items():
+        sfx = stage / "film/scene3/sonar" / name / "assets" / f"{name}_sfx.wav"
+        if not sfx.exists():
+            raise FileNotFoundError(sfx)
+        put(dialogue, pcm(sfx)[:round(seconds * SR)], by[name]["start"])
+    bed = stage / "film/scene3/sonar/music/sos_music.wav"
+    if not bed.exists():
+        raise FileNotFoundError(bed)
+    put(music, pcm(bed)[:round(12.5 * SR)], by["sos_in"]["start"])
+    wav(OUT / "scene3_dialogue_sfx.wav", dialogue)
+    wav(OUT / "scene3_music.wav", music)
+    wav(OUT / "scene3_mix.wav", dialogue + music)
+    return missing
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--page-only", action="store_true", help="write/check composition without final picture/audio render")
+    args = parser.parse_args()
+    OUT.mkdir(parents=True, exist_ok=True)
+    slots = json.loads((HERE / "slots.json").read_text(encoding="utf-8"))
+    T = timeline(slots)
+    videos, stage = sonar_assets(prepare_sonar_still(slots))
+    missing = []
+    write_page(T, slots, videos, missing)
+    run("hyperframes.cmd", "check", cwd=HERE)
+    if not args.page_only:
+        raw = OUT / "scene3_picture.mp4"
+        run("hyperframes.cmd", "render", "-q", "high", "-f", "30", "-o", raw, cwd=HERE)
+        check_video(raw, T["duration"] - 1 / FPS)
+        missing += audio(T, slots, stage)
+    (OUT / "build_status.json").write_text(json.dumps({"duration": T["duration"], "missing": missing}, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps({"duration": T["duration"], "missing": missing}))
+
+
+if __name__ == "__main__":
+    main()
