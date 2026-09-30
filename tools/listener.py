@@ -184,15 +184,25 @@ def has_unpushed_results() -> bool:
         return False
 
 
+def pull_rebase() -> tuple[int, str]:
+    """Time out only the network fetch; let the local rebase finish or abort cleanly."""
+    rc, out = git(*NET, "fetch", "origin", branch(), timeout=NET_TIMEOUT)
+    if rc != 0:
+        return rc, out
+    rc, rebase_out = git("rebase", "--autostash", "FETCH_HEAD", timeout=None)
+    if rc != 0:
+        git("rebase", "--abort", timeout=None)
+    return rc, out + rebase_out
+
+
 def sync() -> bool:
     if OFFLINE:
         return True
-    rc, out = git(*NET, "pull", "--rebase", "--autostash", "origin", branch(), timeout=NET_TIMEOUT)
+    rc, out = pull_rebase()
     if rc != 0:
         if "couldn't find remote ref" in out:
             return True  # remote branch not created yet
-        log(f"git pull failed: {out.strip()[:300]}")
-        git("rebase", "--abort")
+        log(f"git sync failed: {out.strip()[:300]}")
         update_sync_state(last_pull_error_at=now_iso())
         return False
     update_sync_state(last_pull_ok=now_iso(), unpushed=count_unpushed())
@@ -201,8 +211,8 @@ def sync() -> bool:
 
 def push_with_retries(tries: int = PUSH_TRIES, quiet: bool = False, budget: int | None = None) -> bool:
     """Pull/rebase then push, retrying transient network errors and concurrent pushes.
-    `budget` (seconds, default 90 for quiet heartbeat pushes and 240 otherwise) caps the whole cycle: collisions are quick
-    and use all `tries`, but hung network calls (each cut at NET_TIMEOUT) must not add up to many minutes."""
+    `budget` (seconds, default 90 for quiet heartbeat pushes and 240 otherwise) stops retries between attempts.
+    Network calls have their own timeout; the local rebase is never interrupted by either limit."""
     if OFFLINE:
         return True
     if budget is None:
@@ -210,10 +220,9 @@ def push_with_retries(tries: int = PUSH_TRIES, quiet: bool = False, budget: int 
     start = time.time()
     out_of_time = False
     for attempt in range(1, tries + 1):
-        rc, out = git(*NET, "pull", "--rebase", "--autostash", "origin", branch(), timeout=NET_TIMEOUT)
+        rc, out = pull_rebase()
         if rc != 0:
             log(f"push attempt {attempt}/{tries}: pull/rebase failed: {out.strip()[:200]}")
-            git("rebase", "--abort")
         else:
             rc, out = git(*NET, "push", "origin", "HEAD", timeout=NET_TIMEOUT)
             if rc == 0:
