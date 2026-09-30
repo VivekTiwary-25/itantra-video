@@ -1,0 +1,3 @@
+S0003 is complete. I re-rendered both scene 2 drafts with the maps fallback and saved five previews. The `vachana_send` take was not found, so its placeholder remains and visual timing could not be checked. Both drafts measure −16.2 LUFS and −1.7 dBTP; HyperFrames check passed. Details are in [REPORT.md](<REPO>/results/S0003/REPORT.md).
+
+TLDR: Both drafts are ready for review; the real `vachana_send` recording is still missing.
