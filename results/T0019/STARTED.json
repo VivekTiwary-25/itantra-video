@@ -1,0 +1,10 @@
+{
+  "id": "T0019",
+  "machine": "yash-pc",
+  "worker": "codex-f1",
+  "time": "2026-09-30T09:25:51Z",
+  "model": "gpt-6-sol",
+  "effort": "medium",
+  "pid": 43112,
+  "timeout_min": 60
+}
