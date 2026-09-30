@@ -1,0 +1,3 @@
+Completed the read-only audit in [audit.md](<REPO>/results/T0025/audit.md) and wrote the required [REPORT.md](<REPO>/results/T0025/REPORT.md). The audit includes findings with file and line references and a per-scene on-screen text list.
+
+**TLDR:** Must-fix items exist. The second relay uses footage previously identified as Yash while treating him as Utkarsh; current generated pages also contain app placeholder cards. Scene 3 main and the title are not yet available to audit.
