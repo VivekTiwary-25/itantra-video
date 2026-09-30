@@ -1,0 +1,3 @@
+Completed T0009. I wrote the 25-cue [scene 1 SRT](/<REPO>/results/T0009/scene1.srt), [scene 2 dialogue lines](/<REPO>/results/T0009/scene2_lines.json), [caption style proposal](/<REPO>/results/T0009/style.md), and [REPORT.md](/<REPO>/results/T0009/REPORT.md).
+
+Checks passed: cue times are ordered and non-overlapping, every caption line is at most 42 characters, and the dialogue JSON parses. **TLDR:** T0009 is done.

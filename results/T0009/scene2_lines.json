@@ -1,0 +1,9 @@
+[
+  {"speaker": "Vachana", "text": "Hey dude, I'm in the campus near the entry benches, where are you?"},
+  {"speaker": "Yash", "text": "Oh, it's too hot here."},
+  {"speaker": "Yash", "text": "I'm in the garden. I'll come to you."},
+  {"speaker": "Narrator N1", "text": "Let's see how far that message actually has to travel."},
+  {"speaker": "Narrator N2", "text": "But how did that happen? Bluetooth doesn't reach that far."},
+  {"speaker": "Narrator N3", "text": "And that's how it gets there."},
+  {"speaker": "Narrator N4", "text": "His reply comes back the same way."}
+]
