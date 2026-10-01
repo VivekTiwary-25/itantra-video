@@ -12,6 +12,7 @@ Every agent in this system reads this file before doing anything. Git is the onl
 | `codex-f1` | yash-pc | Codex CLI via listener | Worker |
 | `codex-f2` | utkarsh-pc | Codex CLI via listener | Worker |
 | `claude-second` | yojitth-pc | Claude Code, Opus, via listener (or interactive loop) | Second foreman. Consults, reviews with fresh eyes, can run a whole section with its own Sonnet subagents. |
+| `codex-yojitth` | yojitth-codex-pc | Codex CLI via its own listener (second clone on the same PC) | Worker. Runs in parallel with `claude-second`. |
 
 The canonical list lives in `machines/registry.json`. Each machine also has a local, git-ignored `machine.local.json` saying which machine it is and where its paths are:
 

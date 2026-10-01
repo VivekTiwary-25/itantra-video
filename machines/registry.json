@@ -20,6 +20,12 @@
       "owner": "yojitth",
       "workers": ["claude-second"],
       "listener_workers": ["claude-second"]
+    },
+    "yojitth-codex-pc": {
+      "owner": "yojitth",
+      "note": "Same physical PC as yojitth-pc, separate clone and listener so Codex runs in parallel with claude-second.",
+      "workers": ["codex-yojitth"],
+      "listener_workers": ["codex-yojitth"]
     }
   },
   "workers": {
@@ -28,7 +34,8 @@
     "codex-vivek":   { "machine": "vivek-pc",   "cli": "codex",  "role": "worker; final renders", "queue": true, "display_model": "GPT-6 Sol/Luna", "swarm": true },
     "codex-f1":      { "machine": "yash-pc", "cli": "codex",  "role": "worker", "queue": true, "display_model": "GPT-6 Sol/Luna", "swarm": true },
     "codex-f2":      { "machine": "utkarsh-pc", "cli": "codex",  "role": "worker", "queue": true, "display_model": "GPT-6 Sol/Luna", "swarm": true },
-    "claude-second": { "machine": "yojitth-pc", "cli": "claude", "role": "second foreman", "queue": true, "display_model": "Opus", "swarm": true }
+    "claude-second": { "machine": "yojitth-pc", "cli": "claude", "role": "second foreman", "queue": true, "display_model": "Opus", "swarm": true },
+    "codex-yojitth": { "machine": "yojitth-codex-pc", "cli": "codex",  "role": "worker", "queue": true, "display_model": "GPT-6 Sol/Luna", "swarm": true }
   },
   "banned_models": ["astra"]
 }
