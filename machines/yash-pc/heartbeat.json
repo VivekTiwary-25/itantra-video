@@ -1,16 +1,16 @@
 {
   "machine": "yash-pc",
-  "time": "2026-10-02T17:52:22Z",
-  "status": "restarting",
+  "time": "2026-10-02T17:52:58Z",
+  "status": "idle",
   "current_task": null,
   "workers": [
     "codex-f1"
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 35108,
+  "listener_pid": 21092,
   "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-02T17:51:17Z"
+  "last_push_ok": "2026-10-02T17:52:43Z"
 }
