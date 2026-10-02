@@ -1,0 +1,1 @@
+I couldn’t complete P0105r1. The local sandbox runner timed out on every file read, so I could not read the required instructions or task file. It also rejected the attempt to write `results/P0105r1/REPORT.md`. No task output was produced. Please restore the runner and retry the task.
