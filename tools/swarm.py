@@ -128,7 +128,7 @@ $r.lock_pid = $null
 if (Test-Path local\listener.lock) { $r.lock_pid = [int]((Get-Content local\listener.lock -Raw).Trim()) }
 $lp = $procs | Where-Object { $_.ProcessId -eq $r.lock_pid -and $_.CommandLine -match 'listener\.py' }
 $r.listener_alive = [bool]$lp
-$r.loop_alive = [bool]($procs | Where-Object { ($_.Name -eq 'cmd.exe' -and $_.CommandLine -like "*$repo\tools\run-listener.cmd*") -or ($_.Name -match '^pythonw?\.exe$' -and $_.CommandLine -like "*$repo\tools\listener_loop.py*") })
+$r.loop_alive = [bool]($procs | Where-Object { ($_.Name -eq 'cmd.exe' -and $_.CommandLine -like "*$repo\tools\run-listener.cmd*") -or ($_.Name -match '^pythonw?[\d.]*\.exe$' -and $_.CommandLine -like "*$repo\tools\listener_loop.py*") })
 $kids = @()
 if ($lp) {
   $todo = @($r.lock_pid)
@@ -165,7 +165,7 @@ Set-Location $repo
 New-Item -ItemType Directory -Force local | Out-Null
 Remove-Item local\listener.stop -ErrorAction SilentlyContinue
 if ($python) { Set-Content -Path local\python.txt -Value $python -Encoding Ascii -NoNewline }
-$running = @(Get-CimInstance Win32_Process | Where-Object { ($_.Name -eq 'cmd.exe' -and $_.CommandLine -like "*$repo\tools\run-listener.cmd*") -or ($_.Name -match '^pythonw?\.exe$' -and $_.CommandLine -like "*$repo\tools\listener_loop.py*") })
+$running = @(Get-CimInstance Win32_Process | Where-Object { ($_.Name -eq 'cmd.exe' -and $_.CommandLine -like "*$repo\tools\run-listener.cmd*") -or ($_.Name -match '^pythonw?[\d.]*\.exe$' -and $_.CommandLine -like "*$repo\tools\listener_loop.py*") })
 if ($running) { "already running (loop pid $($running[0].ProcessId))"; exit }
 # Preferred: the scheduled task, which runs in the user's desktop session (Codex fails in session 0).
 $null = schtasks.exe /Query /TN $task 2>&1
@@ -188,7 +188,7 @@ Set-Content -Path local\listener.stop -Value 'swarm stop' -Encoding Ascii
 if ($now -eq '1') {
   Get-CimInstance Win32_Process -Filter "Name='cmd.exe'" | Where-Object { $_.CommandLine -like "*$repo\tools\run-listener.cmd*" } |
     ForEach-Object { taskkill /F /T /PID $_.ProcessId | Out-Null }
-  Get-CimInstance Win32_Process | Where-Object { $_.Name -match '^pythonw?\.exe$' -and $_.CommandLine -like "*$repo\tools\listener_loop.py*" } |
+  Get-CimInstance Win32_Process | Where-Object { $_.Name -match '^pythonw?[\d.]*\.exe$' -and $_.CommandLine -like "*$repo\tools\listener_loop.py*" } |
     ForEach-Object { taskkill /F /T /PID $_.ProcessId | Out-Null }
   if (Test-Path local\listener.lock) { taskkill /F /T /PID ((Get-Content local\listener.lock -Raw).Trim()) | Out-Null }
   "stopped now"
