@@ -51,6 +51,9 @@ def load_machine_config() -> dict:
     return cfg
 
 
+NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)  # the listener runs without a console (pythonw): every child would otherwise open a window
+
+
 def which(name: str) -> str | None:
     """shutil.which finds .cmd/.exe shims on Windows via PATHEXT."""
     return shutil.which(name)
@@ -60,7 +63,7 @@ def run(cmd: list[str], timeout: int = 30, cwd: Path | None = None) -> tuple[int
     """Run a command, return (exit code, combined output). Never raises."""
     try:
         p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace",
-                           timeout=timeout, cwd=str(cwd) if cwd else None)
+                           timeout=timeout, cwd=str(cwd) if cwd else None, creationflags=NO_WINDOW)
         return p.returncode, (p.stdout or "") + (p.stderr or "")
     except subprocess.TimeoutExpired:
         return 124, "timed out"
@@ -70,9 +73,6 @@ def run(cmd: list[str], timeout: int = 30, cwd: Path | None = None) -> tuple[int
 
 def git(*args: str, timeout: int = 120) -> tuple[int, str]:
     return run(["git", *args], timeout=timeout, cwd=REPO_ROOT)
-
-
-NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)  # under pythonw every git child would otherwise open a window
 
 
 def push_files_direct(files: dict[str, bytes | None], message: str, branch: str = "main", tries: int = 5,

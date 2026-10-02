@@ -25,7 +25,7 @@ import datetime as dt
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import (REPO_ROOT, SAFE_TOKEN, git, load_machine_config, now_iso, read_json, run, update_sync_state, which, worker_path, write_json)  # noqa: E402
+from common import (NO_WINDOW, REPO_ROOT, SAFE_TOKEN, git, load_machine_config, now_iso, read_json, run, update_sync_state, which, worker_path, write_json)  # noqa: E402
 
 SYNC_EVERY_S = 30
 HEARTBEAT_EVERY_S = 300
@@ -59,7 +59,7 @@ last_heartbeat = 0.0
 warned_blocked: set[str] = set()
 restarting = False
 RESTART_CODE = 75
-STOP_FLAG = REPO_ROOT / "local" / "listener.stop"  # written by `swarm stop`; tools/run-listener.cmd does not restart while it exists
+STOP_FLAG = REPO_ROOT / "local" / "listener.stop"  # written by `swarm stop`; the loops (listener_loop.py, run-listener.cmd) do not restart while it exists
 
 
 def source_stamp() -> str:
@@ -80,7 +80,7 @@ def check_for_update() -> None:
     global restarting
     if source_stamp() != START_STAMP:
         restarting = True
-        log("tool code changed after git pull: restarting to load it (start-listener.cmd restarts automatically)")
+        log("tool code changed after git pull: restarting to load it (the listener loop restarts it automatically)")
         sys.exit(RESTART_CODE)
 
 
@@ -409,7 +409,7 @@ def enforce_sizes(rid: str, roots: list[Path]) -> list[str]:
 def kill_tree(proc: subprocess.Popen) -> None:
     try:
         if os.name == "nt":
-            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)], capture_output=True, timeout=30)
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)], capture_output=True, timeout=30, creationflags=NO_WINDOW)
         else:
             proc.kill()
     except Exception as e:  # noqa: BLE001
@@ -764,7 +764,7 @@ def run_task(worker: str, task_file: Path, _healed: bool = False, pool: bool = F
         with open(out_log, "w", encoding="utf-8", errors="replace") as fh:
             proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=fh, stderr=subprocess.STDOUT, cwd=str(REPO_ROOT),
                                     env=env, text=True, encoding="utf-8",
-                                    creationflags=getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0))
+                                    creationflags=getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | NO_WINDOW)
             try:
                 proc.stdin.write(prompt)
                 proc.stdin.close()
@@ -902,7 +902,7 @@ def acquire_lock() -> Path:
             # Only a live listener.py counts: after a reboot Windows reuses PIDs, and a stale lock blocked yojitth-pc on 2 Oct.
             cmdline = subprocess.run(["powershell", "-NoProfile", "-Command",
                                       f"(Get-CimInstance Win32_Process -Filter 'ProcessId={pid}').CommandLine"],
-                                     capture_output=True, text=True).stdout if os.name == "nt" else ""
+                                     capture_output=True, text=True, creationflags=NO_WINDOW).stdout if os.name == "nt" else ""
             if pid != os.getpid() and "listener.py" in cmdline:
                 sys.exit(f"Another listener is already running on this machine (pid {pid}). Close it first.")
         except (ValueError, OSError):
