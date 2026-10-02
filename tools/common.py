@@ -72,6 +72,56 @@ def git(*args: str, timeout: int = 120) -> tuple[int, str]:
     return run(["git", *args], timeout=timeout, cwd=REPO_ROOT)
 
 
+NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)  # under pythonw every git child would otherwise open a window
+
+
+def push_files_direct(files: dict[str, bytes | None], message: str, branch: str = "main", tries: int = 5,
+                      net_timeout: int = 45) -> bool:
+    """Commit these repo-relative files (None = delete) on top of origin/<branch> and push, WITHOUT touching
+    HEAD, the index or the working tree. Used for heartbeats and supervisor commits, so they can never stash,
+    rebase or overwrite anyone's uncommitted work (an autostash swallowed the film v2 fixes on 30 Sep).
+    Returns True when the change is on GitHub (or there was nothing to change)."""
+    import random
+    import time
+    idx = REPO_ROOT / "local" / "tmp" / f"direct-{os.getpid()}.index"
+    idx.parent.mkdir(parents=True, exist_ok=True)
+    env = dict(os.environ, GIT_INDEX_FILE=str(idx))
+
+    def g(*args, inp: bytes | None = None, timeout: int = 60):
+        try:
+            p = subprocess.run(["git", *args], cwd=REPO_ROOT, env=env, input=inp, capture_output=True,
+                               timeout=timeout, creationflags=NO_WINDOW)
+            return p.returncode, (p.stdout or b"").decode("utf-8", "replace").strip(), (p.stderr or b"").decode("utf-8", "replace").strip()
+        except subprocess.TimeoutExpired:
+            return 124, "", "timed out"
+
+    try:
+        for attempt in range(1, tries + 1):
+            rc, _, err = g("fetch", "-q", "origin", branch, timeout=net_timeout)
+            if rc == 0:
+                base = g("rev-parse", "FETCH_HEAD")[1]
+                g("read-tree", base)
+                for rel, data in files.items():
+                    if data is None:
+                        g("update-index", "--force-remove", "--", rel)
+                    else:
+                        blob = g("hash-object", "-w", "--stdin", inp=data)[1]
+                        g("update-index", "--add", "--cacheinfo", f"100644,{blob},{rel}")
+                tree = g("write-tree")[1]
+                if tree == g("rev-parse", f"{base}^{{tree}}")[1]:
+                    return True
+                commit = g("commit-tree", tree, "-p", base, "-m", message)[1]
+                rc, _, err = g("push", "-q", "origin", f"{commit}:refs/heads/{branch}", timeout=net_timeout)
+                if rc == 0:
+                    g("update-ref", f"refs/remotes/origin/{branch}", commit)
+                    return True
+            if attempt < tries:
+                time.sleep(random.uniform(2, 8))
+        return False
+    finally:
+        idx.unlink(missing_ok=True)
+
+
 def fresh_windows_path() -> list[str]:
     """PATH as Windows gives a NEW terminal: machine + user values read from the registry.
     A listener started from an old terminal has a stale PATH and misses tools installed since

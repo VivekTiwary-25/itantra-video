@@ -3,9 +3,8 @@
 The banner (tools/swarm_status.py) shows the lead ONLINE while
 machines/<lead machine>/lead-heartbeat.json is under 10 minutes old. The lead is an
 interactive session with no listener, so without this it drops to OFFLINE whenever it
-sits waiting for Vivek. This loop rewrites that file every 4 minutes and pushes it,
-using the same pattern as the listener's own heartbeat (commit only that one path,
-pull --rebase --autostash, push with retries).
+sits waiting for Vivek. This loop pushes that file every 4 minutes straight to origin
+(common.push_files_direct): it never touches the lead's HEAD, index or working tree.
 
 It is tied to one Claude Code process and exits as soon as that process is gone, so a
 closed lead session can never keep showing ONLINE. Only one copy runs at a time.
@@ -31,10 +30,15 @@ import time
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common import push_files_direct  # noqa: E402
+
 EVERY_S = 240
 PUSH_TRIES = 5
 PIDFILE = REPO_ROOT / "local" / "lead-heartbeat.pid"
 LOGFILE = REPO_ROOT / "local" / "logs" / "lead-heartbeat.log"
+# Under pythonw (no console) every git child would otherwise open its own terminal window.
+NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 
 
 def log(msg: str) -> None:
@@ -80,7 +84,7 @@ def find_claude_ancestor() -> int | None:
 
 
 def git(*args: str) -> tuple[int, str]:
-    r = subprocess.run(["git", *args], cwd=REPO_ROOT, capture_output=True, text=True)
+    r = subprocess.run(["git", *args], cwd=REPO_ROOT, capture_output=True, text=True, creationflags=NO_WINDOW)
     return r.returncode, (r.stdout or "") + (r.stderr or "")
 
 
@@ -90,30 +94,15 @@ def lead_machine() -> str:
 
 
 def beat(machine: str, watch_pid: int) -> None:
+    """Push the lead heartbeat straight to origin without touching HEAD, the index or the working tree.
+    The old version committed in the lead's working tree and pulled with --autostash; on 30 Sep that
+    stashed the render helper's uncommitted film v2 fixes and never restored them."""
     rel = f"machines/{machine}/lead-heartbeat.json"
     hb = {"worker": "claude-lead", "machine": machine, "time": now_iso(), "status": "active",
           "pid": watch_pid, "source": "lead_heartbeat.py"}
-    (REPO_ROOT / rel).write_text(json.dumps(hb, indent=2) + "\n", encoding="utf-8")
-    if (REPO_ROOT / ".git" / "index.lock").exists():
-        log("git busy (index.lock), will commit next round")
-        return
-    git("add", "--", rel)
-    rc, out = git("commit", "-q", "-m", f"heartbeat {machine} lead", "--", rel)
-    if rc != 0:
-        if "nothing to commit" not in out and "no changes added" not in out:
-            log(f"commit failed: {out.strip()[:200]}")
-        return
-    br = git("branch", "--show-current")[1].strip() or "main"
-    for attempt in range(1, PUSH_TRIES + 1):
-        rc, out = git("push", "-q", "origin", "HEAD")
-        if rc == 0:
-            return
-        log(f"push attempt {attempt} failed: {out.strip()[:200]}")
-        rc2, _ = git("pull", "-q", "--rebase", "--autostash", "origin", br)
-        if rc2 != 0:
-            git("rebase", "--abort")
-        time.sleep(random.uniform(1, 4))
-    log("push gave up; the commit goes out with the next push")
+    if not push_files_direct({rel: (json.dumps(hb, indent=2) + "\n").encode("utf-8")}, f"heartbeat {machine} lead",
+                             tries=PUSH_TRIES):
+        log("push gave up; next round tries again")
 
 
 def read_pidfile() -> tuple[int, int] | None:

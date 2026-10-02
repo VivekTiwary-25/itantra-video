@@ -23,8 +23,8 @@ from common import REPO_ROOT, now_iso, read_json, sync_warnings, write_json  # n
 
 ONLINE_MINUTES = 10
 UNPUSHED_WARN_MINUTES = 10
-WIDTH = 55
-NODE_W, AGENT_W, MODEL_W = 13, 15, 16
+WIDTH = 60
+NODE_W, AGENT_W, MODEL_W = 18, 15, 16
 
 
 def parse_time(s):
@@ -88,11 +88,64 @@ def overdue_tasks(now):
     return overdue
 
 
+LANES = ("video", "ppt", "misc")
+
+
+def task_lane(path):
+    try:
+        head = path.read_text(encoding="utf-8", errors="replace")[:1500]
+    except OSError:
+        return None
+    for line in head.splitlines()[1:]:
+        if line.strip() == "---":
+            break
+        if line.lower().startswith("lane:"):
+            return line.split(":", 1)[1].strip().lower()
+    return None
+
+
+def lane_counts():
+    """Tasks with a lane: line, wherever they are queued (own queue or queue/lane-<lane>/)."""
+    counts = {}
+    for f in (REPO_ROOT / "queue").glob("*/*.md"):
+        lane = task_lane(f)
+        if f.parent.name.startswith("lane-"):
+            lane = f.parent.name[5:]
+        if lane not in LANES:
+            continue
+        rdir = REPO_ROOT / "results" / f.stem
+        verdict = (REPO_ROOT / "reviews" / f"{f.stem}.md")
+        if verdict.exists() and "dropped" in verdict.read_text(encoding="utf-8", errors="replace")[:200]:
+            continue
+        rep = rdir / "REPORT.md"
+        if rep.exists():
+            text = rep.read_text(encoding="utf-8", errors="replace")[:600].lower()
+            state = "done" if "status: done" in text else "failed"
+        elif (rdir / "STARTED.json").exists():
+            state = "running"
+        else:
+            state = "queued"
+        counts.setdefault(lane, {}).setdefault(state, 0)
+        counts[lane][state] += 1
+    return counts
+
+
+def supervisor_line(now):
+    st = read_json(REPO_ROOT / "machines" / "supervisor" / "status.json")
+    if not st:
+        return "Supervisor  never seen"
+    t = parse_time(st.get("time"))
+    alive = t and (now - t).total_seconds() < 12 * 60
+    return (f"Supervisor  {'● running' if alive else '○ NOT RUNNING'} (last report {ago(t, now)})"
+            + (f"  · {st['summary']}" if st.get("summary") else ""))
+
+
 def agent_state(worker, info, now, usage):
     """Return (online, detail) using only real files."""
     if info.get("interactive") and not info.get("queue"):  # the lead
         lead_hb = read_json(REPO_ROOT / "machines" / info["machine"] / "lead-heartbeat.json")
-        times = [parse_time((usage or {}).get("updated_at")), parse_time((lead_hb or {}).get("time"))]
+        seen = read_json(REPO_ROOT / "local" / "lead-seen.json")
+        times = [parse_time((usage or {}).get("updated_at")), parse_time((lead_hb or {}).get("time")), parse_time((seen or {}).get("time"))]
         times = [x for x in times if x]
         t = max(times) if times else None
         if t and (now - t).total_seconds() < ONLINE_MINUTES * 60:
@@ -124,11 +177,8 @@ def main() -> None:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     reg = read_json(REPO_ROOT / "machines" / "registry.json", {})
-    if args.as_lead:
-        lead_machine = reg.get("workers", {}).get("claude-lead", {}).get("machine")
-        if lead_machine:
-            write_json(REPO_ROOT / "machines" / lead_machine / "lead-heartbeat.json",
-                       {"worker": "claude-lead", "machine": lead_machine, "time": now_iso(), "status": "active", "pid": os.getppid()})
+    if args.as_lead:  # git-ignored: writing the tracked heartbeat here left the lead's working tree dirty
+        write_json(REPO_ROOT / "local" / "lead-seen.json", {"worker": "claude-lead", "time": now_iso(), "pid": os.getppid()})
     usage = read_json(REPO_ROOT / "local" / "claude-usage.json")
     now = dt.datetime.now(dt.timezone.utc)
     sync_state = read_json(REPO_ROOT / "local" / "sync-state.json") or {}
@@ -144,7 +194,7 @@ def main() -> None:
         warning = push_warning(info, now)
         if warning:
             detail = f"{detail}  {warning}"
-        rows.append((info["machine"], worker, info.get("display_model", "?"), online, detail))
+        rows.append((info["machine"], worker, info.get("display_model", "?"), online, detail, info.get("home_lane")))
 
     pull_stale, sync_msgs = sync_warnings(now)
     out = [heavy,
@@ -153,10 +203,21 @@ def main() -> None:
            "  ▸ activating agent swarm...",
            heavy,
            f"  {'NODE':<{NODE_W}}{'AGENT':<{AGENT_W}}{'MODEL':<{MODEL_W}}STATUS"]
-    for node, agent, model, online, detail in rows:
+
+    def row(r):
+        node, agent, model, online, detail, _ = r
         status = ("● ONLINE  " if online else ("? UNKNOWN " if pull_stale else "○ OFFLINE ")) + detail
-        out.append(f"  {node:<{NODE_W}}{agent:<{AGENT_W}}{model:<{MODEL_W}}{status}")
+        return f"  {node:<{NODE_W}}{agent:<{AGENT_W}}{model:<{MODEL_W}}{status}"
+
+    out += [row(r) for r in rows if not r[5]]  # the lead
+    counts = lane_counts()
+    for lane in LANES:
+        c = counts.get(lane, {})
+        out.append(f"  ── {lane.upper()} lane · queued {c.get('queued', 0)} · running {c.get('running', 0)} · done {c.get('done', 0)} "
+                   f"· failed {c.get('failed', 0)}")
+        out += [row(r) for r in rows if r[5] == lane] or ["  (no home workers; idle workers from other lanes take these)"]
     out += ["  " + task for task in overdue_tasks(now)]
+    out.append("  " + supervisor_line(now))
     out.append(light)
 
     rl = (usage or {}).get("rate_limits") or {}

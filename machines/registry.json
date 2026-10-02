@@ -1,41 +1,126 @@
 {
-  "_note": "Canonical list of machines and workers. Written by claude-lead only. Names must match machine.local.json on each PC.",
+  "_note": "Canonical list of machines and workers. Written by claude-lead only. Names must match machine.local.json in each listener clone. Checked over SSH against every clone's machine.local.json on 2 Oct.",
   "machines": {
     "vivek-pc": {
       "owner": "Vivek",
-      "workers": ["claude-lead", "claude-helper", "codex-vivek"],
-      "listener_workers": ["codex-vivek"]
+      "workers": [
+        "claude-lead",
+        "claude-helper",
+        "codex-vivek"
+      ],
+      "listener_workers": [
+        "codex-vivek"
+      ],
+      "note": "codex-vivek's listener runs in its own clone, separate from the lead's working folder."
     },
     "yash-pc": {
       "owner": "yash",
-      "workers": ["codex-f1"],
-      "listener_workers": ["codex-f1"]
+      "workers": [
+        "codex-f1"
+      ],
+      "listener_workers": [
+        "codex-f1"
+      ]
     },
     "utkarsh-pc": {
       "owner": "utkarsh",
-      "workers": ["codex-f2"],
-      "listener_workers": ["codex-f2"]
+      "workers": [
+        "codex-f2"
+      ],
+      "listener_workers": [
+        "codex-f2"
+      ]
     },
     "yojitth-pc": {
       "owner": "yojitth",
-      "workers": ["claude-second"],
-      "listener_workers": ["claude-second"]
+      "workers": [
+        "claude-second"
+      ],
+      "listener_workers": [
+        "claude-second"
+      ]
     },
     "yojitth-codex-pc": {
       "owner": "yojitth",
-      "note": "Same physical PC as yojitth-pc, separate clone and listener so Codex runs in parallel with claude-second.",
-      "workers": ["codex-yojitth"],
-      "listener_workers": ["codex-yojitth"]
+      "note": "Same physical laptop as yojitth-pc: a separate clone and listener running the team's chmod777 Codex account, in parallel with claude-second.",
+      "workers": [
+        "codex-yojitth"
+      ],
+      "listener_workers": [
+        "codex-yojitth"
+      ]
     }
   },
   "workers": {
-    "claude-lead":   { "machine": "vivek-pc",   "cli": "claude", "role": "lead foreman",   "queue": false, "interactive": true, "display_model": "Opus", "swarm": true },
-    "claude-helper": { "machine": "vivek-pc",   "cli": "claude", "role": "sonnet subagents inside the lead's session", "queue": false, "interactive": true, "swarm": false },
-    "codex-vivek":   { "machine": "vivek-pc",   "cli": "codex",  "role": "worker; final renders", "queue": true, "display_model": "GPT-6 Sol/Luna", "swarm": true },
-    "codex-f1":      { "machine": "yash-pc", "cli": "codex",  "role": "worker", "queue": true, "display_model": "GPT-6 Sol/Luna", "swarm": true },
-    "codex-f2":      { "machine": "utkarsh-pc", "cli": "codex",  "role": "worker", "queue": true, "display_model": "GPT-6 Sol/Luna", "swarm": true },
-    "claude-second": { "machine": "yojitth-pc", "cli": "claude", "role": "second foreman", "queue": true, "display_model": "Opus", "swarm": true },
-    "codex-yojitth": { "machine": "yojitth-codex-pc", "cli": "codex",  "role": "worker", "queue": true, "display_model": "GPT-6 Sol/Luna", "swarm": true }
+    "claude-lead": {
+      "machine": "vivek-pc",
+      "cli": "claude",
+      "role": "lead foreman",
+      "queue": false,
+      "interactive": true,
+      "display_model": "Opus",
+      "swarm": true
+    },
+    "claude-helper": {
+      "machine": "vivek-pc",
+      "cli": "claude",
+      "role": "sonnet subagents inside the lead's session",
+      "queue": false,
+      "interactive": true,
+      "swarm": false
+    },
+    "codex-vivek": {
+      "machine": "vivek-pc",
+      "cli": "codex",
+      "role": "worker; final renders",
+      "queue": true,
+      "display_model": "GPT-6 Sol/Luna",
+      "swarm": true,
+      "home_lane": "video"
+    },
+    "codex-f1": {
+      "machine": "yash-pc",
+      "cli": "codex",
+      "role": "worker",
+      "queue": true,
+      "display_model": "GPT-6 Sol/Luna",
+      "swarm": true,
+      "home_lane": "video"
+    },
+    "codex-f2": {
+      "machine": "utkarsh-pc",
+      "cli": "codex",
+      "role": "worker",
+      "queue": true,
+      "display_model": "GPT-6 Sol/Luna",
+      "swarm": true,
+      "home_lane": "ppt"
+    },
+    "claude-second": {
+      "machine": "yojitth-pc",
+      "cli": "claude",
+      "role": "second foreman",
+      "queue": true,
+      "display_model": "Opus",
+      "swarm": true,
+      "home_lane": "misc"
+    },
+    "codex-yojitth": {
+      "machine": "yojitth-codex-pc",
+      "cli": "codex",
+      "role": "worker (team chmod777 Codex account)",
+      "queue": true,
+      "display_model": "GPT-6 Sol/Luna",
+      "swarm": true,
+      "home_lane": "ppt"
+    }
   },
-  "banned_models": ["astra"]
+  "banned_models": [
+    "astra"
+  ],
+  "lanes": {
+    "video": "film edits, renders, intro",
+    "ppt": "slide diagrams and text specs (deck itself stays on vivek-pc, never in git)",
+    "misc": "reviews, tooling, research"
+  }
 }

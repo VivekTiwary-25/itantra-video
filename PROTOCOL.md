@@ -65,6 +65,7 @@ local/                     git-ignored: renders, logs, scratch, machine.local.js
 id: T0042
 title: Glass panel, still frames v1
 worker: codex-f1
+lane: video
 model: gpt-6-sol
 effort: high
 batch: 3
@@ -91,8 +92,13 @@ Checkable conditions, e.g. "results/T0042/still-2s.png shows the full problem st
 Film rules that apply to this task.
 ```
 
+Every task also has a `lane:` line: `video`, `ppt` or `misc`.
+
 Rules:
 - `worker` decides who does it. Nobody else touches it. Only the lead reassigns, by writing a new task with `redo_of`.
+- **Lanes.** Each worker has a home lane (`home_lane` in the registry). A task for no one in particular goes to `queue/lane-<lane>/<id>.md` with `worker: any`. A listener takes its own queue first, then its home lane's pool, then the other lanes' pools, so an idle worker never waits while any lane has work. Optional limits on a pool task: `cli: codex|claude`, `machine: <name>`. A pool task only starts once its `STARTED.json` is on GitHub, so two machines can never both run it.
+- A queued task is cancelled by `reviews/<id>.md` with `verdict: dropped`; listeners skip it.
+- **Private files (PPT).** The deck and its text are never committed. The lead copies private inputs with `python tools/swarm.py send <id> <files>` to `local/private-in/<id>/` on every clone; a task writes private outputs to `local/private-out/<id>/` (git-ignored) and its REPORT.md says only what was made, never the deck text. The lead collects them with `python tools/swarm.py fetch <id>`.
 - `writes` is the complete list of paths the worker may change. Default: `results/<id>/` only.
 - `model` and `effort` are passed straight to the CLI by the listener.
 - A task ID is never reused.
@@ -136,6 +142,9 @@ Anything that goes into the actual film is rendered on vivek-pc (by `codex-vivek
 - **Codex usage:** if `codex exec --json` events include rate-limit info, the listener records it in the heartbeat. Otherwise it's handled reactively: a rate-limit error puts the worker in `rate_limited_until`, and the lead reallocates. On vivek-pc the lead can also open Codex, run `/status`, and read a screenshot.
 - **Machine silent for more than 15 minutes** (stale heartbeat) with a queued task: the lead reassigns that task elsewhere.
 - **Task past its `timeout_min`:** the listener kills it and reports `failed`.
+- **Starting the swarm:** `python tools/swarm.py start` (on vivek-pc) starts every listener over SSH without a window, detached from the SSH session, plus the supervisor. Host details live only in the git-ignored `local/swarm/<project>.json`. `swarm.py status` / `stop` work the same way. Each listener clone is owned by its listener: nobody edits files there by hand (codex-vivek has its own clone, separate from the lead's folder).
+- **Supervisor** (`tools/supervisor.py`, vivek-pc, every minute over SSH): restarts crashed or hung listeners, aborts stuck rebases, saves a dirty idle clone to a named stash (never dropped), kills a worker CLI silent for 20 min, queues one redo for a task that failed without a real report, moves a rate-limited or unreachable worker's queued tasks to the lane pools, and after 15 min redoes tasks that were running on a machine that lost its network. Only a machine losing its network stops its share of the work. Its public status is `machines/supervisor/status.json`; the banner shows it.
+- **Commits that are not task results** (lead heartbeat, supervisor) are pushed with `common.push_files_direct`, which never touches a working tree.
 
 ## 8. Foreman-to-foreman
 

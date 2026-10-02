@@ -59,6 +59,7 @@ last_heartbeat = 0.0
 warned_blocked: set[str] = set()
 restarting = False
 RESTART_CODE = 75
+STOP_FLAG = REPO_ROOT / "local" / "listener.stop"  # written by `swarm stop`; tools/run-listener.cmd does not restart while it exists
 
 
 def source_stamp() -> str:
@@ -184,14 +185,25 @@ def has_unpushed_results() -> bool:
         return False
 
 
+def stash_count() -> int:
+    return len([l for l in git("stash", "list")[1].splitlines() if l.strip()])
+
+
 def pull_rebase() -> tuple[int, str]:
-    """Time out only the network fetch; let the local rebase finish or abort cleanly."""
+    """Time out only the network fetch; let the local rebase finish or abort cleanly.
+    Listener clones should be clean. If an autostash cannot be put back, say so loudly (local/autostash-left.flag,
+    read by the supervisor) instead of leaving the work silently in the stash list, as happened on 30 Sep."""
     rc, out = git(*NET, "fetch", "origin", branch(), timeout=NET_TIMEOUT)
     if rc != 0:
         return rc, out
+    before = stash_count()
     rc, rebase_out = git("rebase", "--autostash", "FETCH_HEAD", timeout=None)
     if rc != 0:
         git("rebase", "--abort", timeout=None)
+    if stash_count() > before:
+        flag = REPO_ROOT / "local" / "autostash-left.flag"
+        flag.write_text(f"{now_iso()} local changes could not be re-applied after a pull; they are in stash@{{0}}\n", encoding="utf-8")
+        log("WARNING: local uncommitted changes could not be re-applied after the pull; they are kept in stash@{0}")
     return rc, out + rebase_out
 
 
@@ -306,20 +318,44 @@ def deps_ready(task_id: str, deps: list[str]) -> bool:
     return True
 
 
-def next_task(worker: str) -> Path | None:
-    qdir = REPO_ROOT / "queue" / worker
-    if not qdir.is_dir():
-        return None
-    files = sorted((f for f in qdir.glob("*.md")), key=lambda f: id_sort_key(f.stem))
-    for f in files:
-        rid = f.stem
-        rdir = REPO_ROOT / "results" / rid
-        if (rdir / "STARTED.json").exists() or (rdir / "REPORT.md").exists():
+LANES = ("video", "ppt", "misc")
+
+
+def lane_order(worker: str) -> list[str]:
+    """Home lane first, then the others: an idle worker may take tasks from any lane."""
+    home = REGISTRY.get("workers", {}).get(worker, {}).get("home_lane")
+    return ([home] if home in LANES else []) + [l for l in LANES if l != home]
+
+
+def runnable(f: Path, worker: str, pool: bool) -> bool:
+    rid = f.stem
+    rdir = REPO_ROOT / "results" / rid
+    if (rdir / "STARTED.json").exists() or (rdir / "REPORT.md").exists():
+        return False
+    if review_verdict(rid) == "dropped":  # the lead cancels a queued task by writing reviews/<id>.md verdict: dropped
+        return False
+    fm, _ = parse_frontmatter(f.read_text(encoding="utf-8", errors="replace"))
+    if pool:  # a lane task may limit who takes it: cli: codex|claude, machine: <name>
+        winfo = REGISTRY.get("workers", {}).get(worker, {})
+        if fm.get("cli") not in (None, "any", winfo.get("cli")):
+            return False
+        if fm.get("machine") not in (None, "any", MACHINE):
+            return False
+        if fm.get("worker") not in (None, "any", worker):
+            return False
+    return deps_ready(rid, fm.get("depends_on") or [])
+
+
+def next_task(worker: str) -> tuple[Path, bool] | None:
+    """The worker's own queue first, then the lane pools queue/lane-<lane>/ (home lane first).
+    Returns (task file, is_pool_task)."""
+    qdirs = [(REPO_ROOT / "queue" / worker, False)] + [(REPO_ROOT / "queue" / f"lane-{l}", True) for l in lane_order(worker)]
+    for qdir, pool in qdirs:
+        if not qdir.is_dir():
             continue
-        fm, _ = parse_frontmatter(f.read_text(encoding="utf-8", errors="replace"))
-        if not deps_ready(rid, fm.get("depends_on") or []):
-            continue
-        return f
+        for f in sorted(qdir.glob("*.md"), key=lambda f: id_sort_key(f.stem)):
+            if runnable(f, worker, pool):
+                return f, pool
     return None
 
 
@@ -511,10 +547,10 @@ def build_command(worker: str, fm: dict, rid: str, prompt_file_hint: str) -> tup
     return cmd, cli
 
 
-def build_prompt(worker: str, cli: str, rid: str) -> str:
+def build_prompt(worker: str, cli: str, rid: str, task_rel: str) -> str:
     guide = "AGENTS.md" if cli == "codex" else "CLAUDE.md"
     return (f"You are worker {worker} on machine {MACHINE}. Your machine config is machine.local.json. "
-            f"Read {guide}, PROTOCOL.md and brief/decisions.md, then do the task in queue/{worker}/{rid}.md exactly. "
+            f"Read {guide}, PROTOCOL.md and brief/decisions.md, then do the task in {task_rel} exactly. "
             f"Finish by writing results/{rid}/REPORT.md.")
 
 
@@ -639,9 +675,10 @@ def guard_paused() -> dict[str, str]:
 
 
 # ---------------------------------------------------------------- run one task
-def run_task(worker: str, task_file: Path, _healed: bool = False) -> None:
+def run_task(worker: str, task_file: Path, _healed: bool = False, pool: bool = False) -> None:
     global current_task
     rid = task_file.stem
+    task_rel = task_file.relative_to(REPO_ROOT).as_posix()
     fm, _ = parse_frontmatter(task_file.read_text(encoding="utf-8", errors="replace"))
     rdir = REPO_ROOT / "results" / rid
     rdir.mkdir(parents=True, exist_ok=True)
@@ -656,7 +693,7 @@ def run_task(worker: str, task_file: Path, _healed: bool = False) -> None:
         problem = ("refused", f"Model `{model}` contains 'astra'. GPT-6 Astra is banned (PROTOCOL.md section 5, rule 1). Nothing was run.")
     elif not SAFE_TOKEN.match(model) or not SAFE_TOKEN.match(effort):
         problem = ("failed", f"Model `{model}` or effort `{effort}` contains characters that are not allowed. Nothing was run.")
-    elif fm.get("worker") not in (None, worker):
+    elif not pool and fm.get("worker") not in (None, worker):
         problem = ("failed", f"Task says worker `{fm.get('worker')}` but it is in queue/{worker}/. Nothing was run.")
     if problem:
         status, why = problem
@@ -685,8 +722,18 @@ def run_task(worker: str, task_file: Path, _healed: bool = False) -> None:
     (rdir / "STARTED.json").write_text(json.dumps({
         "id": rid, "machine": MACHINE, "worker": worker, "time": now_iso(), "model": model,
         "effort": effort, "pid": os.getpid(), "timeout_min": timeout_min}, indent=2) + "\n", encoding="utf-8")
-    commit_paths([f"results/{rid}/STARTED.json"], f"start {rid} {msg_tail}")
-    push_with_retries()
+    start_msg = f"start {rid} {msg_tail}"
+    committed = commit_paths([f"results/{rid}/STARTED.json"], start_msg)
+    pushed = push_with_retries()
+    if pool and not pushed:
+        # Lane tasks are open to every worker: only run one once our claim is on GitHub. If another listener
+        # claimed it first (its STARTED.json makes our rebase conflict) or the network is down, undo our claim.
+        if committed and git("log", "-1", "--format=%s")[1].strip() == start_msg:
+            git("reset", "-q", "--keep", "HEAD~1")
+        (rdir / "STARTED.json").unlink(missing_ok=True)
+        current_task = None
+        log(f"{rid}: could not publish the claim (taken by another worker, or no network); not running it")
+        return
     write_heartbeat("busy")
     log(f"{rid}: starting on {worker} with {model}/{effort}, timeout {timeout_min} min")
 
@@ -699,7 +746,7 @@ def run_task(worker: str, task_file: Path, _healed: bool = False) -> None:
     exit_code = -1
     try:
         cmd, cli = build_command(worker, fm, rid, "")
-        prompt = build_prompt(worker, cli, rid)
+        prompt = build_prompt(worker, cli, rid, task_rel)
         env = dict(os.environ, FOOTAGE_ROOT=FOOTAGE_ROOT, RENDERS_DIR=str(RENDERS_DIR), MACHINE=MACHINE,
                    WORKER=worker, TASK_ID=rid, HYPERFRAMES_NO_TELEMETRY="1", DO_NOT_TRACK="1")
         env["PATH"] = worker_path(read_json(REPO_ROOT / "machine.local.json", CFG), env.get("PATH", ""))  # re-read: path_prepend edits apply at once
@@ -745,7 +792,7 @@ def run_task(worker: str, task_file: Path, _healed: bool = False) -> None:
             and out_log.exists() and heal_session(out_log.read_text(encoding="utf-8", errors="replace"))):
         log(f"{rid}: retrying once after fixing the session")
         current_task = None
-        return run_task(worker, task_file, _healed=True)
+        return run_task(worker, task_file, _healed=True, pool=False)  # the claim is already on GitHub
 
     # --- after exit
     tail = tail_lines(out_log)
@@ -887,10 +934,11 @@ def main() -> None:
                 until = rate_until.get(worker)
                 if until and until > dt.datetime.now(dt.timezone.utc):
                     continue
-                task = next_task(worker)
-                if task:
+                found = next_task(worker)
+                if found:
+                    task, pool = found
                     try:
-                        run_task(worker, task)
+                        run_task(worker, task, pool=pool)
                     except KeyboardInterrupt:
                         raise
                     except Exception as e:  # noqa: BLE001
@@ -904,7 +952,9 @@ def main() -> None:
                         push_with_retries()
                     ran = True
                     break
-            if args.once:
+            if args.once or STOP_FLAG.exists():
+                if STOP_FLAG.exists():
+                    log("local/listener.stop found: stopping (swarm stop)")
                 break
             if ran:
                 sync()
@@ -915,7 +965,7 @@ def main() -> None:
                 continue
             wait = SYNC_EVERY_S + random.uniform(0, 8)
             end = time.time() + wait
-            while time.time() < end:
+            while time.time() < end and not STOP_FLAG.exists():
                 time.sleep(1)
                 if heartbeat_due():
                     write_heartbeat()
