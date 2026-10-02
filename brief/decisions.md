@@ -32,6 +32,11 @@ Everything here was agreed with Vivek. Treat it as current until Vivek changes i
 - Footage lives outside the repo (in a separate `footage` folder on each machine, set as `footage_root` in `machine.local.json`) and is never committed.
 - Audio: `normalpart2` to `normalpart5` have no separate audio on purpose. Any voice over them is narration added later. The other clips (`normalpart1`, `normalpart6`, `sospart1-2`, `vachna part1-2`) each have a matching audio file. Match file names ignoring case (e.g. `Normalpart6.mp3`).
 
+## Decision 3 Oct 2026 (Vivek): multi-hop relay WAS tested
+- A 6-hop Bluetooth LE relay was demonstrated on real phones on 28 Sep 2026.
+- The old rule "nothing may claim the multi-hop relay was tested or measured" (discussion/scene2-sonar/001-claude-lead.md) is withdrawn. The film may say multi-hop relay works on real phones, e.g. "6 hops, shown on real phones".
+- Still don't invent numbers: only claims the deck backs (6 hops on real phones, 28 Sep 2026). The relay callouts on the people in scene 2 are still a visualisation of how it works, not footage of that test.
+
 ## Still missing (ask Vivek when needed)
 - Team ID for the title card.
 - The exact official problem-statement text (copied from the SIH portal).
