@@ -343,7 +343,15 @@ def runnable(f: Path, worker: str, pool: bool) -> bool:
             return False
         if fm.get("worker") not in (None, "any", worker):
             return False
+    import importlib.util
+    if any(importlib.util.find_spec(m) is None for m in (fm.get("requires") or [])):  # e.g. requires: [pptx]
+        return False
     return deps_ready(rid, fm.get("depends_on") or [])
+
+
+def for_cli(fm: dict, key: str, cli: str):
+    """model / effort for this CLI: `model_codex:` / `model_claude:` win over `model:` (lane tasks can go to either)."""
+    return fm.get(f"{key}_{cli}") or fm.get(key)
 
 
 def next_task(worker: str) -> tuple[Path, bool] | None:
@@ -529,8 +537,8 @@ def build_command(worker: str, fm: dict, rid: str, prompt_file_hint: str) -> tup
     exe = list(override) if isinstance(override, list) else ([override] if override else [which(cli)])
     if not exe[0]:
         raise RuntimeError(f"'{cli}' was not found on PATH. Run tools/doctor.py.")
-    model = fm.get("model") or ("opus" if cli == "claude" else "gpt-6-sol")
-    effort = fm.get("effort") or ("high" if cli == "claude" else "medium")
+    model = for_cli(fm, "model", cli) or ("opus" if cli == "claude" else "gpt-6-sol")
+    effort = for_cli(fm, "effort", cli) or ("high" if cli == "claude" else "medium")
     last_msg = str(REPO_ROOT / "results" / rid / "last-message.md")
     if cli == "codex":
         cmd = [*exe, "exec", "-m", model, "-c", f'model_reasoning_effort="{effort}"',
@@ -683,8 +691,8 @@ def run_task(worker: str, task_file: Path, _healed: bool = False, pool: bool = F
     rdir = REPO_ROOT / "results" / rid
     rdir.mkdir(parents=True, exist_ok=True)
     cli = REGISTRY.get("workers", {}).get(worker, {}).get("cli", "codex")
-    model = str(fm.get("model") or ("opus" if cli == "claude" else "gpt-6-sol"))
-    effort = str(fm.get("effort") or ("high" if cli == "claude" else "medium"))
+    model = str(for_cli(fm, "model", cli) or ("opus" if cli == "claude" else "gpt-6-sol"))
+    effort = str(for_cli(fm, "effort", cli) or ("high" if cli == "claude" else "medium"))
     msg_tail = f"({worker}@{MACHINE})"
 
     # --- refusals: Astra ban, bad values, wrong worker
