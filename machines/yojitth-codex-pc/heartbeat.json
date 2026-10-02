@@ -1,16 +1,23 @@
 {
   "machine": "yojitth-codex-pc",
-  "time": "2026-10-02T10:20:25Z",
-  "status": "busy",
-  "current_task": "P0101",
+  "time": "2026-10-02T10:24:57Z",
+  "status": "idle",
+  "current_task": null,
   "workers": [
     "codex-yojitth"
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
   "listener_pid": 23756,
-  "last_task_usage": null,
+  "last_task_usage": {
+    "seen_at": "2026-10-02T10:24:50Z",
+    "input_tokens": 234682,
+    "cached_input_tokens": 217472,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 1477,
+    "reasoning_output_tokens": 498
+  },
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-02T10:20:25Z"
+  "last_push_ok": "2026-10-02T10:24:57Z"
 }
