@@ -1,0 +1,9 @@
+{
+  "note": "Times are seconds from each prepared slot's first frame. All slots 30 fps H.264, silent (iTantra TTS is laid by the scene builds at play_at + 0.15 s).",
+  "yash_app": {"path": "RENDERS:scene2/app/yash_app.mp4", "raw": "RENDERS:scene2/app/yash_take.mkv", "raw_in": 6.21, "duration": 20.866667, "frames": 626, "size": "1080x2400", "status_bar": "kept (no call icon in this recording)", "notification_at": 3.0, "log_entry_at": 5.2, "play_at": 7.63, "ptt_down": 12.13, "ptt_up": 15.33, "sent_at": 18.87, "tts": "RENDERS:tts_itantra/tts_msg.wav at 7.78"},
+  "vivek_app": {"path": "RENDERS:scene3/app/vivek_app.mp4", "raw": "RENDERS:scene3/app/vivek_take.mkv", "raw_in": 4.75, "duration": 21.366667, "frames": 641, "size": "1080x2290", "status_bar": "cropped (top 110 px) because a call icon appears in it after Accept", "accept_at": 2.6, "log_entry_at": 5.02, "play_at": 7.63, "ptt_down": 12.76, "ptt_up": 16.22, "sent_at": 19.77, "tts": "RENDERS:tts_itantra/tts_sos.wav at 7.78"},
+  "vachana_send": {"path": "RENDERS:scene2/app/vachana_send.mp4", "raw_in": 1.55, "duration": 13.133333, "size": "1080x2290", "status_bar": "cropped (v1 slot, unchanged)", "ptt_down": 0.08, "ptt_up": 5.24, "sent_at": 11.98},
+  "maps": {"path": "RENDERS:scene2/app/maps_fallback.mp4", "duration": 3.5, "size": "1080x2400", "status_bar": "drawn card, no phone status bar"},
+  "vachana_sos": {"path": "RENDERS:scene3/app/vachana_sos.mp4", "raw_in": 0.64, "duration": 12.966667, "size": "1080x2290", "status_bar": "cropped (v1 slot, unchanged)", "listen_at": 1.4, "send_at": 11.23},
+  "vachana_response": {"path": "RENDERS:scene3/app/vachana_response.mp4", "raw_in": 4.33, "duration": 6.966667, "size": "1080x2290", "status_bar": "cropped (T0031 re-prep); v2 uses only the first 6.967 s of the 9.467 s file", "notification_tap_at": 2.5, "opened_at": 4.96}
+}
