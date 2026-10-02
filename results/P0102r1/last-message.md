@@ -1,0 +1,1 @@
+I couldn’t complete P0102r1. The local runner timed out before I could read the required instructions or task file, and it also failed when I tried to write `results/P0102r1/REPORT.md`. No task artifact or report was created. The machine’s local runner needs to be restored before I can continue.
