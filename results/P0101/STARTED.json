@@ -1,0 +1,10 @@
+{
+  "id": "P0101",
+  "machine": "yojitth-codex-pc",
+  "worker": "codex-yojitth",
+  "time": "2026-10-02T10:20:21Z",
+  "model": "gpt-6-sol",
+  "effort": "high",
+  "pid": 23756,
+  "timeout_min": 90
+}
