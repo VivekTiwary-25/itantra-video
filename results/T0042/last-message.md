@@ -1,0 +1,3 @@
+T0042 is complete. The [intro scaffold](<REPO>/film/intro30/scene/build.py), [540p placeholder preview](<REPO>/results/T0042/preview/intro30-placeholder-540p.mp4), stills, and [REPORT.md](<REPO>/results/T0042/REPORT.md) are ready. HyperFrames check and the production guard passed.
+
+**TLDR:** The 30-second scaffold is ready for footage. The report lists every required slot and notes that the real build also needs measured phone-screen corners and the local RNNoise models.

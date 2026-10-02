@@ -1,0 +1,27 @@
+{
+  "fps": 30,
+  "duration": 30,
+  "panel_top": 64,
+  "shots": [
+    {"id": "campus_wide", "label": "Empty campus at sunrise", "clip": "", "in": null, "out": null, "start": 0, "dur": 3, "grade": "V1"},
+    {"id": "path_walk", "label": "Chest-height walk along empty path", "clip": "", "in": null, "out": null, "start": 3, "dur": 3, "grade": "V1"},
+    {"id": "stairs_plant", "label": "Front: stairs, plant, look around", "clip": "", "in": null, "out": null, "start": 6, "dur": 4, "grade": "V1"},
+    {"id": "phone_out", "label": "Front: take phone out; omit password", "clip": "", "in": null, "out": null, "start": 10, "dur": 2, "grade": "V1"},
+    {"id": "airplane_mode", "label": "Over shoulder: airplane mode on", "clip": "", "in": null, "out": null, "start": 12, "dur": 2, "grade": "V1"},
+    {"id": "push_to_talk", "label": "Over shoulder: press and hold PTT; cut before release or baked text", "clip": "", "in": null, "out": null, "start": 14, "dur": 4, "grade": "V1"},
+    {"id": "short_intro", "label": "Short intro to camera at stairs", "clip": "", "in": null, "out": null, "start": 18, "dur": 10, "grade": "V1"},
+    {"id": "handoff", "label": "Let's see it work; panel grows to title", "clip": "", "in": null, "out": null, "start": 28, "dur": 2, "grade": "V1"}
+  ],
+  "screen": {
+    "id": "phone_screen", "clip": "", "in": null, "out": null, "start": 12, "dur": 6,
+    "corners": [[1310, 245], [1540, 225], [1570, 750], [1320, 770]],
+    "note": "Replace this rough preview quad with four measured phone-screen corners (TL, TR, BR, BL) after footage arrives. Use a clean USB recording; never show baked transcription after PTT release."
+  },
+  "sound": [
+    {"id": "campus_ambience", "clip": "", "in": null, "out": null, "start": 0, "dur": 18, "required": false, "note": "South Campus room tone, with no crew speech"},
+    {"id": "footsteps", "clip": "", "in": null, "out": null, "start": 3, "dur": 3, "required": false, "note": "Walking-shot footsteps if usable"},
+    {"id": "stairs_ambience", "clip": "", "in": null, "out": null, "start": 18, "dur": 12, "required": false, "note": "Talking-spot room tone, duck beneath voice"},
+    {"id": "low_hum", "clip": "", "in": null, "out": null, "start": 14, "dur": 4, "required": false, "note": "Optional quiet hum; no music"},
+    {"id": "short_intro_voice", "clip": "", "in": null, "out": null, "start": 18, "dur": 12, "required": true, "note": "Separate clean short-intro take; sync to lips and place 'Let's see it work' at 28s"}
+  ]
+}
