@@ -1,0 +1,1 @@
+I couldn’t start P0102. The local command runner timed out on every attempt, and the computer UI runner exited unexpectedly. I could not read the required files or write `results/P0102/REPORT.md`. No task artifacts were created. Please restore the workspace runner and retry the task.
