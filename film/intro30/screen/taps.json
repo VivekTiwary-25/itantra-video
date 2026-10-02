@@ -1,0 +1,9 @@
+{
+  "quick_settings": {"time": 0.5, "x": 540, "y": 5, "end_x": 540, "end_y": 1000, "duration_ms": 350},
+  "airplane_mode": {"time": 1.5, "x": 0, "y": 0},
+  "close_quick_settings": {"time": 2.2, "x": 540, "y": 1000, "end_x": 540, "end_y": 5, "duration_ms": 350},
+  "open_itantra": {"time": 3.0, "x": 0, "y": 0},
+  "ptt_down": {"time": 4.0, "x": 0, "y": 0},
+  "ptt_up": {"time": 8.0},
+  "cut_before_release_ms": 500
+}

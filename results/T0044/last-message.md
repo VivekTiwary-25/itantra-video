@@ -1,0 +1,3 @@
+T0044 is complete. The [recording script](/<REPO>/film/intro30/screen/record.py) and [placeholder timings](/<REPO>/film/intro30/screen/taps.json) are ready. `--dry-run` passed without a phone; no live recording was attempted. [REPORT.md](/<REPO>/results/T0044/REPORT.md) has Vivek’s exact setup and recording steps.
+
+TLDR: Fill in the take’s times and phone coordinates, then run the dry run before recording.
