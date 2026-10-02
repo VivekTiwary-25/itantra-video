@@ -1,11 +1,11 @@
 {
-  "time": "2026-10-02T10:12:08Z",
+  "time": "2026-10-02T10:18:07Z",
   "summary": "5/5 machines reachable",
   "machines": {
-    "vivek-pc": "restarting",
+    "vivek-pc": "idle",
     "yash-pc": "idle",
-    "utkarsh-pc": "restarting",
-    "yojitth-pc": "idle \u00b7 11 unpushed commit(s)",
-    "yojitth-codex-pc": "idle"
+    "utkarsh-pc": "idle",
+    "yojitth-pc": "idle",
+    "yojitth-codex-pc": "restarting"
   }
 }
