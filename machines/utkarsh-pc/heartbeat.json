@@ -1,7 +1,7 @@
 {
   "machine": "utkarsh-pc",
-  "time": "2026-10-02T10:10:14Z",
-  "status": "idle",
+  "time": "2026-10-02T10:11:32Z",
+  "status": "restarting",
   "current_task": null,
   "workers": [
     "codex-f2"
@@ -12,5 +12,5 @@
   "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-01T09:44:48Z"
+  "last_push_ok": "2026-10-02T10:10:43Z"
 }
