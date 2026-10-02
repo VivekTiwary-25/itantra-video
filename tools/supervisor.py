@@ -5,8 +5,9 @@ Every minute it probes each listener clone over SSH (tools/swarm.py PROBE) and f
   problem                                     detected by                                 fix
   machine unreachable                         3 failed probes in a row (~3 min)           network failure: queued tasks of its workers move to their lane
                                                                                           pool; tasks it was running get a redo in the pool after 15 min
-  listener crashed / never started            no listener process and no run-listener   start it (WMI, survives SSH drops)
-  listener hung                               process alive, heartbeat file > 12 min old  kill it; run-listener.cmd restarts it
+  listener crashed / never started            no listener process and no loop           start it: schtasks /Run itantra-listener (the user's desktop
+                                                                                          session, where Codex works); WMI only if the clone has no task
+  listener hung                               process alive, heartbeat file > 12 min old  kill it; the loop (listener_loop.py / run-listener.cmd) restarts it
   git rebase stuck                            .git/rebase-* older than 5 min              git rebase --abort
   dirty working tree (listener idle)          tracked changes for 10 min, no task         git stash push -m "supervisor autosave ..." (never dropped)
   autostash could not be restored             local/autostash-left.flag                   reported (needs a human: it is someone's work)
@@ -256,7 +257,7 @@ def handle(l: dict, d: dict, state: dict, reg: dict) -> str:
         return "listener started"
     hb_age = d.get("hb_age")
     if d.get("listener_alive") and hb_age is not None and hb_age > HUNG_LISTENER_S:
-        act(l, f"heartbeat {hb_age}s old while the listener runs -> hung, killing it (run-listener restarts it)", KILL_LISTENER, {})
+        act(l, f"heartbeat {hb_age}s old while the listener runs -> hung, killing it (the listener loop restarts it)", KILL_LISTENER, {})
         return "hung listener restarted"
 
     task = d.get("current_task")

@@ -16,12 +16,17 @@ Usage:
   python tools/swarm.py start  [--project P] [--only NAME]   start every listener that is not running (+ the supervisor)
   python tools/swarm.py stop   [--project P] [--only NAME] [--now]   ask listeners to stop (--now also kills them)
   python tools/swarm.py status [--project P]                 one line per listener, straight from the machines
+  python tools/swarm.py install-task [--project P] [--only NAME]   create the scheduled task that runs a listener in the user's desktop session
   python tools/swarm.py keys   [--project P] [--only NAME]   give remote clones a push-only deploy key (see below)
   python tools/swarm.py send   TASK_ID FILE... [--project P] copy private inputs to local/private-in/<id>/ on every clone
   python tools/swarm.py fetch  TASK_ID [--project P]        copy local/private-out/<id>/ back from the clone that ran it
 
-Listeners are launched with WMI (Win32_Process.Create), so they belong to no SSH session and keep running
-after the connection drops. They run tools/run-listener.cmd, which restarts the listener whenever it exits.
+Listeners belong to no SSH session, so they keep running after the connection drops. Codex needs the user's
+desktop session (session 1): started over SSH/WMI a listener lands in session 0 and every Codex shell command
+fails with "timed out ... connecting runner pipe-in". So `install-task` creates a scheduled task (default name
+"itantra-listener", override with "task" in the listener's entry) that runs tools/listener_loop.py with
+pythonw.exe, "run only when the user is logged on". `start` and the supervisor trigger it with schtasks /Run.
+A clone without that task falls back to WMI and tools/run-listener.cmd (session 0: fine for Claude, not for Codex).
 
 Why deploy keys: in a key-based SSH login Windows cannot open the user's credential store, so git pushes over
 HTTPS fail for anything started over SSH. `keys` makes an ed25519 key inside the clone's git-ignored local/
@@ -118,7 +123,7 @@ $r.lock_pid = $null
 if (Test-Path local\listener.lock) { $r.lock_pid = [int]((Get-Content local\listener.lock -Raw).Trim()) }
 $lp = $procs | Where-Object { $_.ProcessId -eq $r.lock_pid -and $_.CommandLine -match 'listener\.py' }
 $r.listener_alive = [bool]$lp
-$r.loop_alive = [bool]($procs | Where-Object { $_.Name -eq 'cmd.exe' -and $_.CommandLine -like "*$repo\tools\run-listener.cmd*" })
+$r.loop_alive = [bool]($procs | Where-Object { ($_.Name -eq 'cmd.exe' -and $_.CommandLine -like "*$repo\tools\run-listener.cmd*") -or ($_.Name -match '^pythonw?\.exe$' -and $_.CommandLine -like "*$repo\tools\listener_loop.py*") })
 $kids = @()
 if ($lp) {
   $todo = @($r.lock_pid)
@@ -142,22 +147,34 @@ $r.push_url = (git remote get-url --push origin) -replace '//[^@/]*@', '//'
 $r | ConvertTo-Json -Compress -Depth 3
 """
 
-START = r"""
+START_PULL = r"""
 Set-Location $repo
 $env:GIT_TERMINAL_PROMPT = '0'
 git pull -q --ff-only origin main 2>&1 | Out-Null
 if ($LASTEXITCODE -ne 0 -and -not (git status --porcelain --untracked-files=no)) { git pull -q --rebase origin main 2>&1 | Out-Null }
 if (-not (Test-Path tools\run-listener.cmd)) { "FAILED: could not update the clone (tools\run-listener.cmd missing)"; exit }
+"""
+
+START_LAUNCH = r"""
+Set-Location $repo
 New-Item -ItemType Directory -Force local | Out-Null
 Remove-Item local\listener.stop -ErrorAction SilentlyContinue
 if ($python) { Set-Content -Path local\python.txt -Value $python -Encoding Ascii -NoNewline }
-$running = Get-CimInstance Win32_Process -Filter "Name='cmd.exe'" | Where-Object { $_.CommandLine -like "*$repo\tools\run-listener.cmd*" }
+$running = @(Get-CimInstance Win32_Process | Where-Object { ($_.Name -eq 'cmd.exe' -and $_.CommandLine -like "*$repo\tools\run-listener.cmd*") -or ($_.Name -match '^pythonw?\.exe$' -and $_.CommandLine -like "*$repo\tools\listener_loop.py*") })
 if ($running) { "already running (loop pid $($running[0].ProcessId))"; exit }
+# Preferred: the scheduled task, which runs in the user's desktop session (Codex fails in session 0).
+$null = schtasks.exe /Query /TN $task 2>&1
+if ($LASTEXITCODE -eq 0) {
+  $o = (schtasks.exe /Run /TN $task 2>&1 | Out-String).Trim()
+  if ($LASTEXITCODE -eq 0) { "started via scheduled task $task" } else { "FAILED: schtasks /Run $task : $o" }
+  exit
+}
 $si = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ ShowWindow = [uint16]0 }
 $res = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{
   CommandLine = "cmd.exe /d /c `"$repo\tools\run-listener.cmd`""; CurrentDirectory = $repo; ProcessStartupInformation = $si }
-if ($res.ReturnValue -eq 0) { "started (loop pid $($res.ProcessId))" } else { "FAILED to start: WMI code $($res.ReturnValue)" }
+if ($res.ReturnValue -eq 0) { "started via WMI, session 0 (no scheduled task $task here; loop pid $($res.ProcessId))" } else { "FAILED to start: WMI code $($res.ReturnValue)" }
 """
+START = START_PULL + START_LAUNCH
 
 STOP = r"""
 Set-Location $repo
@@ -165,6 +182,8 @@ New-Item -ItemType Directory -Force local | Out-Null
 Set-Content -Path local\listener.stop -Value 'swarm stop' -Encoding Ascii
 if ($now -eq '1') {
   Get-CimInstance Win32_Process -Filter "Name='cmd.exe'" | Where-Object { $_.CommandLine -like "*$repo\tools\run-listener.cmd*" } |
+    ForEach-Object { taskkill /F /T /PID $_.ProcessId | Out-Null }
+  Get-CimInstance Win32_Process | Where-Object { $_.Name -match '^pythonw?\.exe$' -and $_.CommandLine -like "*$repo\tools\listener_loop.py*" } |
     ForEach-Object { taskkill /F /T /PID $_.ProcessId | Out-Null }
   if (Test-Path local\listener.lock) { taskkill /F /T /PID ((Get-Content local\listener.lock -Raw).Trim()) | Out-Null }
   "stopped now"
@@ -180,8 +199,41 @@ def probe(l: dict, timeout: int = 90) -> dict:
     return data
 
 
+TASK_NAME = "itantra-listener"
+
+# The scheduled task that runs listener_loop.py with pythonw.exe in the logged-on user's desktop session.
+INSTALL_TASK = r"""
+$ErrorActionPreference = 'Stop'
+$py = $python
+if (-not $py -and (Test-Path (Join-Path $repo 'local\python.txt'))) { $py = (Get-Content (Join-Path $repo 'local\python.txt') -Raw).Trim() }
+if (-not $py) { $py = (Get-Command python.exe).Source }
+$pyw = Join-Path (Split-Path $py) 'pythonw.exe'
+if (-not (Test-Path $pyw)) { "FAILED: pythonw.exe not found next to the python given"; exit }
+$loop = Join-Path $repo 'tools\listener_loop.py'
+if (-not (Test-Path $loop)) { "FAILED: tools\listener_loop.py is missing in the clone (pull it first)"; exit }
+$user = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+$action = New-ScheduledTaskAction -Execute $pyw -Argument ('"' + $loop + '"') -WorkingDirectory $repo
+$trigger = New-ScheduledTaskTrigger -Once -At ([datetime]'2099-01-01 00:00')   # dummy: the task is only ever started with schtasks /Run
+$principal = New-ScheduledTaskPrincipal -UserId $user -LogonType Interactive -RunLevel Limited   # run only when the user is logged on
+$settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -MultipleInstances IgnoreNew -Hidden
+Register-ScheduledTask -TaskName $task -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
+"task $task registered (interactive logon only, no time limit, pythonw)"
+"""
+
+
+def task_name(l: dict) -> str:
+    return l.get("task") or TASK_NAME
+
+
+def install_task(l: dict) -> str:
+    rc, out = ps(l.get("host"), INSTALL_TASK, {"repo": l["repo"], "python": l.get("python", ""), "task": task_name(l)})
+    if rc == 255 or (rc != 0 and not out.strip()):
+        return "UNREACHABLE"
+    return out.strip().splitlines()[-1] if out.strip() else f"exit {rc}"
+
+
 def start_one(l: dict) -> str:
-    rc, out = ps(l.get("host"), START, {"repo": l["repo"], "python": l.get("python", "")})
+    rc, out = ps(l.get("host"), START, {"repo": l["repo"], "python": l.get("python", ""), "task": task_name(l)})
     if rc == 255 or (rc != 0 and not out.strip()):
         return "UNREACHABLE"
     return out.strip().splitlines()[-1] if out.strip() else f"exit {rc}"
@@ -315,7 +367,7 @@ def fmt_status(name: str, d: dict) -> str:
 def main() -> None:
     global CURRENT_PROJECT
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["start", "stop", "status", "keys", "send", "fetch"])
+    ap.add_argument("cmd", choices=["start", "stop", "status", "install-task", "keys", "send", "fetch"])
     ap.add_argument("args", nargs="*")
     ap.add_argument("--project")
     ap.add_argument("--only")
@@ -339,6 +391,9 @@ def main() -> None:
         elif a.cmd == "status":
             for l, d in zip(ls, ex.map(probe, ls)):
                 print(fmt_status(l["name"], d))
+        elif a.cmd == "install-task":
+            for l, res in zip(ls, ex.map(install_task, ls)):
+                print(f"{l['name']:<18} {res}")
         elif a.cmd == "keys":
             for l, res in zip(ls, ex.map(lambda l: keys_one(l, cfg["github_repo"]), ls)):
                 print(f"{l['name']:<18} {res}")
