@@ -1,8 +1,7 @@
 {
   "worker": "claude-lead",
   "machine": "vivek-pc",
-  "time": "2026-10-01T11:01:13Z",
+  "time": "2026-10-02T10:00:02Z",
   "status": "active",
-  "pid": 34660,
-  "source": "lead_heartbeat.py"
+  "source": "test"
 }
