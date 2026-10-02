@@ -29,7 +29,7 @@ html,body{margin:0;width:1920px;height:1080px;background:#05070a;color:#f3f5f8;f
   <div class="scene" id="walk"><video id="walkVideo" class="clip full" src="assets/walk.mp4" data-start="{{WALK_START}}" data-duration="6" data-media-start="0" muted playsinline></video></div>
   <div class="scene app-only" id="maps"><div class="sides"></div><div class="phone"><video id="mapsVideo" class="clip" src="assets/maps.mp4" data-start="{{MAPS_START}}" data-duration="3.5" data-media-start="0" muted playsinline></video><div id="mapLabel">~300 m, walking distance</div></div></div>
   <div class="scene" id="yashFull"><video id="yashFullVideo" class="clip" src="assets/yash.mp4" data-start="{{YASH_BEFORE_NOTIFICATION_START}}" data-duration="2.65" data-media-start="0" muted playsinline></video></div>
-  <div class="split" id="yashSplit"><div class="camera"><div class="cam-bg" id="yashBg" style="background-image:url('assets/yash_mid.jpg')"></div><video id="yashEarly" class="clip" src="assets/yash.mp4" data-start="{{YASH_APP_START}}" data-duration="5.58" data-media-start="2.65" muted playsinline></video><video id="yashReply" class="clip" src="assets/yash.mp4" data-start="{{YASH_REPLY_START}}" data-duration="4.417" data-media-start="8.23" muted playsinline></video></div><div class="right"><div class="phone"><video id="yashAppVideo" class="clip" src="assets/yash_app.mp4" data-start="{{YASH_APP_START}}" data-duration="{{YASH_APP_DURATION}}" data-media-start="0" muted playsinline></video><div class="empty-app"><div class="brand">iTantra</div><div class="bubble"></div><div class="bubble b2"></div></div></div></div></div>
+  <div class="split" id="yashSplit"><div class="camera"><div class="cam-bg" id="yashBg" style="background-image:url('assets/yash_hold_710.jpg')"></div><video id="yashEarly" class="clip" src="assets/yash.mp4" data-start="{{YASH_APP_START}}" data-duration="4.45" data-media-start="2.65" muted playsinline></video><video id="yashReply" class="clip" src="assets/yash.mp4" data-start="{{YASH_REPLY_START}}" data-duration="4.9" data-media-start="7.1" muted playsinline></video></div><div class="right"><div class="phone"><video id="yashAppVideo" class="clip" src="assets/yash_app.mp4" data-start="{{YASH_APP_START}}" data-duration="{{YASH_APP_DURATION}}" data-media-start="0" muted playsinline></video><div class="empty-app"><div class="brand">iTantra</div><div class="bubble"></div><div class="bubble b2"></div></div></div></div></div>
   <div class="scene sonar" id="sonar_a"><video id="sonarAVideo" class="clip" src="assets/sonar_a.mp4" data-start="{{SONAR_A_START}}" data-duration="7" data-media-start="0" muted playsinline></video></div>
   <div class="scene sonar" id="relay_1"><video id="relay1Video" class="clip" src="assets/relay_1.mp4" data-start="{{RELAY_1_START}}" data-duration="6" data-media-start="0" muted playsinline></video></div>
   <div class="scene sonar" id="relay_2"><video id="relay2Video" class="clip" src="assets/relay_2.mp4" data-start="{{RELAY_2_START}}" data-duration="6" data-media-start="0" muted playsinline></video></div>
@@ -59,6 +59,9 @@ function render(t){
     sp.querySelector('.camera').style.width=(1920-688*f)+'px';sp.querySelector('.right').style.transform=`translateX(${688*(1-f)}px)`;sp.querySelector('.right').style.opacity=f;
     const v=sp.querySelector('.camera video'),a=sp.querySelector('.phone video');
     v.style.display=t<by.vachana_send.start+6.03?'block':'none';
+    // T0040: slow 2% push on the held last camera frame (stops with the freeze); first app frame while the phone slides in.
+    sp.querySelector('.cam-bg').style.transform=`scale(${1+.02*clamp((t-by.vachana_send.start-6.03)/(by.vachana_send.end-by.vachana_send.start-6.03))})`;
+    sp.querySelector('.screen-bg').style.backgroundImage=t<by.vachana_send.start+1?"url('assets/vachana_send_first.jpg')":"url('assets/vachana_send_last.jpg')";
     a.style.display=t>=by.vachana_send.start&&t<by.vachana_send.end?'block':'none';
     sp.querySelector('.empty-app').style.opacity=t<by.vachana_send.end?1:0;
   }
@@ -67,8 +70,11 @@ function render(t){
   if(t>=by.yash_before_notification.start&&t<by.yash_before_notification.end)el('yashFull').style.display='block';
   if(t>=by.yash_app.start&&t<by.yash_app.end){const sp=el('yashSplit');sp.style.display='block';
     const dt=t-by.yash_app.start,f=ease(clamp(dt/.5));sp.querySelector('.camera').style.width=(1920-688*f)+'px';sp.querySelector('.right').style.transform=`translateX(${688*(1-f)}px)`;sp.querySelector('.right').style.opacity=f;
-    el('yashEarly').style.display=dt<5.58?'block':'none';el('yashReply').style.display=dt>=12.23&&dt<16.647?'block':'none';
-    el('yashBg').style.backgroundImage=dt>=16.647?"url('assets/yash_end.jpg')":"url('assets/yash_mid.jpg')";
+    el('yashEarly').style.display=dt<4.45?'block':'none';el('yashReply').style.display=dt>=11.1&&dt<16.0?'block':'none';
+    el('yashBg').style.backgroundImage=dt>=16.0?"url('assets/yash_end.jpg')":"url('assets/yash_hold_710.jpg')";
+    // T0040: slow push on the held frames; the reply clip keeps the scale the first hold reached, so nothing jumps.
+    const len=by.yash_app.end-by.yash_app.start,k=1+.02*clamp((dt-4.45)/(11.1-4.45))+.01*clamp((dt-16.0)/(len-16.0));
+    el('yashBg').style.transform=`scale(${k})`;el('yashReply').style.transform=`scale(${k})`;
   }
   for(const n of ['sonar_a','relay_1','relay_2','relay_3','sonar_b'])if(t>=by[n].start&&t<by[n].end)el(n).style.display='block';
   if(t>=by.sonar_b_hold.start)el('sonarHold').style.display='block';

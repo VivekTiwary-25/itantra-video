@@ -1,16 +1,16 @@
 {
   "fps": 30,
-  "duration": 61.93333333333333,
+  "duration": 61.3,
   "segments": [
     {
       "name": "intro",
-      "start": 0,
-      "end": 3,
+      "start": 0.0,
+      "end": 3.0,
       "source": "FOOTAGE:Video/sospart1.mp4"
     },
     {
       "name": "s3_open",
-      "start": 3,
+      "start": 3.0,
       "end": 5.866666666666666,
       "source": "FOOTAGE:Video/sospart1.mp4",
       "source_in": 0
@@ -18,57 +18,63 @@
     {
       "name": "vachana_sos",
       "start": 5.866666666666666,
-      "end": 18.833333333333332,
+      "end": 18.666666666666668,
       "camera": "FOOTAGE:Video/sospart1.mp4",
       "camera_in": 2.866667
     },
     {
       "name": "sos_in",
-      "start": 18.833333333333332,
-      "end": 20.833333333333332
+      "start": 18.666666666666668,
+      "end": 20.666666666666668
     },
     {
       "name": "sos_sonar",
-      "start": 20.833333333333332,
-      "end": 29.833333333333332
+      "start": 20.666666666666668,
+      "end": 29.666666666666668
     },
     {
       "name": "sos_dive",
-      "start": 29.833333333333332,
-      "end": 31.333333333333332
+      "start": 29.666666666666668,
+      "end": 31.166666666666668
     },
     {
       "name": "lab_open",
-      "start": 31.333333333333332,
-      "end": 33.1,
+      "start": 31.166666666666668,
+      "end": 32.46666666666667,
       "source": "FOOTAGE:Video/sospart2.mp4",
-      "source_in": 3
+      "source_in": 3.0
     },
     {
       "name": "vivek_app",
-      "start": 33.1,
-      "end": 54.46666666666667,
+      "start": 32.46666666666667,
+      "end": 53.833333333333336,
       "camera": "FOOTAGE:Video/sospart2.mp4",
-      "camera_in": 4.75
+      "camera_in": 4.3
     },
     {
       "name": "vachana_response",
-      "start": 54.46666666666667,
-      "end": 61.43333333333333
+      "start": 53.833333333333336,
+      "end": 60.8
     },
     {
       "name": "end_hold",
-      "start": 61.43333333333333,
-      "end": 61.93333333333333
+      "start": 60.8,
+      "end": 61.3
     }
   ],
+  "vivek_camera": {
+    "m1_from": 7.5,
+    "m1_to": 8.8,
+    "m2_from": 10.866666666666667,
+    "m2_to": 15.933333333333334
+  },
   "narration_starts": {
     "N5": 3.3,
-    "N6": 21.833333333333332
+    "N6": 21.666666666666668
   },
   "slot_fields": {
     "vachana_sos": {
-      "duration": 12.966667,
+      "duration": 12.8,
       "listen_at": 1.4,
       "send_at": 11.23
     },
@@ -82,7 +88,8 @@
     },
     "vachana_response": {
       "duration": 6.966667,
-      "opened_at": 4.96
+      "opened_at": 4.96,
+      "notification_at": 0.3
     }
   }
 }

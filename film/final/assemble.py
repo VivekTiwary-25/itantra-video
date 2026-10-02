@@ -17,8 +17,8 @@ from pathlib import Path
 # Paths relative to machine.local.json's renders_dir. Change these if render names change.
 SCENES = (
     ("scene1", "scene1/scene1_draft_v3.mp4", None, None),
-    ("scene2", "scene2/scene2_draft_nomusic.mp4", "scene2/scene2_dialogue_sfx.wav", "scene2/scene2_music.wav"),
-    ("scene3", "scene3/scene3_draft.mp4", "scene3/scene3_dialogue_sfx.wav", "scene3/scene3_music.wav"),
+    ("scene2", "scene2/v2/scene2_picture.mp4", "scene2/v2/scene2_dialogue_sfx.wav", "scene2/v2/scene2_music.wav"),
+    ("scene3", "scene3/v2/scene3_picture.mp4", "scene3/v2/scene3_dialogue_sfx.wav", "scene3/v2/scene3_music.wav"),
     ("title", "title/title.mp4", None, None),
 )
 FPS = 30
@@ -196,13 +196,13 @@ def main():
         start_frame += count
 
     total = sum(frames) / FPS
-    dialogue = root / "full_film_v1_dialogue_sfx.wav"
-    music = root / "full_film_v1_music_only.wav"
-    raw_dialogue = root / "full_film_v1_dialogue_raw.tmp.wav"
-    raw_music = root / "full_film_v1_music_raw.tmp.wav"
-    raw_mix = root / "full_film_v1_mix_raw.tmp.wav"
-    mix = root / "full_film_v1_mix.wav"
-    temp_video = root / "full_film_v1_video.tmp.mp4"
+    dialogue = root / "full_film_v2_dialogue_sfx.wav"
+    music = root / "full_film_v2_music_only.wav"
+    raw_dialogue = root / "full_film_v2_dialogue_raw.tmp.wav"
+    raw_music = root / "full_film_v2_music_raw.tmp.wav"
+    raw_mix = root / "full_film_v2_mix_raw.tmp.wav"
+    mix = root / "full_film_v2_mix.wav"
+    temp_video = root / "full_film_v2_video.tmp.mp4"
     method = make_video(paths, streams, frames, temp_video)
     make_stem(paths, [n / FPS for n in frames], raw_dialogue, False)
     make_stem(paths, [n / FPS for n in frames], raw_music, True)
@@ -234,8 +234,8 @@ def main():
     actual_gain = float(normalized_dialogue_loudness["input_i"]) - float(raw_dialogue_loudness["input_i"])
     if abs(actual_gain - gain) > 0.15:
         raise RuntimeError(f"Dialogue gain check failed: requested {gain:.2f} dB, observed {actual_gain:.2f} dB")
-    with_music = root / "full_film_v1.mp4"
-    no_music = root / "full_film_v1_nomusic.mp4"
+    with_music = root / "full_film_v2.mp4"
+    no_music = root / "full_film_v2_nomusic.mp4"
     mux(temp_video, mix, with_music, total)
     mux(temp_video, dialogue, no_music, total)
     for path in (with_music, no_music):
@@ -262,7 +262,7 @@ def main():
                            "dialogue_before": raw_dialogue_loudness,
                            "dialogue_after": normalized_dialogue_loudness},
               "outputs": [p.name for p in (with_music, no_music, music, dialogue, mix)]}
-    (root / "full_film_v1_report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    (root / "full_film_v2_report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     for temp in (raw_mix, raw_dialogue, raw_music, temp_video):
         temp.unlink(missing_ok=True)
     print(f"Done: {total:.3f}s; mix {second_pass['output_i']} LUFS, {second_pass['output_tp']} dBTP; video {method}")

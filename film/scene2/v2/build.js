@@ -93,6 +93,7 @@ function prepareSlots() {
     else {verifyVideo(src,spec.duration,true); linked(src,dst);}
     const v=verifyVideo(dst,spec.duration,true);
     still(dst,path.join(ASSETS,`${name}_last.jpg`),Math.max(0,spec.duration-.08));
+    still(dst,path.join(ASSETS,`${name}_first.jpg`),0);
     result[name]={video:`assets/${name}.mp4`,last:`assets/${name}_last.jpg`,width:Math.round(1000*v.width/v.height),placeholder:missing};
   }
   return result;
@@ -156,7 +157,7 @@ function prepareSonar() {
 function prepareCamera() {
   ffvideo(path.join(ROOT,'Video/normalpart1.mp4'),path.join(ASSETS,'bench.mp4'),0,10.83);
   ffvideo(path.join(ROOT,'Video/normalpart6.mp4'),path.join(ASSETS,'yash.mp4'),0,12.647);
-  for(const [src,out,at] of [['bench.mp4','bench_start.jpg',0],['bench.mp4','bench_end.jpg',10.75],['yash.mp4','yash_mid.jpg',8.23],['yash.mp4','yash_end.jpg',12.55]])
+  for(const [src,out,at] of [['bench.mp4','bench_start.jpg',0],['bench.mp4','bench_end.jpg',10.79],['yash.mp4','yash_hold_710.jpg',7.09],['yash.mp4','yash_end.jpg',12.0]])
     still(path.join(ASSETS,src),path.join(ASSETS,out),at);
   walkPlate();
 }
@@ -168,7 +169,9 @@ function writePage(T,app) {
     const key=name.toUpperCase();
     page=page.replaceAll(`{{${key}_START}}`,String(row.start)).replaceAll(`{{${key}_DURATION}}`,String(+(row.end-row.start).toFixed(3)));
   }
-  page=page.replaceAll('{{YASH_REPLY_START}}',String(+(by.yash_app.start+12.23).toFixed(3)));
+  // T0040 (review 004 point 6): the camera holds on src 7.10 (he is reading the phone) while the message is read aloud,
+  // then resumes from 7.10 so his line (src 8.23) still starts 0.1 s after ptt_down.
+  page=page.replaceAll('{{YASH_REPLY_START}}',String(+(by.yash_app.start+slots.yash_app.ptt_down+.1-1.13).toFixed(3)));
   if(/\{\{[A-Z_]+\}\}/.test(page))throw Error('Unfilled composition placeholder');
   const index=path.join(HERE,'index.html'),timelinePath=path.join(HERE,'timeline.json'),tjson=JSON.stringify(T,null,2)+'\n';
   if(!fs.existsSync(index)||fs.readFileSync(index,'utf8')!==page)fs.writeFileSync(index,page);
@@ -177,7 +180,7 @@ function writePage(T,app) {
 function verifyAll(T) {
   const req={bench:10.83,yash:12.64,walk:6,vachana_send:slots.vachana_send.duration,maps:3.5,yash_app:slots.yash_app.duration,sonar_a:7,relay_1:6,relay_2:6,relay_3:6,sonar_b:6};
   for(const [name,dur] of Object.entries(req)) verifyVideo(path.join(ASSETS,`${name}.mp4`),dur,['vachana_send','maps','yash_app'].includes(name));
-  for(const name of ['bench_start','bench_end','yash_mid','yash_end','sonar_end','vachana_send_last','maps_last','yash_app_last'])
+  for(const name of ['bench_start','bench_end','yash_hold_710','yash_end','sonar_end','vachana_send_last','maps_last','yash_app_last'])
     if(!fs.existsSync(path.join(ASSETS,`${name}.jpg`))) throw Error(`Missing still: ${name}`);
   if(T.segments.at(-1).end!==T.duration) throw Error('Timeline end mismatch');
 }
@@ -224,40 +227,59 @@ function audio(T,app) {
   if(models.every(fs.existsSync)) chain='highpass=f=100:poles=2,arnndn=m=local/models/rnnoise/cb.rnnn,arnndn=m=local/models/rnnoise/sh.rnnn:mix=0.6,'+chain;
   const vach=decode(path.join(ROOT,'Audio/normalpart1.mp3'),chain),yash=decode(path.join(ROOT,'Audio/Normalpart6.mp3'),chain);
   // Rule B: exactly first word - 0.12 through last word + 0.30, 30 ms edges.
-  put(dialogue,vach,by.bench.start-.068+4.83,4.83,9.83);
-  put(dialogue,yash,by.yash_before_notification.start-.3705,0,3.02);
+  const events=[];const ev=(a,len,label)=>events.push([a,a+len,label]);
+  put(dialogue,vach,by.bench.start-.068+4.83,4.83,9.83);ev(by.bench.start-.068+4.83,5.0,'dialogue Vachana message line');
+  // T0040: the word timed at clean 0.00-0.38 ("Oh,", probability 0.36) falls before the camera started and 1.4 s
+  // before the rest of the line; it is most likely the director's cue. The line's energy starts at clean 1.60 s
+  // (the word timing says 1.80), so the window starts at 1.48.
+  put(dialogue,yash,by.yash_before_notification.start-.3705+1.48,1.48,3.02);ev(by.yash_before_notification.start-.3705+1.48,1.54,'dialogue Yash too hot line');
   const replyAt=by.yash_app.start+slots.yash_app.ptt_down+.10;
-  put(dialogue,yash,replyAt-.12,8.48,10.94);
+  put(dialogue,yash,replyAt-.12,8.48,10.94);ev(replyAt-.12,2.46,'dialogue Yash reply line');
   const voiceCfg=path.join(REPO,'film/common/narration.json');
   const voice=fs.existsSync(voiceCfg)?JSON.parse(fs.readFileSync(voiceCfg,'utf8')).voice:'david';
   if(!['david','vivek'].includes(voice))throw Error(`Bad narration voice: ${voice}`);
   for(const [key,at] of Object.entries(T.narration_starts)) {
     const file=voice==='david'?path.join(RENDERS,'scene2/narration/david',`${key}.wav`):path.join(RENDERS,'narration/vivek',`${key}.wav`);
     if(!fs.existsSync(file)) {if(!preview)throw Error(`Missing narration ${voice} ${key}: ${file}`); console.warn(`Preview has no narration ${key}`);continue;}
-    const v=decode(file,'loudnorm=I=-16:TP=-1.5:LRA=11');
+    // T0040: cleaned narration is at -18 LUFS; one static +2 dB gain, no per-clip loudnorm.
+    const v=decode(file).map(x=>x*Math.pow(10,2/20));
     const max={N1:3.4,N2:4.2,N3:1.8}[key];if(v.length/SR>max)console.warn(`${key} exceeds ${max}s: ${v.length/SR}s`);
-    put(dialogue,v,at,0,Math.min(v.length/SR,max));
+    put(dialogue,v,at);ev(at,v.length/SR,'narration '+key);   // never cut a narration line (review 004 point 2)
   }
-  const specs=JSON.parse(fs.readFileSync(path.join(REPO,'film/sound/designs.json'),'utf8'));
-  const sound=id=>synth(specs.find(s=>s.id===id));
-  put(dialogue,sound('sent_a'),by.vachana_send.start+slots.vachana_send.sent_at,0,.32,.28);
-  put(dialogue,sound('message_a'),by.yash_app.start+slots.yash_app.notification_at,0,.62,.28);
-  put(dialogue,sound('sent_a'),by.yash_app.start+slots.yash_app.sent_at,0,.32,.28);
+  // T0040: production cue set (film/sound/make_set.py, T0035) at its suggested gains.
+  const soundDir=path.join(RENDERS,'sound');
+  if(!['notify','sent'].every(n=>fs.existsSync(path.join(soundDir,n+'.wav'))))run('python',[path.join(REPO,'film/sound/make_set.py')]);
+  const cue=(name,at,db)=>{const c=decode(path.join(soundDir,name+'.wav'));put(dialogue,c,at,0,c.length/SR,Math.pow(10,db/20),.002);ev(at,c.length/SR,'sfx '+name);};
+  cue('sent',by.vachana_send.start+slots.vachana_send.sent_at,-10);
+  cue('notify',by.yash_app.start+(slots.yash_app.banner_at??slots.yash_app.notification_at),-9);
+  cue('sent',by.yash_app.start+slots.yash_app.sent_at,-10);
   const tts=path.join(RENDERS,'tts_itantra/tts_msg.wav');
-  if(fs.existsSync(tts))put(dialogue,decode(tts,'loudnorm=I=-16:TP=-1.5:LRA=11'),by.yash_app.start+slots.yash_app.play_at+.15);
+  if(fs.existsSync(tts)){const c=decode(tts,'loudnorm=I=-16:TP=-1.5:LRA=11');put(dialogue,c,by.yash_app.start+slots.yash_app.play_at+.15);ev(by.yash_app.start+slots.yash_app.play_at+.15,c.length/SR,'app TTS tts_msg');}
   else if(!preview)throw Error(`Missing iTantra TTS: ${tts}`);
   // Screen-recording audio is intentionally excluded. Dialogue comes only from the gated clean tracks;
   // iTantra TTS and the three procedural interaction sounds have explicit cues above.
   // Use v1's procedural sonar stems when present; otherwise keep a quiet local preview fallback.
-  for(const [seg,cues] of Object.entries({sonar_a:[.35,2.25,4.3],relay_1:[.65,3],relay_2:[.65,3],relay_3:[.65,3],sonar_b:[.15,1.1,1.72,2.42,3.12]})) {
-    const sfx=path.join(REPO,'film/scene2/sonar',seg,'assets',`${seg}_sfx.wav`);
-    if(fs.existsSync(sfx))put(dialogue,decode(sfx),by[seg].start,0,by[seg].end-by[seg].start);
-    else for(const cue of cues)put(dialogue,sound(cue===3?'tick_b':'sos_pulse_a'),by[seg].start+cue,0,undefined,.15);
+  // T0040: the sonar sounds and music are v1's own stems (staged by film/scene2/main/build.py on this machine).
+  const v1stage=path.join(RENDERS,'scene2/sonar_work/film/scene2/sonar');
+  for(const seg of SONAR) {
+    const sfx=path.join(v1stage,seg,'assets',`${seg}_sfx.wav`);
+    if(!fs.existsSync(sfx))throw Error(`Missing sonar sound: ${sfx}`);
+    put(dialogue,decode(sfx),by[seg].start,0,by[seg].end-by[seg].start);
   }
-  const sonarMusic=path.join(REPO,'film/scene2/sonar/music/sonar_music.wav');
-  if(fs.existsSync(sonarMusic))put(musicTrack,decode(sonarMusic),by.sonar_a.start,0,31);
-  else music(musicTrack,by.sonar_a.start);
-  const base=path.join(RENDERS,'scene2');mkdir(base);
+  const sonarMusic=path.join(v1stage,'music/sonar_music.wav');
+  if(!fs.existsSync(sonarMusic))throw Error(`Missing sonar music: ${sonarMusic}`);
+  const m=decode(sonarMusic).slice(0,31*SR),floor=Math.pow(10,-2/20),ramp=Math.round(.3*SR);
+  for(const [a0,b0] of [[0,4.2],[29,31]]) {   // same narration-zone trim as v1
+    const A=Math.round(a0*SR),B=Math.min(m.length,Math.round(b0*SR));
+    for(let i=A;i<B;i++){const k=Math.min(1,(i-A)/ramp,(B-1-i)/ramp);m[i]*=1-(1-floor)*Math.max(0,k);}
+  }
+  put(musicTrack,m,by.sonar_a.start,0,31);
+  events.sort((x,y)=>x[0]-y[0]);
+  const lines=events.map(([a0,b0,label],i)=>{const nxt=events.slice(i+1).find(e=>!e[2].startsWith('sfx'));
+    const flag=nxt&&!label.startsWith('sfx')&&nxt[0]<b0?' OVERLAP':'';
+    return `${a0.toFixed(3).padStart(8)} ${b0.toFixed(3).padStart(8)}  ${label}`+(nxt?`   next: ${nxt[2]} at ${nxt[0].toFixed(3)}${flag}`:'');});
+  fs.writeFileSync(path.join(OUT,'audio_events.txt'),lines.join('\n')+'\n');console.log(lines.join('\n'));
+  const base=OUT;   // T0040: v2 layers stay in scene2/v2/ so v1's files are not overwritten
   writeWav(path.join(base,'scene2_dialogue_sfx.wav'),dialogue);
   writeWav(path.join(base,'scene2_music.wav'),musicTrack);
   const sum=new Float32Array(n);for(let i=0;i<n;i++)sum[i]=dialogue[i]+musicTrack[i];
@@ -271,8 +293,11 @@ function main() {
   mkdir(OUT);mkdir(ASSETS);
   const T=timeline();
   prepareCamera();const app=prepareSlots();prepareSonar();writePage(T,app);verifyAll(T);
-  if(!args.has('--audio-only')) run('hyperframes.cmd',['check'],HERE);
+  const absent=Object.entries(app).filter(([,v])=>v.placeholder).map(([k])=>k);
+  if(absent.length&&!preview&&!prepareOnly)throw Error('missing app slots, refusing to render: '+absent.join(', '));
+  if(!args.has('--audio-only')&&!args.has('--page-only')) run('hyperframes.cmd',['check'],HERE);
   if(args.has('--audio-only')) audio(T,app);
+  else if(args.has('--page-only')) {}
   else if(!prepareOnly) {
     const raw=path.join(OUT,'scene2_picture.mp4');
     if(fresh(raw,[path.join(HERE,'index.html')]))run('hyperframes.cmd',['render','-q','high','-f','30','-o',raw],HERE);
@@ -280,6 +305,7 @@ function main() {
     const tracks=audio(T,app);
     mux(raw,tracks.nomusic,path.join(OUT,'scene2_draft_nomusic.mp4'));
     mux(raw,tracks.music,path.join(OUT,'scene2_draft_music.mp4'));
+    fs.copyFileSync(path.join(OUT,'scene2_draft_music.mp4'),path.join(OUT,'scene2_v2.mp4'));
   }
   console.log(JSON.stringify({duration:T.duration,voice_config:'film/common/narration.json',picture:'RENDERS:scene2/v2/scene2_picture.mp4',prepared:prepareOnly,preview}));
 }
