@@ -1,0 +1,1 @@
+P0105 is incomplete. The local execution service timed out on every attempt, so I could not read the required files or determine the task’s scope. I also tried to write `results/P0105/REPORT.md`, but that write failed. No task artifacts were created.
