@@ -1,16 +1,16 @@
 {
   "machine": "yojitth-pc",
-  "time": "2026-10-02T10:16:15Z",
-  "status": "restarting",
+  "time": "2026-10-02T10:16:31Z",
+  "status": "idle",
   "current_task": null,
   "workers": [
     "claude-second"
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 32000,
+  "listener_pid": 25564,
   "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-02T10:11:29Z"
+  "last_push_ok": "2026-10-02T10:16:20Z"
 }
