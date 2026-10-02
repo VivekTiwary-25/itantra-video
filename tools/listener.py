@@ -891,8 +891,11 @@ def acquire_lock() -> Path:
     if lock.exists():
         try:
             pid = int(lock.read_text().strip())
-            out = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/NH"], capture_output=True, text=True).stdout if os.name == "nt" else ""
-            if str(pid) in out:
+            # Only a live listener.py counts: after a reboot Windows reuses PIDs, and a stale lock blocked yojitth-pc on 2 Oct.
+            cmdline = subprocess.run(["powershell", "-NoProfile", "-Command",
+                                      f"(Get-CimInstance Win32_Process -Filter 'ProcessId={pid}').CommandLine"],
+                                     capture_output=True, text=True).stdout if os.name == "nt" else ""
+            if pid != os.getpid() and "listener.py" in cmdline:
                 sys.exit(f"Another listener is already running on this machine (pid {pid}). Close it first.")
         except (ValueError, OSError):
             pass
