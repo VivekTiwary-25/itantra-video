@@ -318,6 +318,19 @@ def round_once(cfg: dict, state: dict) -> dict:
     return summary
 
 
+def single_instance(project: str) -> bool:
+    """A named mutex, so a second supervisor (started from another clone, or by `swarm start`) cannot double-act on the listeners."""
+    if os.name != "nt":
+        return True
+    import ctypes
+    global _MUTEX
+    _MUTEX = ctypes.windll.kernel32.CreateMutexW(None, False, f"Local\\itantra-supervisor-{project}")
+    return ctypes.windll.kernel32.GetLastError() != 183  # ERROR_ALREADY_EXISTS
+
+
+_MUTEX = None
+
+
 def main() -> None:
     global DRY
     ap = argparse.ArgumentParser()
@@ -330,6 +343,9 @@ def main() -> None:
     swarm.CURRENT_PROJECT = cfg.get("project", "")
     pidf = REPO_ROOT / "local" / "supervisor.pid"
     if not a.once:
+        if not single_instance(swarm.CURRENT_PROJECT):
+            log("another supervisor is already running for this project on this PC: exiting")
+            return
         pidf.write_text(str(os.getpid()))
     state = read_json(STATE_FILE, {}) or {}
     log(f"supervisor started (pid {os.getpid()}, project {swarm.CURRENT_PROJECT}, dry run {DRY})")

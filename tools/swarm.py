@@ -24,7 +24,8 @@ Usage:
 Listeners belong to no SSH session, so they keep running after the connection drops. Codex needs the user's
 desktop session (session 1): started over SSH/WMI a listener lands in session 0 and every Codex shell command
 fails with "timed out ... connecting runner pipe-in". So `install-task` creates a scheduled task (default name
-"itantra-listener", override with "task" in the listener's entry) that runs tools/listener_loop.py with
+"itantra-listener"; a laptop that hosts two clones gets "itantra-listener-<name>" for each, or set "task"
+in the listener's entry) that runs tools/listener_loop.py with
 pythonw.exe, "run only when the user is logged on". `start` and the supervisor trigger it with schtasks /Run.
 A clone without that task falls back to WMI and tools/run-listener.cmd (session 0: fine for Claude, not for Codex).
 
@@ -66,6 +67,10 @@ def load_config(project: str | None) -> dict:
     cfg = read_json(p)
     if not cfg:
         sys.exit(f"Missing or unreadable {p}. See the docstring of tools/swarm.py.")
+    hosts = [l.get("host") for l in cfg.get("listeners", []) if l.get("repo")]
+    for l in cfg.get("listeners", []):
+        if not l.get("task"):  # two clones on one laptop need two task names
+            l["task"] = TASK_NAME + (f"-{l['name']}" if l.get("host") and hosts.count(l.get("host")) > 1 else "")
     return cfg
 
 
