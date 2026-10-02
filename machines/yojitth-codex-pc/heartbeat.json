@@ -1,7 +1,7 @@
 {
   "machine": "yojitth-codex-pc",
-  "time": "2026-10-02T10:16:16Z",
-  "status": "idle",
+  "time": "2026-10-02T10:17:46Z",
+  "status": "restarting",
   "current_task": null,
   "workers": [
     "codex-yojitth"
@@ -12,5 +12,5 @@
   "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-02T10:11:21Z"
+  "last_push_ok": "2026-10-02T10:17:45Z"
 }
