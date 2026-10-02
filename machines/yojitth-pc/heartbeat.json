@@ -1,7 +1,7 @@
 {
   "machine": "yojitth-pc",
-  "time": "2026-10-02T10:11:24Z",
-  "status": "idle",
+  "time": "2026-10-02T10:16:15Z",
+  "status": "restarting",
   "current_task": null,
   "workers": [
     "claude-second"
@@ -11,6 +11,6 @@
   "listener_pid": 32000,
   "last_task_usage": null,
   "codex_rate_limits": null,
-  "unpushed_commits": 11,
-  "last_push_ok": "2026-09-30T17:01:10Z"
+  "unpushed_commits": 0,
+  "last_push_ok": "2026-10-02T10:11:29Z"
 }
