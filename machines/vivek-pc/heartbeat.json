@@ -1,7 +1,7 @@
 {
   "machine": "vivek-pc",
-  "time": "2026-10-02T17:52:34Z",
-  "status": "idle",
+  "time": "2026-10-02T17:55:05Z",
+  "status": "restarting",
   "current_task": null,
   "workers": [
     "codex-vivek"
@@ -12,5 +12,5 @@
   "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-02T17:52:20Z"
+  "last_push_ok": "2026-10-02T17:52:37Z"
 }
