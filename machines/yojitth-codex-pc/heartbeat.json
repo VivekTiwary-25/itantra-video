@@ -1,16 +1,16 @@
 {
   "machine": "yojitth-codex-pc",
-  "time": "2026-10-01T14:47:48Z",
-  "status": "stopped",
+  "time": "2026-10-02T10:09:26Z",
+  "status": "idle",
   "current_task": null,
   "workers": [
     "codex-yojitth"
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 24920,
+  "listener_pid": 13164,
   "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-01T14:46:54Z"
+  "last_push_ok": "2026-10-01T14:47:53Z"
 }
