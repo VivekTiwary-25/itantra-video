@@ -144,6 +144,11 @@ $r | ConvertTo-Json -Compress -Depth 3
 
 START = r"""
 Set-Location $repo
+$env:GIT_TERMINAL_PROMPT = '0'
+git pull -q --ff-only origin main 2>&1 | Out-Null
+if ($LASTEXITCODE -ne 0 -and -not (git status --porcelain --untracked-files=no)) { git pull -q --rebase origin main 2>&1 | Out-Null }
+if (-not (Test-Path tools\run-listener.cmd)) { "FAILED: could not update the clone (tools\run-listener.cmd missing)"; exit }
+New-Item -ItemType Directory -Force local | Out-Null
 Remove-Item local\listener.stop -ErrorAction SilentlyContinue
 if ($python) { Set-Content -Path local\python.txt -Value $python -Encoding Ascii -NoNewline }
 $running = Get-CimInstance Win32_Process -Filter "Name='cmd.exe'" | Where-Object { $_.CommandLine -like "*$repo\tools\run-listener.cmd*" }
