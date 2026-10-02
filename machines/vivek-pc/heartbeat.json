@@ -1,8 +1,8 @@
 {
   "machine": "vivek-pc",
-  "time": "2026-10-02T10:17:15Z",
-  "status": "idle",
-  "current_task": null,
+  "time": "2026-10-02T10:20:34Z",
+  "status": "busy",
+  "current_task": "T0042",
   "workers": [
     "codex-vivek"
   ],
@@ -12,5 +12,5 @@
   "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-02T10:17:03Z"
+  "last_push_ok": "2026-10-02T10:20:34Z"
 }
