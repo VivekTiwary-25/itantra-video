@@ -1,0 +1,1 @@
+I couldn’t complete P0101. The workspace runner repeatedly timed out before I could read the required files, and the same failure prevented me from writing `results/P0101/REPORT.md`. I made no production changes. The workspace runner needs to be restored before I can resume the task.
