@@ -1,10 +1,10 @@
 {
-  "time": "2026-10-02T18:37:48Z",
+  "time": "2026-10-02T18:43:48Z",
   "summary": "5/5 machines reachable",
   "machines": {
     "vivek-pc": "idle",
     "yash-pc": "idle",
-    "utkarsh-pc": "busy P0105r3",
+    "utkarsh-pc": "idle",
     "yojitth-pc": "idle",
     "yojitth-codex-pc": "idle"
   }
