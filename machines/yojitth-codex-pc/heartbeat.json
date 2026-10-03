@@ -1,6 +1,6 @@
 {
   "machine": "yojitth-codex-pc",
-  "time": "2026-10-02T23:11:22Z",
+  "time": "2026-10-03T02:40:26Z",
   "status": "idle",
   "current_task": null,
   "workers": [
@@ -8,16 +8,9 @@
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 21732,
-  "last_task_usage": {
-    "seen_at": "2026-10-02T18:34:58Z",
-    "input_tokens": 90969,
-    "cached_input_tokens": 79104,
-    "cache_write_input_tokens": 0,
-    "output_tokens": 480,
-    "reasoning_output_tokens": 0
-  },
+  "listener_pid": 16760,
+  "last_task_usage": null,
   "codex_rate_limits": null,
-  "unpushed_commits": 9,
+  "unpushed_commits": 10,
   "last_push_ok": "2026-10-02T20:20:25Z"
 }
