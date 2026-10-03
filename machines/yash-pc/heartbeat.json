@@ -1,6 +1,6 @@
 {
   "machine": "yash-pc",
-  "time": "2026-10-03T14:03:28Z",
+  "time": "2026-10-03T14:06:51Z",
   "status": "idle",
   "current_task": null,
   "workers": [
@@ -8,16 +8,9 @@
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 38752,
-  "last_task_usage": {
-    "seen_at": "2026-10-03T02:34:40Z",
-    "input_tokens": 135591,
-    "cached_input_tokens": 115968,
-    "cache_write_input_tokens": 0,
-    "output_tokens": 824,
-    "reasoning_output_tokens": 115
-  },
+  "listener_pid": 17752,
+  "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-03T13:58:33Z"
+  "last_push_ok": "2026-10-03T14:03:35Z"
 }
