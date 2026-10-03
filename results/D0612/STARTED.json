@@ -1,0 +1,10 @@
+{
+  "id": "D0612",
+  "machine": "vivek-pc",
+  "worker": "codex-vivek",
+  "time": "2026-10-03T02:31:46Z",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "pid": 18376,
+  "timeout_min": 60
+}
