@@ -1,11 +1,11 @@
 {
-  "time": "2026-10-03T23:53:09Z",
-  "summary": "2/5 machines reachable",
+  "time": "2026-10-03T23:59:09Z",
+  "summary": "4/5 machines reachable",
   "machines": {
     "vivek-pc": "idle",
     "yash-pc": "idle",
     "utkarsh-pc": "UNREACHABLE",
-    "yojitth-pc": "UNREACHABLE",
-    "yojitth-codex-pc": "UNREACHABLE"
+    "yojitth-pc": "idle",
+    "yojitth-codex-pc": "stopped by swarm stop"
   }
 }
