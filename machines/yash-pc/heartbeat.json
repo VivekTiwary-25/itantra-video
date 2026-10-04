@@ -1,7 +1,7 @@
 {
   "machine": "yash-pc",
-  "time": "2026-10-04T05:48:47Z",
-  "status": "idle",
+  "time": "2026-10-04T05:51:23Z",
+  "status": "restarting",
   "current_task": null,
   "workers": [
     "codex-f1"
@@ -12,5 +12,5 @@
   "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-04T05:48:44Z"
+  "last_push_ok": "2026-10-04T05:48:54Z"
 }
