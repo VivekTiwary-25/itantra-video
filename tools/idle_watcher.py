@@ -3,15 +3,17 @@
 Runs on vivek-pc against a dedicated read-only clone. Stdlib only (Python 3.12).
 
     python tools/idle_watcher.py --clone <watch clone> --out <status.md> [--active-flag <file>] [--loop] [--interval 120]
-    python tools/idle_watcher.py --test-ping
+    python tools/idle_watcher.py --test-ping [done|failed|idle]
 
 Readiness follows PROTOCOL.md section 4: a task is ready when it has no STARTED.json (and no REPORT.md),
 is not dropped, and every depends_on has REPORT status done and review verdict accepted.
 Running = STARTED.json without REPORT.md.
+Also pings once per new results/<id>/REPORT.md (done/failed/refused from its front-matter status line).
 """
 from __future__ import annotations
 
 import argparse
+import base64
 import datetime as dt
 import json
 import os
@@ -191,14 +193,24 @@ def ntfy_topic() -> str | None:
     return (topic or "").strip() or None
 
 
-def send_ntfy(message: str) -> bool:
+NTFY_TAGS = {"done": "white_check_mark", "failed": "x", "refused": "x", "idle": "warning"}
+NTFY_PS = ("$b = [Convert]::FromBase64String($env:NTFY_B); "
+           "Invoke-RestMethod -Method Post -Uri ('https://ntfy.sh/' + $env:NTFY_T) "
+           "-Headers @{Title = $env:NTFY_TITLE; Tags = $env:NTFY_TAGS} "
+           "-Body $b -ContentType 'text/plain; charset=utf-8' | Out-Null")
+
+
+def send_ntfy(message: str, kind: str = "idle", title: str = "iTantra") -> bool:
+    """POST to ntfy.sh. Body is UTF-8 (base64 in the child's env, decoded to bytes there);
+    headers are plain ASCII (Title, Tags as ntfy shortcodes). No topic/body on the command line."""
     topic = ntfy_topic()
     if not topic:
         log(f"ntfy: no '{NTFY_VAR}' variable set; not sent: {message}")
         return False
-    env = dict(os.environ, T=topic, B=message)
-    cmd = ["powershell", "-NoProfile", "-Command",
-           "Invoke-RestMethod -Method Post -Uri ('https://ntfy.sh/' + $env:T) -Body $env:B | Out-Null"]
+    title = title.encode("ascii", "ignore").decode("ascii").strip() or "iTantra"
+    env = dict(os.environ, NTFY_T=topic, NTFY_TITLE=title, NTFY_TAGS=NTFY_TAGS.get(kind, "warning"),
+               NTFY_B=base64.b64encode(message.encode("utf-8")).decode("ascii"))
+    cmd = ["powershell", "-NoProfile", "-Command", NTFY_PS]
     try:
         flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
         r = subprocess.run(cmd, env=env, capture_output=True, text=True, timeout=60, creationflags=flags)
@@ -208,8 +220,41 @@ def send_ntfy(message: str) -> bool:
     if r.returncode != 0:
         log(f"ntfy: powershell exit {r.returncode}: {(r.stderr or '').strip()[:300]}")
         return False
-    log(f"ntfy: sent: {message}")
+    log(f"ntfy: sent [{kind}]: {message}")
     return True
+
+
+def report_kind(repo: "Repo", rid: str) -> str | None:
+    """done/failed/refused from the REPORT.md front-matter status line only, else None."""
+    st = parse_frontmatter(read_text(repo.root / "results" / rid / "REPORT.md")).get("status")
+    st = str(st).strip().lower() if st else ""
+    return st if st in ("done", "failed", "refused") else None
+
+
+def notify_reports(args, repo: "Repo", tasks: list[dict], state: dict) -> None:
+    """One ping per new results/<id>/REPORT.md. First run (no 'notified' list) just marks all as seen."""
+    rdir = repo.root / "results"
+    ids = sorted((d.name for d in rdir.iterdir() if (d / "REPORT.md").is_file()), key=id_sort_key) if rdir.is_dir() else []
+    if "notified" not in state:
+        state["notified"] = ids
+        log(f"report notifications: marked {len(ids)} existing REPORTs as seen")
+        return
+    seen = set(state["notified"])
+    titles = {t["id"]: t["title"] for t in tasks}
+    for rid in ids:
+        if rid in seen:
+            continue
+        kind = report_kind(repo, rid)
+        if kind is None:
+            continue  # front matter not readable yet; try again next pass
+        title = " ".join(str(titles.get(rid) or "").split())[:60]
+        msg = f"{rid} {kind}" + (f": {title}" if title else "")
+        if args.no_ntfy:
+            log(f"report (ntfy off): {msg}")
+        elif not send_ntfy(msg, kind, f"iTantra {rid} {kind}"):
+            continue  # retry next pass
+        state["notified"].append(rid)
+        seen.add(rid)
 
 
 # ---------------------------------------------------------------- one pass
@@ -292,11 +337,13 @@ def one_pass(args, state_path: Path) -> None:
         if args.no_ntfy:
             log(f"alert (ntfy off): {msg}")
             pings[key] = now.isoformat()
-        elif send_ntfy(f"iTantra: {msg}"):
+        elif send_ntfy(f"iTantra: {msg}", "idle", "iTantra watcher"):
             pings[key] = now.isoformat()
     for key in list(pings):
         if key not in active_keys:
             del pings[key]  # episode over: the next one pings again at once
+
+    notify_reports(args, repo, tasks, state)
 
     lines = [f"# Worker status ({hhmm(now)} IST)", ""]
     if alerts:
@@ -338,11 +385,13 @@ def main() -> int:
     ap.add_argument("--interval", type=int, default=120)
     ap.add_argument("--no-ntfy", action="store_true", help="log alerts instead of sending them")
     ap.add_argument("--no-pull", action="store_true", help="skip git pull (testing on a working clone)")
-    ap.add_argument("--test-ping", action="store_true", help="send one test ping and exit")
+    ap.add_argument("--test-ping", nargs="?", const="done", choices=("done", "failed", "idle"),
+                    help="send one clearly-marked test ping of that kind (default done) and exit")
     args = ap.parse_args()
 
     if args.test_ping:
-        return 0 if send_ntfy("iTantra watcher: test ping") else 1
+        k = args.test_ping
+        return 0 if send_ntfy(f"TEST ONLY: simulated {k} ping from iTantra watcher", k, f"iTantra test {k}") else 1
     if not args.clone or not args.out:
         ap.error("--clone and --out are required")
     out = Path(args.out)
