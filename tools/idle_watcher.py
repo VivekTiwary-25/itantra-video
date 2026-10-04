@@ -241,6 +241,7 @@ def notify_reports(args, repo: "Repo", tasks: list[dict], state: dict) -> None:
         return
     seen = set(state["notified"])
     titles = {t["id"]: t["title"] for t in tasks}
+    fms = {t["id"]: t.get("fm") or {} for t in tasks}
     for rid in ids:
         if rid in seen:
             continue
@@ -249,6 +250,9 @@ def notify_reports(args, repo: "Repo", tasks: list[dict], state: dict) -> None:
             continue  # front matter not readable yet; try again next pass
         title = " ".join(str(titles.get(rid) or "").split())[:60]
         msg = f"{rid} {kind}" + (f": {title}" if title else "")
+        prev = str((fms.get(rid) or {}).get("redo_of") or "").strip()
+        if kind in ("failed", "refused") and prev and prev != "null" and report_kind(repo, prev) in ("failed", "refused"):
+            msg = f"FAILED TWICE {prev} -> {rid}" + (f": {title}" if title else "")  # the lead skips it after two tries
         if args.no_ntfy:
             log(f"report (ntfy off): {msg}")
         elif not send_ntfy(msg, kind, f"iTantra {rid} {kind}"):
