@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<link rel="stylesheet" href="./assets/glass/glass.css">
+<script src="./three.min.js"></script>
+<script src="./gsap.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; margin: 0; overflow: hidden; background: #040a13; }
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; isolation: isolate;
+    background: radial-gradient(ellipse 920px 430px at 35% 82%, #102b42 0%, #0b1b2c 38%, transparent 78%),
+                radial-gradient(ellipse 740px 390px at 77% 38%, #0b1828 0%, transparent 85%), #040a13; }
+  #sonar { position: absolute; inset: 0; opacity: .58; pointer-events: none;
+    background: repeating-radial-gradient(circle at 34% 82%, transparent 0 111px, rgba(77,163,255,.1) 112px 113px, transparent 114px 146px); }
+  #sonar::after { content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 70%, rgba(5,12,22,.7)),
+                linear-gradient(90deg, transparent 49.96%, rgba(129,190,245,.09) 50%, transparent 50.04%); }
+  #stage { position: absolute; inset: 0; display: block; }
+  #wires { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+  .wire { fill: none; stroke: #4da3ff; stroke-width: 1.5; opacity: 0; filter: drop-shadow(0 0 5px rgba(77,163,255,.65)); }
+  .wire.gold { stroke: #f5c451; filter: drop-shadow(0 0 7px rgba(245,196,81,.7)); }
+  .point { fill: #a8d9ff; opacity: 0; filter: drop-shadow(0 0 7px #4da3ff); }
+  .point.gold { fill: #ffe4a2; filter: drop-shadow(0 0 7px #f5c451); }
+  #labels { position: absolute; inset: 0; pointer-events: none; }
+  .glass-panel.label { position: absolute; left: 1040px; width: 795px; min-height: 126px;
+    border-radius: 19px; padding: 16px 24px 17px 27px; opacity: 0; transform: translateX(16px);
+    border-left: 2px solid rgba(77,163,255,.7); box-shadow: 0 15px 34px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.1); }
+  .glass-panel.label.gold { border-left-color: rgba(245,196,81,.88); }
+  .label .title { font-size: 31px; line-height: 1.15; font-weight: 635; letter-spacing: -.017em; }
+  .label .secondary { display: block; margin-top: 8px; color: var(--text-dim); font-size: 24px; line-height: 1.18; font-weight: 440; }
+  .label:nth-child(1) { top: 47px; }
+  .label:nth-child(2) { top: 203px; }
+  .label:nth-child(3) { top: 359px; }
+  .label:nth-child(4) { top: 515px; }
+  .label:nth-child(5) { top: 671px; }
+  .label:nth-child(6) { top: 827px; }
+  #packet-lock { position: absolute; width: 30px; height: 30px; color: #eef9ff; opacity: 0; pointer-events: none;
+    filter: drop-shadow(0 0 4px #4da3ff); }
+  #packet-lock svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  #vignette { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 145px 48px rgba(0,0,0,.48); }
+</style>
+</head>
+<body>
+<main id="root" data-composition-id="exploded" data-start="0" data-duration="17" data-width="1920" data-height="1080" data-fps="30">
+  <div id="sonar"></div>
+  <canvas id="stage" width="1920" height="1080"></canvas>
+  <svg id="wires" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+  <div id="labels">
+    <div class="glass-panel label"><div class="title">Screen and mic</div><span class="secondary">Hold to talk</span></div>
+    <div class="glass-panel label"><div class="title">Speech to text on the phone, without internet</div><span class="secondary">IndicConformer (9 Indian languages) · Whisper (English)</span></div>
+    <div class="glass-panel label"><div class="title">Encryption: only your contact can open it</div><span class="secondary">Google Tink</span></div>
+    <div class="glass-panel label gold"><div class="title">Bluetooth radio: hops phone to phone, encrypted at every hop</div><span class="secondary">Bluetooth LE · Noise XX</span></div>
+    <div class="glass-panel label"><div class="title">Speaker: reads it aloud</div><span class="secondary">Piper · Meta MMS</span></div>
+    <div class="glass-panel label"><div class="title">Base: stock Android</div><span class="secondary">No new hardware</span></div>
+  </div>
+  <div id="packet-lock"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg></div>
+  <div id="vignette"></div>
+</main>
+<script>
+'use strict';
+const W = 1920, H = 1080;
+const ARRIVALS = [4.1, 5.85, 7.6, 9.35, 11.1, 12.85];
+const clamp = (v, a=0, b=1) => Math.max(a, Math.min(b, v));
+const ease = v => { v = clamp(v); return v*v*(3-2*v); };
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, W/H, .1, 100);
+camera.position.set(0, 0, 10.5);
+camera.lookAt(0, 0, 0);
+const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('stage'), antialias:true, alpha:true, preserveDrawingBuffer:true});
+renderer.setPixelRatio(1);
+renderer.setSize(W, H, false);
+renderer.setClearColor(0x000000, 0);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.45;
+scene.add(new THREE.AmbientLight(0x80a3ca, 1.1));
+const key = new THREE.DirectionalLight(0xcbefff, 4.2); key.position.set(-3.5, 6, 7); scene.add(key);
+const rim = new THREE.DirectionalLight(0x4da3ff, 3.7); rim.position.set(4, -2, -1); scene.add(rim);
+const goldLight = new THREE.PointLight(0xf5c451, 1.1, 8); goldLight.position.set(-.8, -.7, 2); scene.add(goldLight);
+
+const phone = new THREE.Group();
+phone.position.x = -2.4;
+scene.add(phone);
+function roundedShape(w,h,r) {
+  const s = new THREE.Shape(), x=-w/2, y=-h/2;
+  s.moveTo(x+r,y); s.lineTo(x+w-r,y); s.quadraticCurveTo(x+w,y,x+w,y+r);
+  s.lineTo(x+w,y+h-r); s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  s.lineTo(x+r,y+h); s.quadraticCurveTo(x,y+h,x,y+h-r);
+  s.lineTo(x,y+r); s.quadraticCurveTo(x,y,x+r,y);
+  return s;
+}
+const shape = roundedShape(2.65, 5.48, .34);
+const outline = roundedShape(2.65, 5.48, .34).getPoints(14).map(p => new THREE.Vector3(p.x,p.y,0));
+function makeEdge(color) {
+  const geometry = new THREE.BufferGeometry().setFromPoints(outline);
+  const line = new THREE.LineLoop(geometry, new THREE.LineBasicMaterial({color, transparent:true, opacity:.9}));
+  line.position.z=.065;
+  return line;
+}
+const body = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, {depth:.26, bevelEnabled:true, bevelThickness:.055, bevelSize:.045, bevelSegments:3, curveSegments:12}),
+  new THREE.MeshPhysicalMaterial({color:0x080d15, metalness:.42, roughness:.24, clearcoat:1, clearcoatRoughness:.12}));
+body.position.z=-.16;
+phone.add(body);
+const bodyEdge = makeEdge(0x7895ae); bodyEdge.position.z=.17; phone.add(bodyEdge);
+
+const layers = [];
+const baseColors = [0x9bd6ff,0x5baeff,0x65baff,0xf5c451,0x8bd0ff,0x91a9c2];
+for (let i=0; i<6; i++) {
+  const g = new THREE.Group(); phone.add(g);
+  const mat = new THREE.MeshPhysicalMaterial({
+    color:baseColors[i], metalness:.04, roughness:.09, transmission:.72,
+    thickness:.42, ior:1.46, transparent:true, opacity:.53,
+    emissive:baseColors[i], emissiveIntensity:.075, side:THREE.DoubleSide,
+    depthWrite:false
+  });
+  const slab = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, {
+    depth:.09, bevelEnabled:true, bevelThickness:.025, bevelSize:.025,
+    bevelSegments:3, curveSegments:12
+  }), mat);
+  slab.position.z=-.045; g.add(slab);
+  const top = makeEdge(baseColors[i]); g.add(top);
+  const bottom = makeEdge(baseColors[i]); bottom.position.z=-.065; bottom.material.opacity=.38; g.add(bottom);
+  const glow = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(outline),
+    new THREE.LineBasicMaterial({color:baseColors[i], transparent:true, opacity:.0}));
+  glow.position.z=.075; glow.scale.set(1.018,1.018,1); g.add(glow);
+  layers.push({g, mat, top, glow});
+}
+
+// The screen texture is made at runtime so the private image never appears in Git.
+const screenCanvas = document.createElement('canvas'); screenCanvas.width=540; screenCanvas.height=1160;
+const ctx = screenCanvas.getContext('2d');
+let currentTime=0;
+function paintScreen(img) {
+  ctx.fillStyle='#090d15'; ctx.fillRect(0,0,540,1160);
+  if (img) {
+    const ratio=Math.max(540/img.width,1160/img.height), w=img.width*ratio, h=img.height*ratio;
+    ctx.save(); ctx.beginPath(); ctx.roundRect(7,7,526,1146,68); ctx.clip();
+    ctx.drawImage(img,(540-w)/2,(1160-h)/2,w,h); ctx.restore();
+  }
+  texture.needsUpdate=true;
+  draw(currentTime);
+}
+const texture = new THREE.CanvasTexture(screenCanvas);
+texture.colorSpace=THREE.SRGBColorSpace;
+const screen = new THREE.Mesh(new THREE.PlaneGeometry(2.41,5.17), new THREE.MeshBasicMaterial({map:texture, transparent:true, opacity:1, side:THREE.DoubleSide}));
+screen.position.z=.25; layers[0].g.add(screen);
+const cameraDot = new THREE.Mesh(new THREE.CircleGeometry(.052,20), new THREE.MeshBasicMaterial({color:0x05070b}));
+cameraDot.position.set(0,2.45,.26); layers[0].g.add(cameraDot);
+
+const packet = new THREE.Group(); phone.add(packet);
+const capsule = new THREE.Mesh(new THREE.SphereGeometry(.18,24,16), new THREE.MeshBasicMaterial({color:0x92d8ff}));
+capsule.scale.set(1.13,.78,1.45); packet.add(capsule);
+const halo = new THREE.Mesh(new THREE.SphereGeometry(.31,24,16), new THREE.MeshBasicMaterial({color:0x4da3ff, transparent:true, opacity:.13, depthWrite:false}));
+halo.scale.set(1.3,1,1.7); packet.add(halo);
+const packetLight = new THREE.PointLight(0x4da3ff, 2.1, 2.2); packet.add(packetLight);
+
+const svg = document.getElementById('wires');
+const wires = layers.map((_,i)=>{
+  const path=document.createElementNS(svg.namespaceURI,'path'); path.classList.add('wire');
+  const point=document.createElementNS(svg.namespaceURI,'circle'); point.classList.add('point'); point.setAttribute('r','4');
+  if (i===3) {path.classList.add('gold');point.classList.add('gold');}
+  svg.append(path,point); return {path,point};
+});
+const labels = Array.from(document.querySelectorAll('.label'));
+const lock = document.getElementById('packet-lock');
+const v3 = new THREE.Vector3();
+function screenPoint(local, group=phone) {
+  v3.copy(local); group.localToWorld(v3); v3.project(camera);
+  return {x:(v3.x+1)*W/2, y:(1-v3.y)*H/2};
+}
+function draw(time) {
+  const t=clamp(Number(time)||0,0,17); currentTime=t;
+  const turn=ease((t-.05)/1.85);
+  const reunite=ease((t-14.15)/2.55);
+  const spread=ease((t-2)/1.5)*(1-reunite);
+  phone.rotation.x=-1.16*turn+.78*reunite;
+  phone.rotation.y=-.38*turn;
+  phone.rotation.z=.04*turn;
+  phone.scale.setScalar(1-.18*turn);
+  body.visible=spread<.16;
+  bodyEdge.visible=body.visible;
+  layers.forEach((layer,i)=>{
+    layer.g.position.z=(2.5-i)*.93*spread + .015*(2.5-i);
+    const arrival=ARRIVALS[i];
+    const awakened=ease((t-arrival)/.23);
+    const pulse=Math.exp(-Math.max(0,t-arrival)*5.5)*(t>=arrival?1:0);
+    const lit=awakened*(1-reunite);
+    layer.mat.emissiveIntensity=.075+.42*lit+.48*pulse;
+    layer.mat.opacity=.50+.12*lit;
+    layer.top.material.opacity=.52+.45*lit;
+    layer.glow.material.opacity=.04+.32*lit+.55*pulse;
+  });
+  screen.material.opacity=1-.68*spread;
+  screen.visible=screen.material.opacity>.01;
+  packet.visible=t>=3.7 && t<14.3;
+  if (packet.visible) {
+    const p=clamp((t-3.7)/(12.85-3.7));
+    packet.position.set(.28,-.06,2.5*.93*spread - p*5*.93*spread+.4);
+    packet.scale.setScalar(.84+.13*Math.sin(t*5));
+    const pt=screenPoint(new THREE.Vector3(0,0,0),packet);
+    lock.style.left=(pt.x-15)+'px'; lock.style.top=(pt.y-15)+'px';
+    lock.style.opacity='1';
+  } else lock.style.opacity='0';
+  labels.forEach((label,i)=>{
+    const born=ease((t-ARRIVALS[i])/.28);
+    const end=1-ease((t-14)/.75);
+    const old=t>=ARRIVALS[i+2] ? .6 : 1;
+    const visibility=born*end*old;
+    label.style.opacity=visibility.toFixed(3);
+    label.style.transform=`translateX(${(1-born)*16}px)`;
+    const source=screenPoint(new THREE.Vector3(.9,0,.075),layers[i].g);
+    const targetY=47+i*156+63;
+    const anchorX=1037;
+    const bendX=Math.max(source.x+45, 910);
+    wires[i].path.setAttribute('d',`M ${source.x.toFixed(1)} ${source.y.toFixed(1)} L ${bendX.toFixed(1)} ${source.y.toFixed(1)} L ${anchorX} ${targetY.toFixed(1)}`);
+    wires[i].path.style.opacity=(visibility*.55).toFixed(3);
+    wires[i].point.setAttribute('cx',source.x.toFixed(1)); wires[i].point.setAttribute('cy',source.y.toFixed(1));
+    wires[i].point.style.opacity=visibility.toFixed(3);
+  });
+  document.getElementById('sonar').style.opacity=(.42+.18*Math.sin(t*1.1)+.22*reunite).toFixed(3);
+  renderer.render(scene,camera);
+}
+const timeline=gsap.timeline({paused:true,onUpdate:()=>draw(timeline.time())});
+timeline.to({}, {duration:17}, 0);
+window.__timelines=window.__timelines||{};
+window.__timelines.exploded=timeline;
+window.addEventListener('hf-seek',e=>draw(e.detail.time));
+paintScreen(null);
+const image = new Image(); image.onload=()=>paintScreen(image); image.onerror=()=>paintScreen(null); image.src='./assets/home.png';
+draw(0);
+</script>
+</body>
+</html>
