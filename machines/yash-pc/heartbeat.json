@@ -1,6 +1,6 @@
 {
   "machine": "yash-pc",
-  "time": "2026-10-04T18:25:47Z",
+  "time": "2026-10-04T18:30:48Z",
   "status": "idle",
   "current_task": null,
   "workers": [
@@ -11,6 +11,6 @@
   "listener_pid": 24152,
   "last_task_usage": null,
   "codex_rate_limits": null,
-  "unpushed_commits": 2,
-  "last_push_ok": "2026-10-04T17:48:50Z"
+  "unpushed_commits": 0,
+  "last_push_ok": "2026-10-04T18:26:18Z"
 }
