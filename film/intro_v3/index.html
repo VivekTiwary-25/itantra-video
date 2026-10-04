@@ -25,6 +25,7 @@
 #phone-a{left:262px}#phone-b{left:460px}
 .glass-phone{border-color:#101319!important;background:linear-gradient(110deg,#090b10,#282d34 15%,#0b0d12 25%,#090b10 80%,#3a4148 97%,#0c0e13)!important;box-shadow:0 24px 62px rgba(0,0,0,.62),inset 2px 0 2px rgba(255,255,255,.28),inset -2px 0 3px rgba(255,255,255,.20)!important}
 .glass-phone-screen{border:1px solid rgba(255,255,255,.14)}
+.screen-status-mask{position:absolute;top:0;left:0;right:0;height:calc(var(--glass-screen-height) * .055);background:#07111c;z-index:2;pointer-events:none}
 .side-button{position:absolute;right:-19px;top:22%;width:5px;height:55px;border-radius:0 4px 4px 0;background:linear-gradient(90deg,#4b535d,#1b2027)}
 .side-button.short{top:35%;height:31px}
 #speech{position:absolute;left:12px;right:12px;top:35%;min-height:130px;padding:14px 12px;border-radius:14px;background:rgba(11,19,31,.92);border:1px solid rgba(77,163,255,.65);box-shadow:0 0 22px rgba(77,163,255,.19);font-size:30px;font-weight:630;line-height:1.08;text-align:center;overflow:hidden}
@@ -59,7 +60,7 @@ function show(el,yes){el.style.visibility=yes?'visible':'hidden'}
 const speech=$('speech');
 Glass.phone($('phone-a'),{src:'./assets/home.png',kind:'img'});
 Glass.phone($('phone-b'),{src:'./assets/home.png',kind:'img'});
-for(const id of ['phone-a','phone-b']){const host=$(id);for(const cls of ['side-button','side-button short']){const button=document.createElement('span');button.className=cls;host.append(button)}}
+for(const id of ['phone-a','phone-b']){const host=$(id);const mask=document.createElement('span');mask.className='screen-status-mask';host.append(mask);for(const cls of ['side-button','side-button short']){const button=document.createElement('span');button.className=cls;host.append(button)}}
 // The supplied screen stays intact; the speech overlay is a separate temporary layer.
 $('phone-a').append(speech);
 const badgeInfo=[['tower','Tower'],['mobile-data','Mobile data'],['wifi','Wi-Fi'],['internet','Internet'],['bluetooth','Bluetooth LE']];

@@ -43,7 +43,12 @@ def build():
     assert len(envelope["rms"]) > 900 and envelope["fps"] == FPS
     source = [media(p["camera"], config) for p in cuts["pieces"]]
     bench = Path(config["footage_root"]) / "Video/normalpart1.mp4"
-    home = REPO / "local/private-in/F0046/home.png"
+    # The lead distributes the cleaned screenshot under F0046. Older machines
+    # may only have the prior private delivery; the composition masks its status
+    # strip in either case, without changing or committing the source image.
+    home_candidates = [REPO / "local/private-in/F0046/home.png",
+                       REPO / "local/private-in/F0044/home.png"]
+    home = next((path for path in home_candidates if path.is_file()), home_candidates[0])
     voice = media(cuts["voice_wav"], config)
     for path in (*source, bench, home, voice):
         if not path.is_file():
