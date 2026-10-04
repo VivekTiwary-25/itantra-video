@@ -1,16 +1,18 @@
 {
   "machine": "utkarsh-pc",
-  "time": "2026-10-04T04:06:15Z",
-  "status": "busy",
-  "current_task": "F0011r1",
+  "time": "2026-10-04T04:07:42Z",
+  "status": "rate_limited",
+  "current_task": null,
   "workers": [
     "codex-f2"
   ],
-  "rate_limited_until": null,
+  "rate_limited_until": {
+    "codex-f2": "2026-10-04T04:37:34.684864+00:00"
+  },
   "paused_by_safety_check": null,
   "listener_pid": 17396,
   "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-04T04:06:15Z"
+  "last_push_ok": "2026-10-04T04:07:42Z"
 }
