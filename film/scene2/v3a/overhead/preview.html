@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920,height=1080">
+  <link rel="stylesheet" href="assets/glass/glass.css">
+  <link rel="stylesheet" href="overhead.css">
+  <script src="assets/gsap.min.js"></script>
+  <script src="assets/geo.js"></script>
+  <script src="overhead.js"></script>
+  <style>html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#181b1c}</style>
+</head>
+<body>
+  <main id="overhead" data-preview-id="overhead" data-start="0" data-duration="5" data-width="1920" data-height="1080" data-fps="30"></main>
+  <script>
+    document.getElementById('overhead').dataset.compositionId = 'overhead';
+    Overhead.mount(document.getElementById('overhead'), {
+      walkStill: 'assets/walk-still.jpg',
+      yashStill: 'assets/yash-still.jpg',
+      geo: window.OVERHEAD_GEO
+    });
+    const tl = gsap.timeline({paused: true, onUpdate: () => Overhead.render(tl.time())});
+    tl.to({}, {duration: 5}, 0);
+    window.__timelines = window.__timelines || {};
+    window.__timelines.overhead = tl;
+    window.addEventListener('hf-seek', e => Overhead.render(e.detail.time));
+    Overhead.render(0);
+  </script>
+</body>
+</html>

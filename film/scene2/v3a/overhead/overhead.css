@@ -1,0 +1,39 @@
+.overhead-stage {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: #181b1c;
+  color: #f3f5f8;
+  font-family: SceneSans, sans-serif;
+  perspective: 1400px;
+}
+.overhead-stage *, .overhead-stage *::before, .overhead-stage *::after { box-sizing: border-box; }
+.overhead-map-camera { position: absolute; inset: 0; width: 1920px; height: 1080px; transform-origin: 0 0; will-change: transform, opacity; }
+.overhead-map { position: absolute; inset: 0; width: 1920px; height: 1080px; background: #202423; }
+.overhead-map .campus-land { fill: #29302b; stroke: #3b473f; stroke-width: 2; }
+.overhead-map .green { fill: #354138; stroke: #536357; stroke-width: 2; opacity: .82; }
+.overhead-map .court { fill: #28332e; stroke: #4a5a4e; stroke-width: 2; }
+.overhead-map .path { fill: none; stroke: #63706d; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; opacity: .6; }
+.overhead-map .path.service { stroke-width: 3; opacity: .52; }
+.overhead-map .path.footway { stroke-width: 2; stroke-dasharray: 3 7; opacity: .5; }
+.overhead-map .path.secondary, .overhead-map .path.tertiary { stroke-width: 6; opacity: .38; }
+.overhead-map .building-side { fill: #626966; opacity: .75; }
+.overhead-map .building-wall { fill: #777f7b; opacity: .58; }
+.overhead-map .building-roof { fill: #a8b1ae; stroke: #c3cbc5; stroke-width: 1.6; }
+.overhead-map .building-context .building-roof { fill: #7d8984; stroke: #9aa6a0; opacity: .56; }
+.overhead-map .building-context .building-side { opacity: .38; }
+.overhead-map .route-under { fill: none; stroke: rgba(7,12,18,.62); stroke-width: 8; stroke-linecap: round; }
+.overhead-map .route { fill: none; stroke: #e1e9ea; stroke-width: 4; stroke-dasharray: 9 10; stroke-linecap: round; filter: drop-shadow(0 0 7px rgba(238,245,248,.45)); }
+.overhead-map-camera::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 48%, transparent 38%, rgba(5,8,10,.48) 100%); }
+.overhead-walk, .overhead-yash { position: absolute; inset: 0; width: 1920px; height: 1080px; object-fit: cover; transform-origin: center center; will-change: transform, opacity; }
+.overhead-walk { z-index: 2; box-shadow: 0 25px 100px rgba(0,0,0,.62); backface-visibility: visible; }
+.overhead-yash { z-index: 8; }
+.overhead-map-pin { position: absolute; width: 0; height: 0; z-index: 3; transform: translate(-50%, -50%); }
+.overhead-map-pin .ring { position: absolute; left: -22px; top: -22px; width: 44px; height: 44px; border-radius: 50%; border: 2px solid currentColor; opacity: .35; box-shadow: 0 0 25px currentColor; }
+.overhead-map-pin .dot { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 5px rgba(12,17,22,.76), 0 0 24px currentColor; }
+.overhead-map-pin.vachana { color: #4da3ff; }
+.overhead-map-pin.yash { color: #f3f5f8; }
+.overhead-map-pin .label-pin { position: absolute; top: -58px; left: -122px; min-width: 122px; text-align: center; color: #f3f5f8; }
+.overhead-map-pin.yash .label-pin { left: 34px; top: 16px; min-width: 80px; }
+.overhead-distance { position: absolute; z-index: 5; left: 74px; bottom: 78px; padding: 24px 32px; white-space: nowrap; font-size: 40px; font-weight: 620; line-height: 1.15; }
