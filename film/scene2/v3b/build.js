@@ -1,122 +1,108 @@
-/* Scene 2 v3b: local-only build. node build.js [--preview|--final]. */
-const fs = require('fs');
-const path = require('path');
-const cp = require('child_process');
-const HERE = __dirname;
-const REPO = path.resolve(HERE, '../../..');
-const machine = JSON.parse(fs.readFileSync(path.join(REPO, 'machine.local.json'), 'utf8'));
-const RENDERS = machine.renders_dir;
-const ASSETS = path.join(HERE, 'assets');
-const T = JSON.parse(fs.readFileSync(path.join(HERE, 'timeline.json'), 'utf8'));
-const C = JSON.parse(fs.readFileSync(path.join(REPO, 'film/captions/v3/s2b.json'), 'utf8'));
-const order = ['sonar_a', 'relay_1', 'relay_2', 'relay_3', 'sonar_b'];
-const durations = [7, 6, 6, 6, 6];
-const renderFinal = process.argv.includes('--render');
-const final = process.argv.includes('--final') || renderFinal;
-const preview = process.argv.includes('--preview');
-const missing = [];
-function run(exe, argv, cwd=REPO) {
-  const p = cp.spawnSync(exe, argv.map(String), {cwd, encoding:'utf8', shell:exe.endsWith('.cmd'), maxBuffer:8*1024*1024});
-  if (p.error || p.status !== 0) throw Error(`${exe}: ${p.error || p.stderr || p.stdout}`);
+/* Scene 2b build: narration lengths are the timing source. */
+const fs=require('fs'),path=require('path'),cp=require('child_process');
+const HERE=__dirname,REPO=path.resolve(HERE,'../../..');
+const machine=JSON.parse(fs.readFileSync(path.join(REPO,'machine.local.json')));
+const RENDERS=machine.renders_dir,ASSETS=path.join(HERE,'assets');
+const lines=JSON.parse(fs.readFileSync(path.join(REPO,'film/common/narration_v4.json'))).lines;
+const names=['N2','N2a','N2b','N2c','N2d','N2e','N2f','N3'];
+const order=['sonar_a','relay_1','relay_2','relay_3','sonar_b'];
+const lens={sonar_a:7,relay_1:6,relay_2:6,relay_3:6,sonar_b:6},missing=[];
+const round=n=>Math.round(n*1000)/1000;
+function run(exe,args,cwd=REPO){
+  const p=cp.spawnSync(exe,args.map(String),{cwd,encoding:'utf8',shell:exe.endsWith('.cmd'),maxBuffer:8*1024*1024});
+  if(p.error||p.status!==0)throw Error(exe+': '+(p.error||p.stderr||p.stdout));
   return p.stdout;
 }
-function probe(file) {
-  if (!fs.existsSync(file)) return null;
-  const d = JSON.parse(run('ffprobe', ['-v','error','-show_entries','format=duration:stream=codec_type,width,height','-of','json',file]));
-  const v = (d.streams || []).find(s=>s.codec_type==='video');
-  return {duration:Number(d.format.duration), width:v?.width, height:v?.height};
-}
-function stage(src, dst) {
-  if (fs.existsSync(dst)) fs.unlinkSync(dst);
-  try { fs.linkSync(src,dst); } catch { fs.copyFileSync(src,dst); }
-}
-function placeholder(dst, seconds, size) {
-  run('ffmpeg',['-v','error','-y','-f','lavfi','-i',`color=c=0x0a0d12:s=${size}:r=30:d=${seconds}`,
-    '-an','-c:v','libx264','-preset','ultrafast','-crf','30','-pix_fmt','yuv420p',dst]);
-}
-function verified(file, seconds, portrait=false) {
-  const p=probe(file);
-  if (!p || p.duration+0.07<seconds || !p.width || !p.height || (portrait && p.height<=p.width))
-    throw Error(`Missing or invalid asset ${file}: ${JSON.stringify(p)}; need ${seconds}s`);
-}
-function stageVideo(name, src, seconds, size, portrait=false) {
-  const dst=path.join(ASSETS,`${name}.mp4`);
-  if (fs.existsSync(src)) { verified(src,seconds,portrait);stage(src,dst); }
-  else { missing.push(name);placeholder(dst,seconds,size); }
-  verified(dst,seconds,portrait);
-}
-function stageSound(name, src) {
-  const dst=path.join(ASSETS,`${name}.wav`);
-  if (!fs.existsSync(src)) {
-    missing.push(name);
-    const seconds=name==='N2'?3.35:name==='N3'?1.55:name==='sonar_a_sfx'?7:6;
-    run('ffmpeg',['-v','error','-y','-f','lavfi','-i','anullsrc=r=48000:cl=stereo','-t',seconds,dst]);
-    return;
+function stage(src,dst){if(fs.existsSync(dst))fs.unlinkSync(dst);try{fs.linkSync(src,dst)}catch{fs.copyFileSync(src,dst)}}
+function video(name,src,seconds,size,portrait=false){
+  const dst=path.join(ASSETS,name+'.mp4');
+  let ok=false;
+  if(fs.existsSync(src)){
+    const p=JSON.parse(run('ffprobe',['-v','error','-show_entries','format=duration:stream=codec_type,width,height','-of','json',src]));
+    const v=p.streams.find(s=>s.codec_type==='video');
+    ok=!!v&&Number(p.format.duration)+.07>=seconds&&(!portrait||v.height>v.width);
   }
-  stage(src,dst);
+  if(ok)stage(src,dst);
+  else{missing.push(name);run('ffmpeg',['-v','error','-y','-f','lavfi','-i',`color=c=0x0a0d12:s=${size}:r=30:d=${seconds}`,'-an','-c:v','libx264','-preset','ultrafast','-crf','30','-pix_fmt','yuv420p',dst])}
 }
-// F0024: frame 0 continues s2a's last frame. Read s2a's end_state, take the next frame, and refuse a phone rect that differs.
-function joinFromS2a() {
-  const A=JSON.parse(fs.readFileSync(path.join(REPO,'film/scene2/v3a/timeline.json'),'utf8')).end_state;
-  if (!A || A.slot!=='yash_app') throw Error('s2a end_state is not the yash_app phone');
-  const sh=T.start_state.screen_height, c=T.start_state.phone_center, w=450;  // #phone in index.html.tpl is 450 x 1000
-  const mine={x:c[0]-w/2,y:c[1]-sh/2,width:w,height:sh};
-  for (const k of ['x','y','width','height']) if (Math.abs(mine[k]-A.position[k])>0.5)
-    throw Error(`s2a/s2b join: phone ${k} is ${A.position[k]} in s2a but ${mine[k]} in s2b`);
-  if (A.background && A.background.toLowerCase()!==T.start_state.field.toLowerCase())
-    throw Error(`s2a/s2b join: background ${A.background} vs ${T.start_state.field}`);
-  const t=+(A.slot_time+1/30).toFixed(4);
-  T.start_state.slot_time=t;
-  T.start_state.derivation=`s2a end_state.slot_time ${A.slot_time} + 1/30 (read at build)`;
-  return t;
+function sound(name,src,seconds){
+  const dst=path.join(ASSETS,name+'.wav');
+  if(fs.existsSync(src))stage(src,dst);
+  else{missing.push(name);run('ffmpeg',['-v','error','-y','-f','lavfi','-i','anullsrc=r=48000:cl=stereo','-t',seconds,dst])}
 }
-function main() {
-  fs.mkdirSync(ASSETS,{recursive:true});
-  for (const f of ['glass.css','glass.js','noise.png']) {
-    const dir=path.join(ASSETS,'glass');fs.mkdirSync(dir,{recursive:true});
-    fs.copyFileSync(path.join(REPO,'film/common/glass',f),path.join(dir,f));
+function timing(){
+  const T={fps:30,segments:[],narration_starts:{},beats:[],start_state:{field:'#0a0d12',screen_height:1000,phone_center:[960,540],slot:'RENDERS:scene2/app/yash_app.mp4'},end_state:{
+    card_html:'<div class="glass-card full"><h1 class="card-title"><span style="color:var(--red)">SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div>',
+    class:'glass-card full',title:'SOS',subline:'help from anyone nearby, no saved contact needed'}};
+  const seg=(name,start,end)=>T.segments.push({name,start:round(start),end:round(end)});
+  seg('push_in',0,1.4);seg('sonar_a',1.4,8.4);T.narration_starts.N2=1.4;
+  let t=8.4;
+  for(const id of ['N2a','N2b','N2c','N2d','N2e']){
+    const d=Number(lines[id].duration);if(!(d>0))throw Error('Invalid '+id+' duration');
+    T.narration_starts[id]=round(t);T.beats.push({id,start:round(t),end:round(t+d+.4)});t+=d+.4;
   }
+  seg('sonar_loop',8.4,t);
+  for(const id of ['relay_1','relay_2','relay_3']){seg(id,t,t+6);t+=6}
+  T.narration_starts.N2f=T.segments.find(s=>s.name==='relay_1').start;
+  seg('sonar_b',t,t+6);
+  T.narration_starts.N3=round(t+Math.max(0,4.4-Number(lines.N3.duration)));
+  seg('to_sos',t+4.5,t+6);T.duration=round(t+6);
+  return T;
+}
+function join(T){
+  const A=JSON.parse(fs.readFileSync(path.join(REPO,'film/scene2/v3a/timeline.json'))).end_state;
+  if(!A||A.slot!=='yash_app'||Math.abs(A.position.x-735)>.5||Math.abs(A.position.y-40)>.5||A.position.width!==450||A.position.height!==1000||A.background.toLowerCase()!=='#0a0d12')
+    throw Error('s2a/s2b phone join does not match');
+  const t=round(A.slot_time+1/30);T.start_state.slot_time=t;
+  T.start_state.derivation=`s2a end_state.slot_time ${A.slot_time} + 1/30 (read at build)`;return t;
+}
+function main(){
+  fs.mkdirSync(ASSETS,{recursive:true});fs.mkdirSync(path.join(ASSETS,'glass'),{recursive:true});
+  for(const f of ['glass.css','glass.js','noise.png'])fs.copyFileSync(path.join(REPO,'film/common/glass',f),path.join(ASSETS,'glass',f));
   fs.copyFileSync(path.join(REPO,'film/vendor/gsap/gsap.min.js'),path.join(HERE,'gsap.min.js'));
-  const slot=JSON.parse(fs.readFileSync(path.join(REPO,'film/scene2/v2/slots.json'),'utf8')).yash_app;
-  const slotSrc=path.join(RENDERS,slot.path.slice(8).split('/').join(path.sep));
-  stageVideo('yash_app',slotSrc,slot.duration,'1080x2400',true);
-  const slotTime=joinFromS2a();
+  const T=timing(),slotTime=join(T),slot=JSON.parse(fs.readFileSync(path.join(REPO,'film/scene2/v2/slots.json'))).yash_app;
+  video('yash_app',path.join(RENDERS,slot.path.slice(8).split('/').join(path.sep)),slot.duration,'1080x2400',true);
   run('ffmpeg',['-v','error','-y','-ss',slotTime,'-i',path.join(ASSETS,'yash_app.mp4'),'-frames:v','1',path.join(ASSETS,'yash_slot.jpg')]);
-  const sonarDir=path.join(RENDERS,'scene2','sonar');
-  const sfxDir=path.join(RENDERS,'scene2','sonar_work','film','scene2','sonar');
-  for (let i=0;i<order.length;i++) {
-    const n=order[i];stageVideo(n,path.join(sonarDir,`${n}.mp4`),durations[i],'1920x1080');
-    stageSound(`${n}_sfx`,path.join(sfxDir,n,'assets',`${n}_sfx.wav`));
-  }
-  run('ffmpeg',['-v','error','-y','-ss','2.5','-i',path.join(ASSETS,'sonar_a.mp4'),'-frames:v','1','-q:v','3',path.join(ASSETS,'sonar_open.jpg')]);
-  for (const n of ['N2','N3']) {
-    const cfg=JSON.parse(fs.readFileSync(path.join(REPO,'film/common/narration.json'),'utf8'));
-    const src=cfg.voice==='vivek' ? path.join(RENDERS,'narration','vivek',`${n}.wav`)
-      : path.join(RENDERS,'scene2','narration','david',`${n}.wav`);
-    stageSound(n,src);
-  }
-  const template=fs.readFileSync(path.join(HERE,'index.html.tpl'),'utf8');
-  const page=template.replace(/(id="yashSlot"[^>]*data-media-start=")[\d.]+"/,`$1${slotTime}"`);
-  if (page===template && !template.includes(`data-media-start="${slotTime}"`)) throw Error('could not set the yashSlot start frame in index.html.tpl');
-  fs.writeFileSync(path.join(HERE,'index.html'),page.replaceAll('{{TIMELINE}}',JSON.stringify(T)).replaceAll('{{CAPTIONS}}',JSON.stringify(C)));
-  if (final && missing.length) throw Error(`Missing assets for final render: ${missing.join(', ')}`);
+  const sonarDir=path.join(RENDERS,'scene2','sonar'),sfxDir=path.join(RENDERS,'scene2','sonar_work','film','scene2','sonar');
+  for(const n of order){video(n,path.join(sonarDir,n+'.mp4'),lens[n],'1920x1080');sound(n+'_sfx',path.join(sfxDir,n,'assets',n+'_sfx.wav'),lens[n])}
+  for(const [name,time] of [['sonar_open',2.5],['sonar_loop',6.5]])
+    run('ffmpeg',['-v','error','-y','-ss',time,'-i',path.join(ASSETS,'sonar_a.mp4'),'-frames:v','1','-q:v','2',path.join(ASSETS,name+'.jpg')]);
+  for(const id of names)sound(id,path.join(RENDERS,'narration','v4',id+'.wav'),Number(lines[id].duration));
+  const C=names.filter(id=>lines[id].text).map(id=>({start:T.narration_starts[id],end:round(T.narration_starts[id]+Number(lines[id].duration)),text:lines[id].text}));
+  fs.writeFileSync(path.join(HERE,'timeline.json'),JSON.stringify(T,null,2)+'\n');
+  fs.writeFileSync(path.join(REPO,'film/captions/v3/s2b.json'),JSON.stringify(C,null,2)+'\n');
+  fs.writeFileSync(path.join(HERE,'meta.json'),JSON.stringify({id:'scene2_v3b',name:'Scene 2 second half',width:1920,height:1080,fps:30,duration:T.duration})+'\n');
+  const tpl=fs.readFileSync(path.join(HERE,'index.html.tpl'),'utf8');
+  const clips=order.map(n=>{const s=T.segments.find(x=>x.name===n);return `<video id="${n}" class="clip" src="assets/${n}.mp4" data-start="${s.start}" data-duration="${lens[n]}" data-media-start="0" muted playsinline></video>`}).join('\n');
+  const sounds=[
+    ...names.map(n=>({id:n,start:T.narration_starts[n],duration:Number(lines[n].duration),file:n+'.wav'})),
+    ...order.map(n=>({id:n+'_sfx',start:T.segments.find(s=>s.name===n).start,duration:lens[n],file:n+'_sfx.wav'}))
+  ].map(x=>`<audio id="audio_${x.id}" class="clip" src="assets/${x.file}" data-start="${x.start}" data-duration="${x.duration}"></audio>`).join('\n');
+  fs.writeFileSync(path.join(HERE,'index.html'),tpl.replaceAll('{{TIMELINE}}',JSON.stringify(T)).replaceAll('{{CAPTIONS}}',JSON.stringify(C)).replaceAll('{{SLOT_TIME}}',String(slotTime)).replaceAll('{{DURATION}}',String(T.duration)).replaceAll('{{CLIPS}}',clips).replaceAll('{{SOUNDS}}',sounds));
+  if(process.argv.includes('--render')&&missing.length)throw Error('Missing final assets: '+missing.join(', '));
   run('hyperframes.cmd',['check'],HERE);
-  if (renderFinal) {
-    const out=path.join(RENDERS,'scene2','v3b','scene2_v3b.mp4');fs.mkdirSync(path.dirname(out),{recursive:true});
+  if(process.argv.includes('--render')){
+    const out=path.join(RENDERS,'scene2','v3b','scene2_v3b.mp4');
+    fs.mkdirSync(path.dirname(out),{recursive:true});
     run('hyperframes.cmd',['render','-q','high','-f','30','-o',out],HERE);
-    verified(out,T.duration);
   }
-  if (preview) {
-    const out=path.join(REPO,'results','F0017','preview');fs.mkdirSync(out,{recursive:true});
-    const times=[0,.7,1.4,5.2,10.5,17,27.8,29.2,31.4,32.367];
-    const tmp=path.join(REPO,'results','F0017','snapshots');fs.mkdirSync(tmp,{recursive:true});
+  if(process.argv.includes('--preview')){
+    const out=path.join(REPO,'results','F0042','preview');fs.mkdirSync(out,{recursive:true});
+    const times=[.1,6.7,...T.beats.map(b=>round(b.start+.84*(b.end-b.start))),...['relay_1','relay_2','relay_3','sonar_b'].map(n=>round(T.segments.find(s=>s.name===n).start+3.6)),round(T.duration-1/30)];
+    const ids=['push','opening','N2a','N2b','N2c','N2d','N2e','relay1','relay2','relay3','arrival','sos'];
+    const tmp=path.join(out,'snapshots');fs.mkdirSync(tmp,{recursive:true});
     run('hyperframes.cmd',['snapshot','--at',times.join(','),'--no-end','-o',tmp],HERE);
     const pngs=fs.readdirSync(tmp).filter(x=>x.endsWith('.png')).sort();
-    if (pngs.length!==times.length) throw Error(`Expected ${times.length} snapshots, got ${pngs.length}: ${pngs}`);
-    for (let i=0;i<pngs.length;i++) run('ffmpeg',['-v','error','-y','-i',path.join(tmp,pngs[i]),'-vf','scale=960:-2','-q:v','3',path.join(out,`${String(i).padStart(2,'0')}-${String(times[i]).replace('.','p')}s.jpg`)]);
-    run('python',['-c',`from PIL import Image\nfrom pathlib import Path\np=Path(__import__('sys').argv[1]); frames=[Image.open(f).convert('RGB').resize((480,270),Image.Resampling.LANCZOS) for f in sorted(p.glob('[0-9][0-9]-*s.jpg'))]; sheet=Image.new('RGB',(480,270*len(frames))); [sheet.paste(frame,(0,i*270)) for i,frame in enumerate(frames)]; sheet.save(p/'phone-review.jpg',quality=90,optimize=True)`,out]);
+    if(pngs.length!==times.length)throw Error(`Expected ${times.length} snapshots, got ${pngs.length}`);
+    for(let i=0;i<pngs.length;i++)fs.renameSync(path.join(tmp,pngs[i]),path.join(out,`${String(i).padStart(2,'0')}-${ids[i]}-1920.png`));
     fs.rmSync(tmp,{recursive:true,force:true});
+    run('python',['-c',`from PIL import Image,ImageDraw
+from pathlib import Path
+p=Path(__import__('sys').argv[1]); fs=sorted(p.glob('*-1920.png')); sheet=Image.new('RGB',(480,300*len(fs)),'#0a0d12'); d=ImageDraw.Draw(sheet)
+for i,f in enumerate(fs):
+ im=Image.open(f).convert('RGB').resize((480,270),Image.Resampling.LANCZOS); im.save(f.with_name(f.stem.replace('-1920','-480')+'.png')); sheet.paste(im,(0,i*300)); d.text((8,i*300+274),f.stem,fill='white')
+sheet.save(p/'sheet-480.jpg',quality=92)`,out]);
   }
-  console.log(JSON.stringify({duration:T.duration,slot_time:slotTime,placeholder_assets:missing,checked:true,preview}));
+  console.log(JSON.stringify({duration:T.duration,placeholder_assets:missing,preview:process.argv.includes('--preview')}));
 }
-try {main();} catch(e) {console.error(e.stack||e);process.exit(1);}
+try{main()}catch(e){console.error(e.stack||e);process.exit(1)}
