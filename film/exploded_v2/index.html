@@ -17,18 +17,20 @@
   #rings circle { fill: none; stroke: #4da3ff; stroke-width: 1.4; }
   #floor { position: absolute; left: 260px; top: 860px; width: 1000px; height: 160px; pointer-events: none;
     background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.55), transparent 70%); filter: blur(6px); }
-  #stage { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 760px 420px; transform-origin: 760px 540px; }
+  #stage { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 805px 420px; transform-origin: 805px 540px; }
   .layer { position: absolute; left: 0; top: 0; transform-style: preserve-3d; will-change: transform; }
   .layer img { display: block; width: 100%; height: 100%; filter: drop-shadow(0 30px 40px rgba(0,0,0,.55)); }
   #sweep { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: 0;
-    background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,.0) 42%, rgba(220,236,255,.55) 50%, rgba(255,255,255,0) 58%, transparent 62%);
-    background-size: 300% 100%; background-repeat: no-repeat;
+    background: linear-gradient(105deg, transparent 43%, rgba(180,210,235,.12) 47%, rgba(255,255,255,.8) 50%, rgba(180,210,235,.12) 53%, transparent 57%);
+    background-size: 300% 100%; background-repeat: no-repeat; clip-path: polygon(30% 5%, 98% 11%, 91% 39%, 25% 31%);
     -webkit-mask-image: url(./assets/layer_mid.png); mask-image: url(./assets/layer_mid.png);
     -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
-  .glow { position: absolute; border-radius: 50%; pointer-events: none; mix-blend-mode: screen; opacity: 0;
+  .glow { position: absolute; border-radius: 16%; pointer-events: none; mix-blend-mode: screen; opacity: 0;
     transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(220,238,255,.95) 0%, rgba(120,190,255,.55) 28%, rgba(77,163,255,.18) 52%, transparent 70%); }
-  .glow.gold { background: radial-gradient(circle, rgba(255,240,200,.95) 0%, rgba(245,196,81,.62) 28%, rgba(245,196,81,.2) 52%, transparent 70%); }
+    background: rgba(60,145,255,.21); border: 2px solid rgba(185,225,255,.85);
+    box-shadow: inset 0 0 14px rgba(170,215,255,.38), 0 0 22px 6px rgba(77,163,255,.55); }
+  .glow.gold { background: rgba(245,196,81,.24); border-color: rgba(255,226,150,.92);
+    box-shadow: inset 0 0 14px rgba(255,230,170,.42), 0 0 22px 6px rgba(245,196,81,.6); }
   #leaders { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
   #leaders path { fill: none; stroke: rgba(220,236,255,.85); stroke-width: 2; }
   #leaders circle { fill: #eaf4ff; }
@@ -61,14 +63,14 @@
 </main>
 <script>
 // Pure function of t: no clock, no randomness. All numbers come from timeline.json (via assets/data.js).
-const D = window.EXPLODED, T = D.timeline, LAY = T.layout, PX = LAY.layer_px;
+const D = window.EXPLODED, T = D.timeline, LAY = T.layout, PX = LAY.layer_px, PH = PX * D.size[1] / D.size[0];
 const NS = 'http://www.w3.org/2000/svg';
 const clamp = v => Math.max(0, Math.min(1, v));
 const smooth = v => { v = clamp(v); return v * v * (3 - 2 * v); };
 const inOut = v => { v = clamp(v); return v < .5 ? 2 * v * v : 1 - Math.pow(-2 * v + 2, 2) / 2; };   // power1-ish inOut
 const lerp = (a, b, k) => a + (b - a) * k;
 const L = { screen: document.getElementById('L_screen'), mid: document.getElementById('L_mid'), back: document.getElementById('L_back') };
-for (const el of Object.values(L)) { el.style.width = PX + 'px'; el.style.height = PX + 'px'; }
+for (const el of Object.values(L)) { el.style.width = PX + 'px'; el.style.height = PH + 'px'; }
 const LX = LAY.label_x || 1350, LW = LAY.label_w || 530;
 const stage = document.getElementById('stage');
 stage.style.transformOrigin = `${T.push.origin[0]}px ${T.push.origin[1]}px`;
@@ -79,8 +81,8 @@ const glows = {};
 for (const [name, p] of Object.entries(D.parts)) {
   const g = document.createElement('div');
   g.className = 'glow';
-  const r = Math.max(70, Math.max(p.w, p.h) * scaleImg * 2.2);
-  g.style.width = g.style.height = r + 'px';
+  g.style.width = Math.max(22, p.w * scaleImg * .86) + 'px';
+  g.style.height = Math.max(18, p.h * scaleImg * .86) + 'px';
   g.style.left = (p.cx * scaleImg) + 'px'; g.style.top = (p.cy * scaleImg) + 'px';
   L.mid.appendChild(g); glows[name] = g;
 }
@@ -134,7 +136,7 @@ function draw(t) {
   for (const name of ['back', 'mid', 'screen']) {
     const [x, y, z] = offsets(name, t);
     pos[name] = [x, y];
-    L[name].style.transform = `translate3d(${(cx - PX / 2 + x).toFixed(2)}px, ${(cy - PX / 2 + y).toFixed(2)}px, ${z.toFixed(2)}px)`;
+    L[name].style.transform = `translate3d(${(cx - PX / 2 + x).toFixed(2)}px, ${(cy - PH / 2 + y).toFixed(2)}px, ${z.toFixed(2)}px)`;
   }
   // light sweep across the metal frame once
   const sw = (t - T.sweep[0]) / (T.sweep[1] - T.sweep[0]);
@@ -145,7 +147,7 @@ function draw(t) {
   const O = T.push.origin;
   const partXY = name => {
     const p = D.parts[name];
-    const x = cx - PX / 2 + pos.mid[0] + p.cx * scaleImg, y = cy - PX / 2 + pos.mid[1] + p.cy * scaleImg;
+    const x = cx - PX / 2 + pos.mid[0] + p.cx * scaleImg, y = cy - PH / 2 + pos.mid[1] + p.cy * scaleImg;
     return [O[0] + (x - O[0]) * s, O[1] + (y - O[1]) * s];
   };
   for (const g of Object.values(glows)) g.style.opacity = '0';

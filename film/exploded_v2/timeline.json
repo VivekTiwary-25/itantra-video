@@ -6,16 +6,16 @@
     "from": 1.0,
     "to": 1.1,
     "origin": [
-      760,
+      805,
       540
     ]
   },
   "layout": {
     "center": [
-      760,
+      805,
       540
     ],
-    "layer_px": 900,
+    "layer_px": 675,
     "tight": {
       "screen": [
         0,
@@ -35,8 +35,8 @@
     },
     "exploded": {
       "screen": [
-        270,
-        -230,
+        -410,
+        0,
         140
       ],
       "mid": [
@@ -45,13 +45,13 @@
         0
       ],
       "back": [
-        -270,
-        230,
+        260,
+        55,
         -140
       ]
     },
-    "label_x": 1350,
-    "label_w": 530,
+    "label_x": 1370,
+    "label_w": 510,
     "end_center_x": 960
   },
   "explode": [
