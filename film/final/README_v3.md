@@ -64,3 +64,25 @@ Exit code 1 on FAIL. A REVIEW status still exits 0, so read the freeze rows. `py
 | "picture is N s, expected M s" | The segment changed length. Re-check its joins, then update `expected_duration`. |
 | "stem is longer than the picture" | The tail after the last frame is dropped. Listen that it holds no speech (speech is never cut or stretched on purpose). |
 | Encoded film misses -16 LUFS / -1.5 dBTP | Look at `loudness` in the report. A very dynamic mix uses the limiter path (`master_method`). |
+
+## 4. Beat stills (after every assembly, before a render is accepted)
+```
+python film/final/beat_stills.py                                   # default: RENDERS:full_film_v3_draft.mp4 + its _report.json
+python film/final/beat_stills.py --film RENDERS:full_film_v3.mp4    # the final
+python film/final/beat_stills.py --beats-only                      # print the beat table only
+```
+- **Inputs:** segment starts come from the assembly report. Beats come from each segment's own `timeline.json` (folder from `v3_segments.json`):
+  - `segments` lists (s2a, s2b, s3) give the middle of each segment
+  - `tech_lines` / `techlines` and `labels` (exploded_v2) give their middles
+  - the intro's word cues give a moment 0.4 s after each cue
+  - cards uses built-in beats
+  - every segment also gets its first and last frame, for the joins
+- **Slates:** draft slates get first/last frames only.
+- **Output:** `RENDERS:review/<film name>/` (`--out` to change), printed at the end:
+  - `frames/` (full-size JPGs)
+  - `beats_full.jpg` (960 px tiles)
+  - `beats_phone.jpg` (480 px tiles, how a judge on a phone sees it)
+  - `joins.jpg` (each segment's last frame next to the next segment's first frame)
+  - `beats.json`
+- **Review:** look at every tile at both sizes. The joins must look identical across each cut, with no jump.
+- Needs ffmpeg and Pillow. Takes about 20 s for a 2:35 film.

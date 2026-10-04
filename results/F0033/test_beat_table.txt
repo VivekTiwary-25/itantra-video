@@ -1,0 +1,58 @@
+  film s  segment     seg s  beat
+   0.000  intro       0.000  first frame
+   0.867  intro       0.867  voice_start
+   0.967  intro       0.967  panel
+   7.067  intro       7.067  built
+   8.233  intro       8.233  wave
+   9.300  intro       9.300  message
+   9.533  intro       9.533  travels
+  10.200  intro      10.200  phone1
+  10.600  intro      10.600  phone2
+  11.233  intro      11.233  no
+  11.367  intro      11.367  network
+  11.667  intro      11.667  needed
+  12.367  intro      12.367  lets
+  13.567  intro      13.567  camera_end
+  13.767  intro      13.767  last frame
+  13.800  s2a         0.000  first frame
+  14.600  s2a         0.800  card_out
+  17.533  s2a         3.733  bench
+  19.933  s2a         6.133  vachana_split_in
+  26.200  s2a        12.400  vachana_send
+  32.567  s2a        18.767  send_fly
+  35.133  s2a        21.333  walk
+  40.200  s2a        26.400  overhead
+  44.033  s2a        30.233  yash_before_notification
+  51.200  s2a        37.400  yash_app
+  57.067  s2a        43.267  last frame
+  57.100  s2b         0.000  first frame
+  57.800  s2b         0.700  push_in
+  62.000  s2b         4.900  sonar_a
+  63.067  s2b         5.967  tech: Speech becomes text on the p
+  68.000  s2b        10.900  tech: Encrypted: relays can't read
+  68.500  s2b        11.400  relay_1
+  74.500  s2b        17.400  relay_2
+  80.500  s2b        23.400  relay_3
+  85.600  s2b        28.500  tech: Hops phone to phone over Blu
+  86.500  s2b        29.400  sonar_b
+  88.767  s2b        31.667  to_sos
+  89.467  s2b        32.367  last frame
+  89.500  s3          0.000  first frame
+  90.300  s3          0.800  card_out
+  92.533  s3          3.033  s3_open
+ 100.433  s3         10.933  vachana_sos
+ 107.933  s3         18.433  sos_in
+ 110.233  s3         20.733  tech: No saved contact needed
+ 113.200  s3         23.700  tech: Reaches the 3 strongest phon
+ 113.433  s3         23.933  sos_sonar
+ 118.167  s3         28.667  tech: The helper must accept
+ 118.700  s3         29.200  sos_dive
+ 120.100  s3         30.600  lab_open
+ 130.833  s3         41.333  vivek_app
+ 140.867  s3         51.367  last frame
+ 140.900  cards       0.000  first frame
+ 142.500  cards       1.600  items in
+ 145.900  cards       5.000  works now hold
+ 149.300  cards       8.400  transition
+ 151.900  cards      11.000  closing card
+ 154.867  cards      13.967  last frame
