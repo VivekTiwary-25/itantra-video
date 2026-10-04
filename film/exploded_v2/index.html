@@ -14,7 +14,7 @@
     /* dark studio: near-black with a very soft light falling from the top */
     background: radial-gradient(ellipse 1300px 760px at 46% -12%, #1d232b 0%, #10141a 38%, #06080b 70%, #030507 100%); }
   #rings { position: absolute; inset: 0; pointer-events: none; }
-  #rings circle { fill: none; stroke: #4da3ff; stroke-width: 1.4; }
+  #rings circle { fill: none; stroke: #4da3ff; stroke-width: 2; }
   #floor { position: absolute; left: 260px; top: 860px; width: 1000px; height: 160px; pointer-events: none;
     background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.55), transparent 70%); filter: blur(6px); }
   #stage { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 805px 420px; transform-origin: 805px 540px; }
@@ -30,6 +30,8 @@
     background: radial-gradient(ellipse at center, rgba(165,215,255,.6) 0%, rgba(77,163,255,.26) 52%, transparent 78%);
     filter: blur(5px); }
   .glow.gold { background: radial-gradient(ellipse at center, rgba(255,227,160,.72) 0%, rgba(245,196,81,.34) 54%, transparent 80%); }
+  .glow.mic { border-radius: 50%; filter: blur(4px);
+    background: radial-gradient(circle at center, rgba(165,215,255,.12) 0%, rgba(165,215,255,.15) 28%, rgba(132,197,255,.78) 43%, rgba(77,163,255,.45) 55%, rgba(77,163,255,.10) 72%, transparent 82%); }
   #leaders { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
   #leaders path { fill: none; stroke: rgba(220,236,255,.85); stroke-width: 2; }
   #leaders circle { fill: #eaf4ff; }
@@ -40,7 +42,7 @@
   .label.gold { border-left-color: rgba(245,196,81,.95); }
   .label .title { font-size: 52px; font-weight: 650; line-height: 1.08; letter-spacing: -.015em; }
   .label .detail { display: block; margin-top: 12px; font-size: 34px; line-height: 1.22; color: rgba(243,245,248,.82); }
-  #endline { position: absolute; left: 360px; width: 1200px; top: 1000px; text-align: center; font-size: 56px; font-weight: 650;
+  #endline { position: absolute; left: 360px; width: 1200px; top: 900px; text-align: center; font-size: 60px; line-height: 1; font-weight: 650;
     letter-spacing: -.015em; opacity: 0; text-shadow: 0 2px 18px rgba(0,0,0,.8); }
   #vignette { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 200px 70px rgba(0,0,0,.6); }
   #ph { position: absolute; right: 24px; top: 18px; font-size: 20px; color: rgba(255,255,255,.78); }
@@ -80,8 +82,10 @@ const glows = {};
 for (const [name, p] of Object.entries(D.parts)) {
   const g = document.createElement('div');
   g.className = 'glow';
-  g.style.width = Math.max(25, p.w * scaleImg) + 'px';
-  g.style.height = Math.max(22, p.h * scaleImg) + 'px';
+  const mic = name === 'microphone';
+  if (mic) g.classList.add('mic');
+  g.style.width = (mic ? Math.max(75, p.w * scaleImg * 3) : Math.max(25, p.w * scaleImg)) + 'px';
+  g.style.height = (mic ? Math.max(75, p.h * scaleImg * 3) : Math.max(22, p.h * scaleImg)) + 'px';
   g.style.left = (p.cx * scaleImg) + 'px'; g.style.top = (p.cy * scaleImg) + 'px';
   L.mid.appendChild(g); glows[name] = g;
 }
@@ -126,7 +130,7 @@ function draw(t) {
   ringEls.forEach((c, i) => {
     const r = (t * 34 + i * 170) % 850;
     c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r.toFixed(1));
-    c.style.opacity = (0.10 * Math.sin(Math.PI * r / 850)).toFixed(3);
+    c.style.opacity = (0.18 * Math.sin(Math.PI * r / 850)).toFixed(3);
   });
   // slow camera push over the whole segment
   const s = lerp(T.push.from, T.push.to, inOut(t / T.duration));
@@ -170,7 +174,8 @@ function draw(t) {
       dots[i].style.opacity = vis.toFixed(3);
       const g = glows[name];
       g.classList.toggle('gold', !!lb.gold);
-      g.style.opacity = Math.max(+g.style.opacity, vis * (0.75 + 0.25 * Math.sin((t - lb.start) * 4))).toFixed(3);
+      const pulse = name === 'microphone' ? 0.35 * Math.exp(-Math.pow((t - lb.start - 0.45) / 0.32, 2)) : 0;
+      g.style.opacity = Math.max(+g.style.opacity, vis * (0.75 + 0.25 * Math.sin((t - lb.start) * 4)) + pulse).toFixed(3);
     });
   }
   const e = smooth((t - T.end_line.start) / 0.4);

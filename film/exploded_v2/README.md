@@ -17,7 +17,7 @@ HyperFrames, 1920x1080, 30 fps. Three still layers (screen / metal mid-frame wit
 - **1.5-3.5 s:** layers float apart. The screen goes up-right and toward camera, the back down-left and away, and the mid-frame stays put; each layer drifts slightly on its own.
 - **3.5-13 s:** four labels, 2.375 s each: Microphone, Processor, Bluetooth chip and antenna (GOLD glow, two leaders), Loudspeaker. Each has a leader line and glow on the part from `parts.json`. A light sweep crosses the metal frame at 3.5-4.8 s.
 - **13-15 s:** the layers close up, and the phone glides to frame centre (`end_center_x`).
-- **14.9-16 s:** `No new hardware.` (56 px), centred below the phone.
+- **14.9-16 s:** `No new hardware.` (60 px), centred below the phone with its baseline near y=960.
 
 ## Swapping in the real images (F0030)
 1. Put `layer_screen.png`, `layer_mid.png`, `layer_back.png` in `RENDERS:exploded_v2/`, replacing the placeholders: same names, same 1366 x 2048 portrait canvas for all three, transparent background.
