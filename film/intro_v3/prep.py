@@ -84,8 +84,9 @@ def word_timing():
         from faster_whisper import WhisperModel
     except ImportError as exc:
         raise RuntimeError("faster-whisper Python package is unavailable") from exc
-    model = WhisperModel(str(MODEL), device="auto", compute_type="auto", local_files_only=True)
-    segments, _ = model.transcribe(str(AUDIO), language="en", beam_size=5,
+    model = WhisperModel(str(MODEL), device="cpu", compute_type="int8", local_files_only=True)
+    audio = pcm(AUDIO, 16000).astype(np.float32)  # decode with ffmpeg: some PyAV versions break faster-whisper's own decoder
+    segments, _ = model.transcribe(audio, language="en", beam_size=5,
                                    word_timestamps=True, initial_prompt=PROMPT)
     words = [{"w": w.word.strip(), "s": round(w.start, 3),
               "e": round(w.end, 3), "p": round(w.probability, 3)}
@@ -100,7 +101,7 @@ def scene1_chain():
     if not CB.is_file() or not SH.is_file():
         raise FileNotFoundError("Required scene-1 RNNoise models absent: local/models/rnnoise/{cb,sh}.rnnn")
     source = (REPO / "film/scene1/build.py").read_text(encoding="utf-8")
-    match = re.search(r'^CHAIN = \((.*?)^\)', source, re.M | re.S)
+    match = re.search(r'^CHAIN = \((.*?)\)\s*$', source, re.M | re.S)
     if not match:
         raise RuntimeError("Scene-1 CHAIN definition not found")
     # Keep the exact current scene-1 chain as the reference, not a drifting copy.

@@ -1,0 +1,22 @@
+{
+  "short_raw": {
+    "below_300": 0.1642,
+    "300_to_3000": 0.8248,
+    "above_3000": 0.0111,
+    "centroid_hz": 632.6
+  },
+  "short_clean": {
+    "below_300": 0.115,
+    "300_to_3000": 0.8578,
+    "above_3000": 0.0272,
+    "centroid_hz": 756.5
+  },
+  "scene1_reference_clean": {
+    "below_300": 0.0641,
+    "300_to_3000": 0.8639,
+    "above_3000": 0.072,
+    "centroid_hz": 1262.6
+  },
+  "low_to_mid_deficit_db": 2.57,
+  "shelf_applied": false
+}
