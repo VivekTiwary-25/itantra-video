@@ -25,7 +25,7 @@
 #walker{position:absolute;left:642px;top:713px;width:18px;height:18px;border-radius:50%;background:var(--blue);box-shadow:0 0 20px var(--blue);display:none}
 #hop{left:1000px;top:715px;font-size:52px;min-width:90px;text-align:center}
 #relayName{position:absolute;z-index:7;display:none;white-space:nowrap;font-size:44px;padding:12px 24px}
-#relayMask{position:absolute;z-index:6;display:none;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 30%),rgba(14,18,26,.72);backdrop-filter:blur(36px) saturate(1.4);-webkit-backdrop-filter:blur(36px) saturate(1.4);border:1px solid rgba(255,255,255,.09);border-radius:18px;box-shadow:0 0 22px 16px rgba(14,18,26,.22)}
+#relayMask{display:none!important}#relayMask{position:absolute;z-index:6;display:none;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 30%),rgba(14,18,26,.72);backdrop-filter:blur(36px) saturate(1.4);-webkit-backdrop-filter:blur(36px) saturate(1.4);border:1px solid rgba(255,255,255,.09);border-radius:18px;box-shadow:0 0 22px 16px rgba(14,18,26,.22)}
 #frost{position:absolute;inset:0;z-index:8;background:#0e121a99;backdrop-filter:blur(0);opacity:0;pointer-events:none}
 #card{z-index:9;display:grid;place-items:center;text-align:center;opacity:0;pointer-events:none}
 #card .glass-card.full{display:flex;flex-direction:column;align-items:center;justify-content:center}
