@@ -1,16 +1,26 @@
 {
   "sample_rate": 48000,
-  "key": "D minor",
+  "key": "D Dorian (D minor with B natural); fits notify E5/A5, sent E5/B5, SOS notice D5/G5",
   "pulse_bpm": 72,
   "crossfade_seconds": 2.5,
+  "reverb_mix": 0.32,
   "sections": [
-    {"name": "intro", "start": 0, "end": 25, "level_dbfs": -25.5},
-    {"name": "s2a", "start": 25, "end": 75, "level_dbfs": -24.5},
-    {"name": "s2b", "start": 75, "end": 110, "level_dbfs": -24.0},
-    {"name": "s3", "start": 110, "end": 155, "level_dbfs": -23.5},
-    {"name": "exploded", "start": 155, "end": 172, "level_dbfs": -24.0},
-    {"name": "cards", "start": 172, "end": 186, "level_dbfs": -22.5}
+    {"name": "intro",    "start": 0,   "end": 25,  "lufs": -28.0},
+    {"name": "s2a",      "start": 25,  "end": 75,  "lufs": -25.0},
+    {"name": "s2b",      "start": 75,  "end": 110, "lufs": -25.0},
+    {"name": "s3",       "start": 110, "end": 155, "lufs": -24.0},
+    {"name": "exploded", "start": 155, "end": 172, "lufs": -25.0},
+    {"name": "cards",    "start": 172, "end": 186, "lufs": -23.0, "closing_chord_at": 180}
   ],
+  "end_fade_seconds": 2.5,
+  "duck": {
+    "speech_db": -10.0,
+    "tts_extra_db": -4.0,
+    "attack_ms": 150,
+    "release_ms": 600,
+    "hold_ms": 250,
+    "threshold_dbfs": -45.0
+  },
   "tts_windows": [
     {"start": 66.5, "end": 70.5, "note": "Yash playback; retime to final s2a"},
     {"start": 149.0, "end": 153.0, "note": "Vivek playback; retime to final s3"}
