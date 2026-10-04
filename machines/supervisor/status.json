@@ -1,11 +1,11 @@
 {
-  "time": "2026-10-04T12:48:10Z",
-  "summary": "5/5 machines reachable",
+  "time": "2026-10-04T12:53:19Z",
+  "summary": "3/5 machines reachable",
   "machines": {
     "vivek-pc": "busy F0052",
     "yash-pc": "idle \u00b7 20 unpushed commit(s)",
     "utkarsh-pc": "rate_limited \u00b7 rate-limited",
-    "yojitth-pc": "stopped by swarm stop",
-    "yojitth-codex-pc": "stopped by swarm stop"
+    "yojitth-pc": "UNREACHABLE",
+    "yojitth-codex-pc": "UNREACHABLE"
   }
 }
