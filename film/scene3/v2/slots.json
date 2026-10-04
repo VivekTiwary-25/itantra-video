@@ -1,5 +1,5 @@
 {
-  "vachana_sos": {"path": "RENDERS:scene3/app/vachana_sos.mp4", "duration": 12.966667, "listen_at": 1.4, "send_at": 11.23},
+  "vachana_sos": {"path": "RENDERS:scene3/app/vachana_sos.mp4", "duration": 12.8, "listen_at": 1.4, "send_at": 11.23},
   "vivek_app": {"path": "RENDERS:scene3/app/vivek_app.mp4", "duration": 21.366667, "accept_at": 2.6, "play_at": 7.63, "ptt_down": 12.76, "ptt_up": 16.22, "sent_at": 19.77},
-  "vachana_response": {"path": "RENDERS:scene3/app/vachana_response.mp4", "duration": 6.966667, "opened_at": 4.96}
+  "vachana_response": {"path": "RENDERS:scene3/app/vachana_response.mp4", "duration": 6.966667, "opened_at": 4.96, "notification_at": 0.3}
 }

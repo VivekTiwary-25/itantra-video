@@ -1,5 +1,5 @@
 {
   "vachana_send": {"path": "RENDERS:scene2/app/vachana_send.mp4", "duration": 13.1333333333, "ptt_down": 0.08, "ptt_up": 5.24, "sent_at": 11.98},
   "maps": {"path": "RENDERS:scene2/app/maps_fallback.mp4", "duration": 3.5},
-  "yash_app": {"path": "RENDERS:scene2/app/yash_app.mp4", "duration": 20.8666666667, "notification_at": 3.0, "play_at": 7.63, "ptt_down": 12.13, "ptt_up": 15.33, "sent_at": 18.87}
+  "yash_app": {"path": "RENDERS:scene2/app/yash_app.mp4", "duration": 20.8666666667, "notification_at": 3.0, "play_at": 7.63, "ptt_down": 12.13, "ptt_up": 15.33, "sent_at": 18.87, "banner_at": 1.45}
 }

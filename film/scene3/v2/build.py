@@ -22,6 +22,14 @@ OUT = RENDERS / "scene3/v2"
 FPS = 30
 SR = 48000
 SONAR = {"sos_in": 2.0, "sos_sonar": 9.0, "sos_dive": 1.5}
+# T0040: Vivek's lab camera plan (the plate starts at sospart2 src 3.0; all values in 30 fps frames).
+# Full frame plays plate frames 0-38 (he reads his phone). In the split: hold plate frame 39 while the
+# banner, Accept, log entry and Play are tapped; play 39-78 (he lifts the phone to his ear as the SOS is
+# read aloud); hold 78; play 78-230 so his spoken line (plate 4.606 s) lands 0.1 s after ptt_down; hold 230.
+LAB_OPEN_FRAMES = 39
+VIVEK_HOLD_A, VIVEK_HOLD_B, VIVEK_LAST = 39, 78, 230
+VIVEK_M1_AT = 225          # slot frame where the first motion starts (7.5 s, just before Play at 7.63 s)
+VIVEK_LINE_PLATE = 4.606   # first word of his line, seconds into the plate
 CHAIN = ("pan=mono|c0=0.5*c0+0.5*c1,highpass=f=100:poles=2,highpass=f=100:poles=2,"
          "arnndn=m=local/models/rnnoise/cb.rnnn,arnndn=m=local/models/rnnoise/sh.rnnn:mix=0.6,"
          "afftdn=nr=18:nf=-45:tn=0,agate=threshold=0.025:ratio=3:range=0.1:attack=5:release=200:knee=4,"
@@ -30,7 +38,7 @@ CHAIN = ("pan=mono|c0=0.5*c0+0.5*c1,highpass=f=100:poles=2,highpass=f=100:poles=
 
 
 def run(*args, cwd=REPO):
-    p = subprocess.run([str(x) for x in args], cwd=cwd, capture_output=True, text=True)
+    p = subprocess.run([str(x) for x in args], cwd=cwd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if p.returncode:
         raise RuntimeError(f"{args[0]} failed:\n{p.stdout[-1500:]}\n{p.stderr[-2000:]}")
     return p.stdout
@@ -57,12 +65,18 @@ def timeline(slots):
     add("vachana_sos", slots["vachana_sos"]["duration"], camera="FOOTAGE:Video/sospart1.mp4", camera_in=2.866667)
     for name, duration in SONAR.items():
         add(name, duration)
-    add("lab_open", 53 / FPS, source="FOOTAGE:Video/sospart2.mp4", source_in=3.0)
-    add("vivek_app", slots["vivek_app"]["duration"], camera="FOOTAGE:Video/sospart2.mp4", camera_in=4.75)
+    add("lab_open", LAB_OPEN_FRAMES / FPS, source="FOOTAGE:Video/sospart2.mp4", source_in=3.0)
+    add("vivek_app", slots["vivek_app"]["duration"], camera="FOOTAGE:Video/sospart2.mp4", camera_in=3.0 + LAB_OPEN_FRAMES / FPS)
     add("vachana_response", slots["vachana_response"]["duration"])
     add("end_hold", 0.5)
     by = {row["name"]: row for row in rows}
-    return {"fps": FPS, "duration": frame / FPS, "segments": rows,
+    m2 = round((slots["vivek_app"]["ptt_down"] + .1 - (VIVEK_LINE_PLATE - VIVEK_HOLD_B / FPS)) * FPS)
+    m1_end = VIVEK_M1_AT + VIVEK_HOLD_B - VIVEK_HOLD_A
+    if not VIVEK_M1_AT < m1_end <= m2:
+        raise RuntimeError("vivek_app camera plan does not fit the slot timings")
+    vivek_camera = {"m1_from": VIVEK_M1_AT / FPS, "m1_to": m1_end / FPS, "m2_from": m2 / FPS,
+                    "m2_to": (m2 + VIVEK_LAST - VIVEK_HOLD_B) / FPS}
+    return {"fps": FPS, "duration": frame / FPS, "segments": rows, "vivek_camera": vivek_camera,
             "narration_starts": {"N5": by["s3_open"]["start"] + .3,
                                  "N6": by["sos_sonar"]["start"] + 1.0},
             "slot_fields": {k: {a: b for a, b in v.items() if a != "path"} for k, v in slots.items()}}
@@ -192,7 +206,10 @@ def screen(slot, name, start, seconds, missing, hold=False):
         video = asset(source, f"{name}{source.suffix}")
         contents = (f'<video id="video_{name}" src="{video}" data-start="{start:.6f}" '
                     f'data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video>{mock}')
-    return f'<div class="screen" style="width:{width:.2f}px">{contents}</div>'
+    # T0040: the slot's first frame sits behind the video, so the phone is never blank while it slides in.
+    first = OUT / "plates" / f"{name}_first.jpg"
+    still(source, first, 0)
+    return f'<div class="screen" style="width:{width:.2f}px;background:#101820 url({asset(first)}) center/100% 100% no-repeat">{contents}</div>'
 
 
 def write_page(T, slots, sonar, missing):
@@ -202,11 +219,13 @@ def write_page(T, slots, sonar, missing):
     camera_plate(root / "Video/sospart2.mp4", p / "vivek.mp4", 3.0, 7.70)
     still(p / "vachana.mp4", p / "vachana_first.jpg", 0)
     still(p / "vachana.mp4", p / "vachana_last.jpg", 10.60)
-    still(p / "vivek.mp4", p / "vivek_first.jpg", 1.70)
+    still(p / "vivek.mp4", p / f"vivek_hold_a_{VIVEK_HOLD_A}.jpg", VIVEK_HOLD_A / FPS - .01)
+    still(p / "vivek.mp4", p / f"vivek_hold_b_{VIVEK_HOLD_B}.jpg", VIVEK_HOLD_B / FPS - .01)
     still(p / "vivek.mp4", p / "vivek_last.jpg", 7.66)
     pic = {"vachana": asset(p / "vachana.mp4"), "vivek": asset(p / "vivek.mp4"),
            "vachana_first": asset(p / "vachana_first.jpg"), "vachana_last": asset(p / "vachana_last.jpg"),
-           "vivek_first": asset(p / "vivek_first.jpg"), "vivek_last": asset(p / "vivek_last.jpg")}
+           "vivek_hold_a": asset(p / f"vivek_hold_a_{VIVEK_HOLD_A}.jpg"), "vivek_hold_b": asset(p / f"vivek_hold_b_{VIVEK_HOLD_B}.jpg"),
+           "vivek_last": asset(p / "vivek_last.jpg")}
     rows = T["segments"]
     layers = []
     for row in rows:
@@ -217,6 +236,17 @@ def write_page(T, slots, sonar, missing):
             key = "vachana" if name == "s3_open" else "vivek"
             offset = 0 if key == "vachana" else 0
             layers.append(f'<div class="scene" id="seg_{name}"><video id="video_{name}" class="full" src="{pic[key]}" data-start="{start:.6f}" data-duration="{seconds:.6f}" data-media-start="{offset}" muted playsinline></video></div>')
+        elif name == "vivek_app":
+            C = T["vivek_camera"]
+            c = "".join(
+                f'<video id="video_vivek_app_camera{n}" class="camera-motion" src="{pic["vivek"]}" data-start="{start+a:.6f}" '
+                f'data-duration="{b-a:.6f}" data-media-start="{m:.6f}" muted playsinline></video>'
+                for n, a, b, m in ((1, C["m1_from"], C["m1_to"], VIVEK_HOLD_A / FPS), (2, C["m2_from"], C["m2_to"], VIVEK_HOLD_B / FPS)))
+            layers.append(f'<div class="scene split" id="seg_{name}"><div class="camera camera-vivek"><div class="push">'
+                          f'<div class="camera-still hold-a" style="background-image:url({pic["vivek_hold_a"]})"></div>'
+                          f'<div class="camera-still hold-b" style="background-image:url({pic["vivek_hold_b"]})"></div>{c}'
+                          f'<div class="camera-last" style="background-image:url({pic["vivek_last"]})"></div></div><div class="feather"></div></div>'
+                          f'<div class="app-field" id="vivek-field">{screen(slots[name],name,start,seconds,missing)}</div></div>')
         elif name in ("vachana_sos", "vivek_app"):
             key = "vachana" if name == "vachana_sos" else "vivek"
             camera_start = 2.866667 if key == "vachana" else 1.75
@@ -314,36 +344,43 @@ def audio(T, slots, stage):
     dialogue = np.zeros(round(T["duration"] * SR), dtype=np.float32)
     music = np.zeros_like(dialogue)
     missing = []
+    events = []
     root = Path(MACHINE["footage_root"])
-    put(dialogue, spoken(root / "Audio/sospart1.mp3", 0.0, 4.72),
-        by["vachana_sos"]["start"] + slots["vachana_sos"]["listen_at"] - .12)
-    put(dialogue, spoken(root / "Audio/sospart2.mp3", 7.54, 10.34),
-        by["vivek_app"]["start"] + slots["vivek_app"]["ptt_down"] + .1 - .12)
+    at = by["vachana_sos"]["start"] + slots["vachana_sos"]["listen_at"] - .12
+    clip = spoken(root / "Audio/sospart1.mp3", 0.0, 4.72)
+    put(dialogue, clip, at); events.append((at, at + len(clip) / SR, "dialogue Vachana SOS line"))
+    at = by["vivek_app"]["start"] + slots["vivek_app"]["ptt_down"] + .1 - .12
+    clip = spoken(root / "Audio/sospart2.mp3", 7.54, 10.34)
+    put(dialogue, clip, at); events.append((at, at + len(clip) / SR, "dialogue Vivek reply line"))
     tts = RENDERS / "tts_itantra/tts_sos.wav"
     if tts.exists():
-        put(dialogue, pcm(tts, "loudnorm=I=-16:TP=-1.5:LRA=11"),
-            by["vivek_app"]["start"] + slots["vivek_app"]["play_at"] + .15)
+        clip = pcm(tts, "loudnorm=I=-16:TP=-1.5:LRA=11")
+        at = by["vivek_app"]["start"] + slots["vivek_app"]["play_at"] + .15
+        put(dialogue, clip, at); events.append((at, at + len(clip) / SR, "app TTS tts_sos"))
     else:
         missing.append("RENDERS:tts_itantra/tts_sos.wav")
     for key, at in T["narration_starts"].items():
         path = narration_file(key)
         if path.exists():
-            clip = pcm(path, "loudnorm=I=-16:TP=-1.5:LRA=11")
+            # T0040: the cleaned narration files sit at -18 LUFS; one static +2 dB gain, no per-clip loudnorm.
+            clip = pcm(path) * 10 ** (2 / 20)
             limit = 3.4 if key == "N5" else 7.2
             if len(clip) / SR > limit:
                 print(f"WARNING: {key} narration exceeds {limit:.1f} s", file=sys.stderr)
-            put(dialogue, clip, at)
+            put(dialogue, clip, at); events.append((at, at + len(clip) / SR, "narration " + key))
         else:
             missing.append("RENDERS:" + path.relative_to(RENDERS).as_posix())
-    sounds = OUT / "sound_options"
-    if not all((sounds / f"{name}.wav").exists() for name in ("message_a", "sent_a", "sos_notice_a", "sos_pulse_a")):
-        run(sys.executable, REPO / "film/sound/make_options.py", "--out", sounds)
-    cues = [("sos_pulse_a", "vachana_sos", slots["vachana_sos"]["send_at"], .35),
-            ("sos_notice_a", "lab_open", .1, .28),
-            ("sent_a", "vivek_app", slots["vivek_app"]["sent_at"], .32),
-            ("message_a", "vachana_response", .15, .28)]
-    for sound, segment, offset, gain in cues:
-        put(dialogue, pcm(sounds / f"{sound}.wav") * gain, by[segment]["start"] + offset)
+    # T0040: production cue set from film/sound/make_set.py (T0035), at its suggested gains.
+    sounds = RENDERS / "sound"
+    if not all((sounds / f"{name}.wav").exists() for name in ("notify", "sent", "sos_notify", "sos_send")):
+        run(sys.executable, REPO / "film/sound/make_set.py")
+    cues = [("sos_send", "vachana_sos", slots["vachana_sos"]["send_at"], -11),
+            ("sos_notify", "lab_open", .1, -10),
+            ("sent", "vivek_app", slots["vivek_app"]["sent_at"], -10),
+            ("notify", "vachana_response", slots["vachana_response"].get("notification_at", .15), -9)]
+    for sound, segment, offset, gain_db in cues:
+        put(dialogue, pcm(sounds / f"{sound}.wav") * 10 ** (gain_db / 20), by[segment]["start"] + offset)
+        events.append((by[segment]["start"] + offset, by[segment]["start"] + offset + len(pcm(sounds / f"{sound}.wav")) / SR, "sfx " + sound))
     for name, seconds in SONAR.items():
         sfx = stage / "film/scene3/sonar" / name / "assets" / f"{name}_sfx.wav"
         if not sfx.exists():
@@ -356,25 +393,51 @@ def audio(T, slots, stage):
     wav(OUT / "scene3_dialogue_sfx.wav", dialogue)
     wav(OUT / "scene3_music.wav", music)
     wav(OUT / "scene3_mix.wav", dialogue + music)
+    events.sort()
+    lines = []
+    for i, (a, b, label) in enumerate(events):
+        nxt = next((e for e in events[i + 1:] if not e[2].startswith("sfx")), None)
+        flag = " OVERLAP" if nxt and not label.startswith("sfx") and nxt[0] < b else ""
+        lines.append(f"{a:8.3f} {b:8.3f}  {label}" + (f"   next: {nxt[2]} at {nxt[0]:.3f}{flag}" if nxt else ""))
+    (OUT / "audio_events.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print("\n".join(lines))
     return missing
+
+
+def mux(T):
+    """T0040: playable scene file = the single picture render + both audio layers mixed."""
+    raw = OUT / "scene3_picture.mp4"
+    check_video(raw, T["duration"] - 1 / FPS)
+    run("ffmpeg", "-v", "error", "-y", "-i", raw, "-i", OUT / "scene3_mix.wav", "-map", "0:v:0", "-map", "1:a:0",
+        "-c:v", "copy", "-af", "loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000", "-ac", "2",
+        "-c:a", "aac", "-b:a", "256k", "-shortest", "-movflags", "+faststart", OUT / "scene3_v2.mp4")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--page-only", action="store_true", help="write/check composition without final picture/audio render")
+    parser.add_argument("--audio-only", action="store_true", help="T0040: rebuild only the audio layers and the playable mp4 from the existing picture")
     args = parser.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     slots = json.loads((HERE / "slots.json").read_text(encoding="utf-8"))
     T = timeline(slots)
+    if args.audio_only:
+        missing = audio(T, slots, OUT / "sonar_work")
+        mux(T)
+        print(json.dumps({"duration": T["duration"], "missing": missing}))
+        return
     videos, stage = sonar_assets(prepare_sonar_still(slots))
     missing = []
     write_page(T, slots, videos, missing)
+    if missing and not args.page_only:
+        sys.exit("missing app slots, refusing to render: " + ", ".join(missing))
     run("hyperframes.cmd", "check", cwd=HERE)
     if not args.page_only:
         raw = OUT / "scene3_picture.mp4"
         run("hyperframes.cmd", "render", "-q", "high", "-f", "30", "-o", raw, cwd=HERE)
         check_video(raw, T["duration"] - 1 / FPS)
         missing += audio(T, slots, stage)
+        mux(T)
     (OUT / "build_status.json").write_text(json.dumps({"duration": T["duration"], "missing": missing}, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"duration": T["duration"], "missing": missing}))
 

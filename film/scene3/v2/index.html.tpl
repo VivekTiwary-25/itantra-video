@@ -13,11 +13,13 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#05070a
 .split .camera{position:absolute;left:0;top:0;width:1232px;height:1080px;overflow:hidden;background:#080b0e}
 .camera-motion,.camera-still,.camera-last{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;background-position:center;background-size:cover}
 .camera-motion{width:1920px;max-width:none;left:0;object-fit:cover;object-position:left center}
-.camera-vachana .camera-motion{left:-150px}
+.camera-vachana .camera-motion{left:-250px}.camera-vivek .camera-motion{left:-200px}
 .camera-still,.camera-last{background-size:1920px 1080px;background-repeat:no-repeat;background-position:left center}.camera-last{display:none}
-.camera-vachana .camera-still,.camera-vachana .camera-last{background-position:-150px center}
+.camera-vachana .camera-still,.camera-vachana .camera-last{background-position:-250px center}.camera-vivek .camera-still,.camera-vivek .camera-last{background-position:-200px center}
 .feather{position:absolute;right:0;top:0;bottom:0;width:24px;background:linear-gradient(90deg,transparent,#0a0d12);pointer-events:none}
 .app-field{position:absolute;left:1232px;top:0;width:688px;height:1080px;background:#0a0d12;display:flex;align-items:center;justify-content:center}
+.push{position:absolute;inset:0;transform-origin:50% 45%}
+.screen{height:1000px;max-width:560px;border-radius:32px;border:1px solid rgba(255,255,255,.14);overflow:hidden;background:#101820;box-shadow:0 22px 65px #000a}
 .split .screen{position:relative;height:1000px;max-width:560px;border-radius:32px;border:1px solid rgba(255,255,255,.14);overflow:hidden;background:#101820;box-shadow:0 22px 65px #000a}
 .screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#101820}
 .app-only .sides{position:absolute;inset:-60px;background:#101820;background-size:cover;background-position:center;filter:blur(40px) brightness(.55);transform:scale(1.04)}
@@ -53,17 +55,33 @@ function render(t){
   }
   if((r.name==='s3_open'&&t>=r.start+2.4)||(r.name==='lab_open'&&t>=r.end-.5)){
     const sos=r.name==='s3_open',f=ease(clamp((t-(sos?r.start+2.4:r.end-.5))/(sos ? .466667 : .5)));
-    const v=e.querySelector('video');v.style.width=(1920-688*f)+'px';v.style.left='0';v.style.objectPosition=sos?'22% center':'left center';
+    const v=e.querySelector('video');v.style.width=(1920-688*f)+'px';v.style.left='0';v.style.objectPosition=sos?'36.337% center':'29.07% center';
     e.style.background='#0a0d12';
     const app=document.getElementById(sos?'vachana-field':'vivek-field');
     app.style.transform=`translateX(${(1-f)*688}px)`;app.style.opacity=f;e.appendChild(app);
   }
-  if(r.name==='vachana_sos'||r.name==='vivek_app'){
+  if(r.name==='vivek_app'){
+    const st=t-r.start,C=T.vivek_camera,len=r.end-r.start,v=e.querySelectorAll('.camera-motion');
+    const show=(el,on)=>{el.style.display=on?'block':'none'};
+    show(e.querySelector('.hold-a'),st<C.m1_from);show(v[0],st>=C.m1_from&&st<C.m1_to);
+    show(e.querySelector('.hold-b'),st>=C.m1_to&&st<C.m2_from);show(v[1],st>=C.m2_from&&st<C.m2_to);
+    show(e.querySelector('.camera-last'),st>=C.m2_to);
+    const s=1+.02*clamp(st/C.m1_from)+.01*clamp((st-C.m1_to)/Math.max(C.m2_from-C.m1_to,.001))+.01*clamp((st-C.m2_to)/Math.max(len-C.m2_to,.001));
+    e.querySelector('.push').style.transform=`scale(${s})`;
+  }
+  if(r.name==='vachana_sos'){
     const st=t-r.start,motion=e.querySelector('.camera-motion'),initial=e.querySelector('.camera-still'),last=e.querySelector('.camera-last');
     const from=r.name==='vachana_sos'?0:9.99,stop=r.name==='vachana_sos'?7.77:15.94;
     motion.style.display=st>=from&&st<stop?'block':'none';initial.style.display=st<from?'block':'none';last.style.display=st>=stop?'block':'none';
     const push=st<from?st/Math.max(from,1):(st-stop)/Math.max(r.end-r.start-stop,1);
     const target=st<from?initial:last;target.style.transform=`scale(${1+.02*clamp(push)})`;
+    // Leaving move (last 0.5 s): settle into the centred phone over the blurred camera frame that sos_in opens on.
+    const f=ease(clamp((st-(r.end-r.start-.5))/.5)),cam=e.querySelector('.camera'),field=document.getElementById('vachana-field'),scr=field.querySelector('.screen');
+    cam.style.width=(1232+688*f)+'px';last.style.backgroundPosition=`${-250*(1-f)}px center`;
+    last.style.filter=f>0?`blur(${40*f}px) brightness(${1-.45*f})`:'';e.querySelector('.feather').style.opacity=1-f;
+    field.style.background=`rgba(10,13,18,${1-f})`;
+    const w=scr.offsetWidth,x0=1232+(688-w)/2,k=1080/1000;
+    scr.style.transformOrigin='0 0';scr.style.transform=f>0?`translate(${((1920-w*k)/2-x0)*f}px,${-40*f}px) scale(${1+(k-1)*f})`:'';
   }
   for(const m of e.querySelectorAll('.mock'))m.querySelector('.mock-content').innerHTML=mock(m.dataset.slot,r.name==='end_hold'?T.slot_fields.vachana_response.duration:t-r.start);
 }
