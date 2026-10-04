@@ -11,10 +11,18 @@
   <style>html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#181b1c}</style>
 </head>
 <body>
-  <main id="overhead" data-preview-id="overhead" data-start="0" data-duration="5" data-width="1920" data-height="1080" data-fps="30"></main>
+  <main id="overhead" data-preview-id="overhead" data-start="0" data-duration="5" data-width="1920" data-height="1080" data-fps="30">
+    <!-- F0026: live clips owned by the composition. Local only (assets/ is ignored); see README.md for how to make them.
+         walk: the last 1.2 s of FOOTAGE:Video/normalpart2.mp4, playing 0-1.2 s. yash: FOOTAGE:Video/normalpart6.mp4 from 0, starting at 4.02 s. -->
+    <video id="walkLive" class="clip" src="assets/walk-tail.mp4" data-start="0" data-duration="1.2" data-media-start="0" muted playsinline></video>
+    <video id="yashLive" class="clip" src="assets/yash-head.mp4" data-start="4.02" data-duration="0.98" data-media-start="0" muted playsinline></video>
+  </main>
   <script>
     document.getElementById('overhead').dataset.compositionId = 'overhead';
+    const live = !location.search.includes('stills');  // ?stills = old still-image fallback
     Overhead.mount(document.getElementById('overhead'), {
+      walkVideo: live ? document.getElementById('walkLive') : null,
+      yashVideo: live ? document.getElementById('yashLive') : null,
       walkStill: 'assets/walk-still.jpg',
       yashStill: 'assets/yash-still.jpg',
       geo: window.OVERHEAD_GEO

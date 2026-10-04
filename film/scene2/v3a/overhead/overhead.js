@@ -171,8 +171,12 @@
     map.appendChild(el);
     return el;
   }
+  function adopt(video, still, cls) {
+    if (video) { video.classList.add(cls, 'overhead-live'); video.muted = true; video.playsInline = true; return video; }
+    const img = document.createElement('img'); img.className = cls; img.src = still; img.alt = ''; return img;
+  }
   function mount(el, opts) {
-    if (!el || !opts || !opts.walkStill || !opts.yashStill) throw new Error('Overhead.mount needs el, walkStill and yashStill');
+    if (!el || !opts || !(opts.walkVideo || opts.walkStill) || !(opts.yashVideo || opts.yashStill)) throw new Error('Overhead.mount needs el, walkVideo or walkStill, and yashVideo or yashStill');
     const geo = opts.geo || global.OVERHEAD_GEO;
     if (!geo || !geo.osm || !geo.outlines) throw new Error('Overhead.mount needs local campus geo data');
     el.replaceChildren();
@@ -188,11 +192,13 @@
     state.routeLength = paths.length;
     state.vachana = pin('vachana', 'Vachana', V, camera);
     state.yash = pin('yash', 'Yash', Y, camera);
-    state.walk = document.createElement('img'); state.walk.className = 'overhead-walk'; state.walk.src = opts.walkStill; state.walk.alt = '';
+    // F0026: prefer the composition's live videos (already timed by HyperFrames) so no camera frame is ever held.
+    state.walk = adopt(opts.walkVideo, opts.walkStill, 'overhead-walk');
     state.distance = document.createElement('div'); state.distance.className = 'glass-panel overhead-distance'; state.distance.textContent = '~300 m, walking distance';
     state.distance.style.left = `${paths.middle[0] + 44}px`;
     state.distance.style.top = `${paths.middle[1] - 138}px`;
-    state.yashImage = document.createElement('img'); state.yashImage.className = 'overhead-yash'; state.yashImage.src = opts.yashStill; state.yashImage.alt = '';
+    state.yashImage = adopt(opts.yashVideo, opts.yashStill, 'overhead-yash');
+    state.live = { walk: !!opts.walkVideo, yash: !!opts.yashVideo };
     camera.appendChild(state.distance);
     el.append(state.walk, state.yashImage);
     render(0);
