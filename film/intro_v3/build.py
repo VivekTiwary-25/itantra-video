@@ -11,6 +11,7 @@ ASSETS = HERE / "assets"
 FPS = 30
 BENCH_START = 32.6
 DURATION = 33.6
+DISSOLVE = 0.35
 
 
 def run(*args):
@@ -33,6 +34,11 @@ def build():
     captions = json.loads((REPO / "film/captions/v3/intro.json").read_text(encoding="utf-8"))
     opening, explain = cuts["pieces"]
     assert opening["film_out"] < explain["film_in"] < 7
+    dissolve_start = round(explain["film_in"] - DISSOLVE / 2, 4)
+    dissolve_end = round(explain["film_in"] + DISSOLVE / 2, 4)
+    explain_camera_start = round(explain["camera_in"] - DISSOLVE / 2, 4)
+    if explain_camera_start < 0:
+        raise ValueError("Long take has no footage for the dissolve")
     assert words[-1]["e"] < BENCH_START and captions[-1]["end"] < BENCH_START
     assert len(envelope["rms"]) > 900 and envelope["fps"] == FPS
     source = [media(p["camera"], config) for p in cuts["pieces"]]
@@ -55,13 +61,17 @@ def build():
     if not grade:
         raise ValueError("GRADE_V1 missing")
     for name, src, length in (
-        ("opening", source[0], explain["film_in"]),
-        ("explain", source[1], BENCH_START - explain["film_in"]),
+        ("opening", source[0], dissolve_end),
+        ("explain", source[1], BENCH_START - dissolve_start),
         ("bench", bench, DURATION - BENCH_START),
     ):
         dst = ASSETS / f"{name}.mp4"
         if dst.is_file() and dst.stat().st_mtime >= src.stat().st_mtime:
-            continue
+            old_length = float(json.loads(subprocess.check_output([
+                "ffprobe", "-v", "error", "-show_entries", "format=duration",
+                "-of", "json", str(dst)], text=True))["format"]["duration"])
+            if abs(old_length - length) < 1 / FPS:
+                continue
         probe = json.loads(subprocess.check_output([
             "ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
             "stream=color_transfer", "-of", "json", str(src)], text=True))
@@ -69,7 +79,7 @@ def build():
         if probe["streams"][0].get("color_transfer") in {"smpte2084", "arib-std-b67"}:
             vf += ",zscale=t=linear:npl=100,format=gbrpf32le,tonemap=tonemap=hable:desat=0,zscale=p=bt709:t=bt709:m=bt709:r=tv"
         vf += ",scale=1920:1080:flags=lanczos,setsar=1," + grade.group(1) + ",format=yuv420p"
-        offset = explain["camera_in"] if name == "explain" else 0
+        offset = explain_camera_start if name == "explain" else 0
         run("ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-ss", offset,
             "-i", src, "-t", length, "-vf", vf, "-an", "-c:v", "libx264",
             "-preset", "veryfast", "-crf", "21", "-pix_fmt", "yuv420p",
@@ -77,6 +87,7 @@ def build():
 
     timeline = {
         "fps": FPS, "duration": DURATION, "cut": explain["film_in"],
+        "dissolve": {"start": dissolve_start, "end": dissolve_end},
         "beats": {"bridge": 6.962, "badges": 8.522, "wave": 15.682,
                   "message": 20.702, "read": 25.262, "title": 31.2,
                   "title_hold": 31.4, "bench": BENCH_START},
@@ -86,7 +97,11 @@ def build():
     payload = json.dumps({"timeline": timeline, "words": words, "envelope": envelope,
                           "captions": captions}, ensure_ascii=False)
     page = (HERE / "index.html.tpl").read_text(encoding="utf-8")
-    (HERE / "index.html").write_text(page.replace("{{DATA}}", payload), encoding="utf-8")
+    page = page.replace("{{DATA}}", payload)
+    page = page.replace("{{OPENING_END}}", str(dissolve_end))
+    page = page.replace("{{EXPLAIN_START}}", str(dissolve_start))
+    page = page.replace("{{EXPLAIN_DURATION}}", str(round(BENCH_START - dissolve_start, 4)))
+    (HERE / "index.html").write_text(page, encoding="utf-8")
     print("Intro v4 built:", DURATION, "s, bench last frame:", timeline["end_state"]["normalpart1_src"])
 
 

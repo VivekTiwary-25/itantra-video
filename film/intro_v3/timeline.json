@@ -2,6 +2,10 @@
   "fps": 30,
   "duration": 33.6,
   "cut": 6.842,
+  "dissolve": {
+    "start": 6.667,
+    "end": 7.017
+  },
   "beats": {
     "bridge": 6.962,
     "badges": 8.522,

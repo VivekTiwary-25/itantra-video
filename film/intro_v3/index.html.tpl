@@ -8,11 +8,12 @@
 .camera{position:absolute;width:2950px;height:1660px;top:-290px;object-fit:fill;transform-origin:50% 50%}
 #opening-camera{left:-1030px}#explain-camera{left:-700px}#bench-camera{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover}
 #shade{position:absolute;inset:0;background:linear-gradient(90deg,transparent 47%,rgba(5,8,13,.17) 58%,rgba(5,8,13,.43) 100%);pointer-events:none}
-#opening-panel{position:absolute;left:1020px;top:238px;width:800px;padding:48px 54px 54px;box-shadow:0 30px 80px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.24)}
+#opening-panel{position:absolute;inset:0;padding:48px 54px 54px;z-index:2}
 #opening-panel strong{display:block;font-size:76px;font-weight:650;letter-spacing:-.035em;line-height:1.04}
 #opening-panel .secondary{font-size:46px;line-height:1.27;color:var(--text);margin-top:20px;font-weight:530}
-#stage{position:absolute;left:1020px;top:145px;width:800px;height:790px;overflow:hidden;padding:0;border-radius:30px;box-shadow:0 30px 80px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.24)}
+#stage{position:absolute;left:1020px;top:238px;width:800px;height:328px;overflow:hidden;padding:0;border-radius:22px;box-shadow:0 30px 80px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.24)}
 #stage:before{content:'';position:absolute;inset:15px;border:1px solid rgba(255,255,255,.08);border-radius:20px;pointer-events:none}
+#visuals{position:absolute;inset:0;opacity:0}
 #orbit{position:absolute;left:75px;top:75px;width:650px;height:650px;border:1px solid rgba(255,255,255,.19);border-radius:50%;opacity:.65}
 #orbit:after{content:'';position:absolute;inset:56px;border:1px dashed rgba(255,255,255,.14);border-radius:50%}
 .badge{position:absolute;width:120px;height:120px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;padding:5px;font-size:30px;line-height:.96;font-weight:650;white-space:normal;background:linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,.03) 35%),rgba(28,34,44,.75);border:1px solid rgba(255,255,255,.3);box-shadow:0 12px 32px #0006,inset 0 1px #ffffff31;transform-origin:center}
@@ -42,12 +43,11 @@
 #caption{position:absolute;bottom:54px;left:50%;z-index:10;visibility:hidden}
 </style></head><body>
 <main id="root" data-composition-id="intro_v3" data-start="0" data-duration="33.6" data-width="1920" data-height="1080" data-fps="30">
-  <video id="opening-camera" class="camera" src="./assets/opening.mp4" data-start="0" data-duration="6.842" data-media-start="0" muted playsinline></video>
-  <video id="explain-camera" class="camera" src="./assets/explain.mp4" data-start="6.842" data-duration="25.758" data-media-start="0" muted playsinline></video>
+  <video id="opening-camera" class="camera" src="./assets/opening.mp4" data-start="0" data-duration="{{OPENING_END}}" data-media-start="0" muted playsinline></video>
+  <video id="explain-camera" class="camera" src="./assets/explain.mp4" data-start="{{EXPLAIN_START}}" data-duration="{{EXPLAIN_DURATION}}" data-media-start="0" muted playsinline></video>
   <video id="bench-camera" src="./assets/bench.mp4" data-start="32.6" data-duration="1" data-media-start="0" muted playsinline></video>
   <div id="shade"></div>
-  <div id="opening-panel" class="glass-panel"><strong>Vachana</strong><span class="secondary">Team chmod 777<br>Problem statement SIH26173</span></div>
-  <div id="stage" class="glass-panel"><div id="orbit"></div><div id="badges"></div><div id="phone-a"><div id="speech"><div id="wave"></div><span id="speech-text">Speech to text on the phone, without internet</span></div></div><div id="phone-b"></div><svg id="link" viewBox="0 0 350 130"><path d="M0 70 Q175 -35 350 70"/></svg><div id="packet"><span id="packet-lock"></span><span id="packet-lines"><i></i><i></i></span></div><span id="bt"></span><svg id="sound" viewBox="0 0 115 95"><path d="M17 33 Q50 48 17 63 M42 19 Q91 48 42 77 M68 7 Q129 48 68 89"/></svg></div>
+  <div id="stage" class="glass-panel"><div id="opening-panel"><strong>Vachana</strong><span class="secondary">Team chmod 777<br>Problem statement SIH26173</span></div><div id="visuals"><div id="orbit"></div><div id="badges"></div><div id="phone-a"><div id="speech"><div id="wave"></div><span id="speech-text">Speech to text on the phone, without internet</span></div></div><div id="phone-b"></div><svg id="link" viewBox="0 0 350 130"><path d="M0 70 Q175 -35 350 70"/></svg><div id="packet"><span id="packet-lock"></span><span id="packet-lines"><i></i><i></i></span></div><span id="bt"></span><svg id="sound" viewBox="0 0 115 95"><path d="M17 33 Q50 48 17 63 M42 19 Q91 48 42 77 M68 7 Q129 48 68 89"/></svg></div></div>
   <div id="title" class="glass-card full" data-layout-allow-overflow><h1>How the app works</h1></div>
   <div id="caption" class="caption"></div>
   <audio id="voice" src="./assets/voice.wav" data-start="0.4619" data-duration="30.88" preload="auto"></audio>
@@ -67,13 +67,22 @@ const badges=badgeInfo.map(([icon,label],i)=>{const tile=document.createElement(
 $('packet-lock').append(Glass.icon('lock'));$('bt').append(Glass.icon('bluetooth'));
 const bars=[];for(let i=0;i<35;i++){const bar=document.createElement('i');$('wave').append(bar);bars.push(bar)}
 function render(t){
-  const intro=t<T.bench,short=t<D.timeline.cut;
-  show($('opening-camera'),short);show($('explain-camera'),!short&&intro);show($('bench-camera'),!intro);show($('shade'),intro);
-  if(short)$('opening-camera').style.transform=`scale(${1+.04*t/13.16})`;
-  else if(intro)$('explain-camera').style.transform=`scale(${1+.04*(t-D.timeline.cut)/25.758})`;
-  show($('opening-panel'),short&&t>=.582);
-  if(short){const p=out(clamp((t-.582)/.62));$('opening-panel').style.opacity=p;$('opening-panel').style.transform=`translateX(${60*(1-p)+8*t/13.8}px)`}
-  $('stage').style.display=!short&&intro?'block':'none';
+  const intro=t<T.bench,fade=D.timeline.dissolve;
+  const cameraBlend=ease(clamp((t-fade.start)/(fade.end-fade.start)));
+  show($('opening-camera'),t<fade.end);show($('explain-camera'),t>=fade.start&&intro);show($('bench-camera'),!intro);show($('shade'),intro);
+  $('explain-camera').style.opacity=String(cameraBlend);
+  $('opening-camera').style.transform=`scale(${1+.04*t/13.16})`;
+  $('explain-camera').style.transform=`scale(${1+.04*(t-D.timeline.cut)/25.758})`;
+  const morph=ease(clamp((t-6.48)/1.0));
+  $('stage').style.display=intro?'block':'none';
+  $('stage').style.top=`${238-93*morph}px`;
+  $('stage').style.height=`${328+462*morph}px`;
+  $('stage').style.borderRadius=`${22+8*morph}px`;
+  $('visuals').style.opacity=String(morph);
+  show($('opening-panel'),t>=.582&&morph<1);
+  const nameIn=out(clamp((t-.582)/.62));
+  $('opening-panel').style.opacity=String(nameIn*(1-morph));
+  $('opening-panel').style.transform=`translateX(${60*(1-nameIn)+8*t/13.8}px)`;
   const badgesPhase=t<T.wave,merge=ease(clamp((t-T.wave)/.7));
   $('orbit').style.opacity=badgesPhase?'.65':String(.65*(1-merge));
   badges.forEach(({tile,mark},i)=>{
