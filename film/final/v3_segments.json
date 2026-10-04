@@ -1,46 +1,69 @@
 {
-  "_note": "Film v3 segment list for film/final/assemble_v3.py (claude-second, F0018, 4 Oct 2026). Order = film order. Paths are RENDERS: (relative to machine.local.json renders_dir). dx = dialogue/narration/TTS stem; 'embedded' means the picture file's own audio track (a mixed track where the build does not write separate stems). sfx = separate effects stem or null. tts_windows are [start, end] in SEGMENT seconds; a negative number counts back from the segment's end. tts_events (optional) is a build log whose 'app TTS' lines override tts_windows when the file exists. expected_duration null = not built yet, any length accepted with a warning.",
+  "_note": "Film v3 segment list for film/final/assemble_v3.py (claude-second, F0018; updated F0024, 4 Oct 2026). Order = film order. Paths are RENDERS: (relative to machine.local.json renders_dir). dx = dialogue/narration/TTS stem; 'embedded' means the picture file's own audio track (a mixed track where the build does not write separate stems). sfx = separate effects stem or null. tts_windows are [start, end] in SEGMENT seconds; a negative number counts back from the segment's end. tts_events (optional) is a build log whose 'app TTS' lines override tts_windows when the file exists. expected_duration null = not built yet, any length accepted with a warning.",
   "fps": 30,
   "segments": [
     {
       "name": "intro",
       "folder": "film/intro_v3/",
-      "status": "not built yet (folder missing on 4 Oct 10:30); outputs assumed",
+      "status": "TODO: F0023 builds film/intro_v3/ (not landed on 4 Oct 10:55); set video, stems, render_cmd and expected_duration from its REPORT",
       "render_cmd": "python film/intro_v3/build.py --render",
       "video": "RENDERS:intro_v3/intro_v3.mp4",
-      "stems": {"dx": "embedded", "sfx": null},
+      "stems": {
+        "dx": "embedded",
+        "sfx": null
+      },
       "tts_windows": [],
       "expected_duration": null
     },
     {
       "name": "s2a",
       "folder": "film/scene2/v3a/",
-      "status": "only the overhead module exists (film/scene2/v3a/overhead/); main composition and render not built yet; outputs assumed",
-      "render_cmd": "python film/scene2/v3a/build.py --render",
-      "video": "RENDERS:scene2/v3a/scene2_v3a.mp4",
-      "stems": {"dx": "embedded", "sfx": null},
-      "tts_windows": [[-3.944, -0.6]],
-      "_tts_note": "Yash's TTS ends 0.6 s before s2a ends (film/scene2/v3b/timeline.json start_state: play_at 7.63 + delay 0.15 + TTS 3.343673 + 0.6)",
-      "expected_duration": null
+      "status": "built (F0004, F0013; F0020 editing); render writes the 1080p picture and a separate dialogue+sfx stem; music stem is silent and not used",
+      "render_cmd": "node film/scene2/v3a/build.js --render",
+      "video": "RENDERS:scene2/v3a/scene2_picture.mp4",
+      "stems": {
+        "dx": "RENDERS:scene2/v3a/scene2_dialogue_sfx.wav",
+        "sfx": null
+      },
+      "tts_windows": [
+        [
+          40.21,
+          43.554
+        ]
+      ],
+      "_tts_note": "F0004: TTS 40.210-43.554 with YASH_REPLY=false; replaced by the \"TTS\" line in audio_events.txt when it exists",
+      "expected_duration": 44.154,
+      "tts_events": "RENDERS:scene2/v3a/audio_events.txt"
     },
     {
       "name": "s2b",
       "folder": "film/scene2/v3b/",
-      "status": "built; render writes one mp4 whose audio is narration N2/N3 + sonar sfx mixed by HyperFrames (no separate stems)",
+      "status": "built (F0009, F0017); render.cmd writes one mp4, audio = N2/N3 + sonar sfx mixed by HyperFrames; frame 0 = s2a end_state.slot_time + 1/30 read at build (F0024)",
       "render_cmd": "film\\scene2\\v3b\\render.cmd",
       "video": "RENDERS:scene2/v3b/scene2_v3b.mp4",
-      "stems": {"dx": "embedded", "sfx": null},
+      "stems": {
+        "dx": "embedded",
+        "sfx": null
+      },
       "tts_windows": [],
       "expected_duration": 32.4
     },
     {
       "name": "s3",
       "folder": "film/scene3/v3/",
-      "status": "built; picture + separate dialogue_sfx stem (dialogue, TTS, narration and UI/sonar sfx in one file) + its own SOS music stem, which the film-wide bed replaces (not mixed)",
+      "status": "built (F0008, F0015); picture + dialogue/sfx stem; no scene music since F0024 (the film bed is the only music)",
       "render_cmd": "python film/scene3/v3/build.py",
       "video": "RENDERS:scene3/v3/scene3_picture.mp4",
-      "stems": {"dx": "RENDERS:scene3/v3/scene3_dialogue_sfx.wav", "sfx": null, "scene_music_unused": "RENDERS:scene3/v3/scene3_music.wav"},
-      "tts_windows": [[39.013, 42.357]],
+      "stems": {
+        "dx": "RENDERS:scene3/v3/scene3_dialogue_sfx.wav",
+        "sfx": null
+      },
+      "tts_windows": [
+        [
+          39.013,
+          42.357
+        ]
+      ],
       "tts_events": "RENDERS:scene3/v3/audio_events.txt",
       "_tts_note": "vivek_app starts at 31.233; TTS at play_at 7.63 + 0.15; the end assumes ~3.34 s and is replaced by the real 'app TTS' line in audio_events.txt when it exists",
       "expected_duration": 51.4
@@ -51,7 +74,10 @@
       "status": "built; build.py only stages assets, the picture is a plain HyperFrames render (no audio); ticks.py writes the tick stem",
       "render_cmd": "python film/exploded/build.py && python film/exploded/ticks.py && hyperframes.cmd render film/exploded -q high -f 30 -o <renders_dir>/exploded/exploded.mp4",
       "video": "RENDERS:exploded/exploded.mp4",
-      "stems": {"dx": null, "sfx": "RENDERS:exploded/ticks.wav"},
+      "stems": {
+        "dx": null,
+        "sfx": "RENDERS:exploded/ticks.wav"
+      },
       "tts_windows": [],
       "expected_duration": 17
     },
@@ -61,9 +87,14 @@
       "status": "built; render.cmd renders the picture (no audio); cards_sfx.py writes the tick stem",
       "render_cmd": "python film/cards_v3/cards_sfx.py && film\\cards_v3\\render.cmd",
       "video": "RENDERS:cards_v3/cards_v3.mp4",
-      "stems": {"dx": null, "sfx": "RENDERS:cards_v3/cards_sfx.wav"},
+      "stems": {
+        "dx": null,
+        "sfx": "RENDERS:cards_v3/cards_sfx.wav"
+      },
       "tts_windows": [],
-      "music": {"closing_chord_at": 8.0},
+      "music": {
+        "closing_chord_at": 8.0
+      },
       "expected_duration": 14
     }
   ]

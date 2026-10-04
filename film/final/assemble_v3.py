@@ -191,9 +191,12 @@ def tts_windows(seg: dict, resolve) -> list[list[float]]:
         return []
     ev = resolve(s["tts_events"]) if s.get("tts_events") else None
     if ev and ev.is_file():
-        rows = [[float(a), float(b)] for a, b, label in
-                re.findall(r"^\s*([\d.]+)\s+([\d.]+)\s+(.*)$", ev.read_text(encoding="utf-8"), re.M)
-                if "app TTS" in label]
+        rows = []
+        for line in ev.read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*([\d.]+)\s+([\d.]+)\s+(.*)", line)
+            label = m.group(3).split("   next:")[0].strip() if m else ""
+            if label == "TTS" or label.startswith(("TTS ", "app TTS")):  # s2a writes "TTS", s3 "app TTS tts_sos"
+                rows.append([float(m.group(1)), float(m.group(2))])
         if rows:
             return rows
     out = []

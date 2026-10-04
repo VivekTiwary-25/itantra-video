@@ -351,7 +351,6 @@ def audio(T, slots, stage):
     import numpy as np
     by = {r["name"]: r for r in T["segments"]}
     dialogue = np.zeros(round(T["duration"] * SR), dtype=np.float32)
-    music = np.zeros_like(dialogue)
     missing = []
     events = []
     root = Path(MACHINE["footage_root"])
@@ -394,13 +393,8 @@ def audio(T, slots, stage):
         if not sfx.exists():
             raise FileNotFoundError(sfx)
         put(dialogue, pcm(sfx)[:round(seconds * SR)], by[name]["start"])
-    bed = stage / "film/scene3/sonar/music/sos_music.wav"
-    if not bed.exists():
-        raise FileNotFoundError(bed)
-    put(music, pcm(bed)[:round(12.5 * SR)], by["sos_in"]["start"])
+    # F0024: no scene music. The film uses one film-wide bed (film/music/), so the scene's own mix is dialogue + sfx only.
     wav(OUT / "scene3_dialogue_sfx.wav", dialogue)
-    wav(OUT / "scene3_music.wav", music)
-    wav(OUT / "scene3_mix.wav", dialogue + music)
     events.sort()
     lines = []
     for i, (a, b, label) in enumerate(events):
@@ -413,10 +407,10 @@ def audio(T, slots, stage):
 
 
 def mux(T):
-    """T0040: playable scene file = the single picture render + both audio layers mixed."""
+    """Playable scene file = the single picture render + the dialogue/sfx stem (no scene music, F0024)."""
     raw = OUT / "scene3_picture.mp4"
     check_video(raw, T["duration"] - 1 / FPS)
-    run("ffmpeg", "-v", "error", "-y", "-i", raw, "-i", OUT / "scene3_mix.wav", "-map", "0:v:0", "-map", "1:a:0",
+    run("ffmpeg", "-v", "error", "-y", "-i", raw, "-i", OUT / "scene3_dialogue_sfx.wav", "-map", "0:v:0", "-map", "1:a:0",
         "-c:v", "copy", "-af", "loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000", "-ac", "2",
         "-c:a", "aac", "-b:a", "256k", "-shortest", "-movflags", "+faststart", OUT / "scene3_v3.mp4")
 

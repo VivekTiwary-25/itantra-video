@@ -6,9 +6,9 @@ Run everything from the repository root of the render machine's clone (utkarsh-p
 | # | Segment | Command | Picture | Audio taken from |
 |---|---|---|---|---|
 | 1 | intro | `python film/intro_v3/build.py --render` (not built yet: confirm the real command and output, then fix the json) | `RENDERS:intro_v3/intro_v3.mp4` | its embedded track |
-| 2 | s2a | `python film/scene2/v3a/build.py --render` (main composition not built yet: same) | `RENDERS:scene2/v3a/scene2_v3a.mp4` | embedded |
+| 2 | s2a | `node film/scene2/v3a/build.js --render` | `RENDERS:scene2/v3a/scene2_picture.mp4` (44.154 s) | `RENDERS:scene2/v3a/scene2_dialogue_sfx.wav`; TTS window from its `audio_events.txt` |
 | 3 | s2b | `film\scene2\v3b\render.cmd` | `RENDERS:scene2/v3b/scene2_v3b.mp4` (32.4 s) | embedded (narration + sonar sfx) |
-| 4 | s3 | `python film/scene3/v3/build.py` | `RENDERS:scene3/v3/scene3_picture.mp4` (51.4 s) | `RENDERS:scene3/v3/scene3_dialogue_sfx.wav`; its own `scene3_music.wav` is not used (the film bed replaces it) |
+| 4 | s3 | `python film/scene3/v3/build.py` | `RENDERS:scene3/v3/scene3_picture.mp4` (51.4 s) | `RENDERS:scene3/v3/scene3_dialogue_sfx.wav` (no scene music since F0024) |
 | 5 | exploded | `python film/exploded/build.py && python film/exploded/ticks.py && hyperframes.cmd render film/exploded -q high -f 30 -o <renders_dir>\exploded\exploded.mp4` | `RENDERS:exploded/exploded.mp4` (17 s) | sfx `RENDERS:exploded/ticks.wav` |
 | 6 | cards | `python film/cards_v3/cards_sfx.py && film\cards_v3\render.cmd` | `RENDERS:cards_v3/cards_v3.mp4` (14 s) | sfx `RENDERS:cards_v3/cards_sfx.wav` |
 

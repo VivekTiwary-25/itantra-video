@@ -55,6 +55,21 @@ function stageSound(name, src) {
   }
   stage(src,dst);
 }
+// F0024: frame 0 continues s2a's last frame. Read s2a's end_state, take the next frame, and refuse a phone rect that differs.
+function joinFromS2a() {
+  const A=JSON.parse(fs.readFileSync(path.join(REPO,'film/scene2/v3a/timeline.json'),'utf8')).end_state;
+  if (!A || A.slot!=='yash_app') throw Error('s2a end_state is not the yash_app phone');
+  const sh=T.start_state.screen_height, c=T.start_state.phone_center, w=450;  // #phone in index.html.tpl is 450 x 1000
+  const mine={x:c[0]-w/2,y:c[1]-sh/2,width:w,height:sh};
+  for (const k of ['x','y','width','height']) if (Math.abs(mine[k]-A.position[k])>0.5)
+    throw Error(`s2a/s2b join: phone ${k} is ${A.position[k]} in s2a but ${mine[k]} in s2b`);
+  if (A.background && A.background.toLowerCase()!==T.start_state.field.toLowerCase())
+    throw Error(`s2a/s2b join: background ${A.background} vs ${T.start_state.field}`);
+  const t=+(A.slot_time+1/30).toFixed(4);
+  T.start_state.slot_time=t;
+  T.start_state.derivation=`s2a end_state.slot_time ${A.slot_time} + 1/30 (read at build)`;
+  return t;
+}
 function main() {
   fs.mkdirSync(ASSETS,{recursive:true});
   for (const f of ['glass.css','glass.js','noise.png']) {
@@ -65,7 +80,7 @@ function main() {
   const slot=JSON.parse(fs.readFileSync(path.join(REPO,'film/scene2/v2/slots.json'),'utf8')).yash_app;
   const slotSrc=path.join(RENDERS,slot.path.slice(8).split('/').join(path.sep));
   stageVideo('yash_app',slotSrc,slot.duration,'1080x2400',true);
-  const slotTime=T.start_state.slot_time;
+  const slotTime=joinFromS2a();
   run('ffmpeg',['-v','error','-y','-ss',slotTime,'-i',path.join(ASSETS,'yash_app.mp4'),'-frames:v','1',path.join(ASSETS,'yash_slot.jpg')]);
   const sonarDir=path.join(RENDERS,'scene2','sonar');
   const sfxDir=path.join(RENDERS,'scene2','sonar_work','film','scene2','sonar');
@@ -81,7 +96,9 @@ function main() {
     stageSound(n,src);
   }
   const template=fs.readFileSync(path.join(HERE,'index.html.tpl'),'utf8');
-  fs.writeFileSync(path.join(HERE,'index.html'),template.replaceAll('{{TIMELINE}}',JSON.stringify(T)).replaceAll('{{CAPTIONS}}',JSON.stringify(C)));
+  const page=template.replace(/(id="yashSlot"[^>]*data-media-start=")[\d.]+"/,`$1${slotTime}"`);
+  if (page===template && !template.includes(`data-media-start="${slotTime}"`)) throw Error('could not set the yashSlot start frame in index.html.tpl');
+  fs.writeFileSync(path.join(HERE,'index.html'),page.replaceAll('{{TIMELINE}}',JSON.stringify(T)).replaceAll('{{CAPTIONS}}',JSON.stringify(C)));
   if (final && missing.length) throw Error(`Missing assets for final render: ${missing.join(', ')}`);
   run('hyperframes.cmd',['check'],HERE);
   if (renderFinal) {

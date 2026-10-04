@@ -9,8 +9,9 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12
 #root{position:relative;width:1920px;height:1080px;overflow:hidden}
 .scene{position:absolute;inset:0;display:none;overflow:hidden;background:#0a0d12}
 .full{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover}
-.card-footage{filter:blur(40px) brightness(.58) saturate(.85);transform:scale(1.07)}
-.card-red{position:absolute;inset:0;background:rgba(105,17,30,.16)}
+/* F0024: matched to scene 2 v3b's last frame (same red radial as its #redTint at .68, footage dimmed): mean abs diff 1.7/255 */
+.card-footage{filter:blur(40px) brightness(.22) saturate(.2);transform:scale(1.07)}
+.card-red{position:absolute;inset:0;background:radial-gradient(circle at 55% 48%,rgba(255,77,94,.46),rgba(116,20,38,.72));opacity:.68}
 #sos-card{display:grid;place-items:center;text-align:center;transform-origin:50% 50%;z-index:2}
 #sos-card h1{font-size:64px;font-weight:650;line-height:1.08;margin:0}
 .split .camera{position:absolute;left:0;top:0;width:1232px;height:1080px;overflow:hidden;background:#0a0d12}
