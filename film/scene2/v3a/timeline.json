@@ -1,55 +1,56 @@
 {
   "fps": 30,
-  "duration": 41.037,
-  "intro_src": 1,
+  "duration": 42.337,
+  "intro_src": 0.966667,
   "segments": [
     {
       "name": "bench",
       "start": 0,
-      "end": 3.3,
+      "end": 4.6,
       "source": "FOOTAGE:Video/normalpart1.mp4",
-      "source_in": 1,
-      "source_out": 4.3,
+      "source_in": 0.966667,
+      "source_out": 5.5667,
       "intro_join": true
     },
     {
       "name": "mode_card",
-      "start": 0.3,
-      "end": 3.3,
+      "start": 0,
+      "end": 4.6,
       "over": "bench",
       "title": "Normal",
-      "subline": "a private message to someone you trust"
+      "subline": "a private message to someone you trust",
+      "narration": "N0"
     },
     {
       "name": "vachana_split_in",
-      "start": 3.3,
-      "end": 3.8,
+      "start": 4.6,
+      "end": 5.1,
       "source": "FOOTAGE:Video/normalpart1.mp4",
-      "source_in": 4.3,
-      "source_out": 4.8
+      "source_in": 5.5667,
+      "source_out": 6.0667
     },
     {
       "name": "vachana_send",
-      "start": 3.8,
-      "end": 15.78,
+      "start": 5.1,
+      "end": 17.08,
       "slot": "vachana_send",
       "slot_in": 0,
       "slot_out": 11.98,
       "camera_source": "FOOTAGE:Video/normalpart1.mp4",
-      "camera_offset": 4.8,
-      "camera_visible_until": 9.83
+      "camera_offset": 6.0667,
+      "camera_visible_until": 9.863
     },
     {
       "name": "send_fly",
-      "start": 15.78,
-      "end": 16.58,
+      "start": 17.08,
+      "end": 17.88,
       "slot": "vachana_send",
-      "sent_at": 15.78
+      "sent_at": 17.08
     },
     {
       "name": "walk",
-      "start": 16.18,
-      "end": 21.3,
+      "start": 17.48,
+      "end": 22.6,
       "source": "FOOTAGE:Video/normalpart2.mp4",
       "source_ranges": [
         [
@@ -78,26 +79,27 @@
     },
     {
       "name": "overhead",
-      "start": 21.3,
-      "end": 26.3,
+      "start": 22.6,
+      "end": 27.6,
       "walk_video_media_start": 5.12,
       "walk_video_duration": 0.88,
       "yash_video_media_start": 0,
       "yash_video_starts_at": 4.02,
-      "yash_video_duration": 0.98
+      "yash_video_duration": 0.98,
+      "map_hold": 0
     },
     {
       "name": "yash_before_notification",
-      "start": 26.3,
-      "end": 27.97,
+      "start": 27.6,
+      "end": 29.27,
       "source": "FOOTAGE:Video/normalpart6.mp4",
       "source_in": 0.98,
       "source_out": 2.65
     },
     {
       "name": "yash_app",
-      "start": 27.97,
-      "end": 41.037,
+      "start": 29.27,
+      "end": 42.337,
       "slot": "yash_app",
       "edl": [
         {
@@ -158,10 +160,16 @@
     }
   ],
   "narration_starts": {
-    "N1": 16.48
+    "N0": 0,
+    "N1": 17.78
   },
   "narration_durations": {
+    "N0": 4.2,
     "N1": 3.2
+  },
+  "narration_beats": {
+    "N0": 4.6,
+    "N1": 3.6
   },
   "slot_fields": {
     "vachana_send": {

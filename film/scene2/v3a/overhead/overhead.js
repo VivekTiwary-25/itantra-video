@@ -204,9 +204,10 @@
     render(0);
     return state;
   }
-  function render(seconds) {
+  function render(seconds, hold = 0) {
     if (!state) return;
-    const t = clamp(Number(seconds) || 0, 0, 5);
+    const raw = Number(seconds) || 0;
+    const t = clamp(raw <= 3.4 ? raw : raw < 3.4 + hold ? 3.4 : raw - hold, 0, 5);
     const rise = smooth(progress(t, 0, .8));
     const v = xy(V.lat, V.lon), y = xy(Y.lat, Y.lon);
     // F0050 (spec 005 S2): the rise is a tracking pull-back that travels FROM Vachana's pin TOWARD Yash's. The camera
