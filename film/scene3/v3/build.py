@@ -29,7 +29,7 @@ FPS = 30
 SR = 48000
 # Source times in the uncut vivek_app slot. All cuts are idle frames; each join
 # dissolves for three frames. Keep the entire 7.78-11.63 s TTS playback.
-VIVEK_CUTS = ((1.0, 2.2), (3.7, 4.5), (5.5, 7.2),
+VIVEK_CUTS = ((3.7, 4.5), (5.5, 7.2),
               (11 + 22 / FPS, 12 + 8 / FPS), (17 + 20 / FPS, 19 + 14 / FPS))
 DISSOLVE = 3 / FPS
 SONAR = {"sos_dive": 1.5}
