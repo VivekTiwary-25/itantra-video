@@ -1,5 +1,5 @@
 {
-  "_note": "Film v3 segment list for film/final/assemble_v3.py (claude-second, F0018; updated F0024, 4 Oct 2026). Order = film order. Paths are RENDERS: (relative to machine.local.json renders_dir). dx = dialogue/narration/TTS stem; 'embedded' means the picture file's own audio track (a mixed track where the build does not write separate stems). sfx = separate effects stem or null. tts_windows are [start, end] in SEGMENT seconds; a negative number counts back from the segment's end. tts_events (optional) is a build log whose 'app TTS' lines override tts_windows when the file exists. expected_duration null = not built yet, any length accepted with a warning.",
+  "_note": "Film v3 segment list for film/final/assemble_v3.py (claude-second, F0018; updated F0024, 4 Oct 2026). Order = film order. Paths are RENDERS: (relative to machine.local.json renders_dir). dx = dialogue/narration/TTS stem; 'embedded' means the picture file's own audio track (a mixed track where the build does not write separate stems). sfx = separate effects stem or null. tts_windows are [start, end] in SEGMENT seconds; a negative number counts back from the segment's end. tts_events (optional) is a build log whose 'app TTS' lines override tts_windows when the file exists. expected_duration null = not built yet, any length accepted with a warning. EXPLODED VIEW ON HOLD (Vivek, 4 Oct 10:55): removed from the film; s3 is followed directly by cards (acting lead, F0028).",
   "fps": 30,
   "segments": [
     {
@@ -67,19 +67,6 @@
       "tts_events": "RENDERS:scene3/v3/audio_events.txt",
       "_tts_note": "vivek_app starts at 31.233; TTS at play_at 7.63 + 0.15; the end assumes ~3.34 s and is replaced by the real 'app TTS' line in audio_events.txt when it exists",
       "expected_duration": 51.4
-    },
-    {
-      "name": "exploded",
-      "folder": "film/exploded/",
-      "status": "built; build.py only stages assets, the picture is a plain HyperFrames render (no audio); ticks.py writes the tick stem",
-      "render_cmd": "python film/exploded/build.py && python film/exploded/ticks.py && hyperframes.cmd render film/exploded -q high -f 30 -o <renders_dir>/exploded/exploded.mp4",
-      "video": "RENDERS:exploded/exploded.mp4",
-      "stems": {
-        "dx": null,
-        "sfx": "RENDERS:exploded/ticks.wav"
-      },
-      "tts_windows": [],
-      "expected_duration": 17
     },
     {
       "name": "cards",
