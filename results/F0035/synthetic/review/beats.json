@@ -1,0 +1,82 @@
+[
+  {
+    "segment": "s2a",
+    "beat": "first frame",
+    "seg_time": 0.0,
+    "film_time": 0.0,
+    "frame": 0,
+    "join": true,
+    "slate": false,
+    "file": "selected_0001.jpg"
+  },
+  {
+    "segment": "s2a",
+    "beat": "card_out",
+    "seg_time": 0.8,
+    "film_time": 0.8,
+    "frame": 24,
+    "join": false,
+    "slate": false,
+    "file": "selected_0002.jpg"
+  },
+  {
+    "segment": "s2a",
+    "beat": "bench",
+    "seg_time": 3.7333333333333334,
+    "film_time": 3.733,
+    "frame": 112,
+    "join": false,
+    "slate": false,
+    "file": "selected_0003.jpg"
+  },
+  {
+    "segment": "s2a",
+    "beat": "last frame",
+    "seg_time": 5.966666666666667,
+    "film_time": 5.967,
+    "frame": 179,
+    "join": true,
+    "slate": false,
+    "file": "selected_0004.jpg"
+  },
+  {
+    "segment": "s2b",
+    "beat": "first frame",
+    "seg_time": 0.0,
+    "film_time": 6.0,
+    "frame": 180,
+    "join": true,
+    "slate": false,
+    "file": "selected_0005.jpg"
+  },
+  {
+    "segment": "s2b",
+    "beat": "push_in",
+    "seg_time": 0.7,
+    "film_time": 6.7,
+    "frame": 201,
+    "join": false,
+    "slate": false,
+    "file": "selected_0006.jpg"
+  },
+  {
+    "segment": "s2b",
+    "beat": "sonar_a",
+    "seg_time": 4.9,
+    "film_time": 10.9,
+    "frame": 327,
+    "join": false,
+    "slate": false,
+    "file": "selected_0007.jpg"
+  },
+  {
+    "segment": "s2b",
+    "beat": "last frame",
+    "seg_time": 5.966666666666667,
+    "film_time": 11.967,
+    "frame": 359,
+    "join": true,
+    "slate": false,
+    "file": "selected_0008.jpg"
+  }
+]

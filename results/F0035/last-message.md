@@ -1,0 +1,3 @@
+F0035 is done. The beat-stills tool now selects exact frames for beat and join reviews, and the README explains how to run it after assembly. A 12-second synthetic film produced both contact sheets, the join sheet, and eight frame stills. The results are recorded in [REPORT.md](/<REPO>/results/F0035/REPORT.md).
+
+TLDR: The tool is ready for review on an assembled film; no real film render was tested.

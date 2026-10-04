@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import subprocess
 import sys
 from pathlib import Path
@@ -26,7 +27,10 @@ REPO = Path(__file__).resolve().parents[2]
 FPS = 30
 FOLDER_DEFAULTS = {"intro": "film/intro_v3", "s2a": "film/scene2/v3a", "s2b": "film/scene2/v3b",
                    "s3": "film/scene3/v3", "exploded": "film/exploded_v2", "cards": "film/cards_v3"}
-CARDS_BEATS = [("items in", 1.6), ("works now hold", 5.0), ("transition", 8.4), ("closing card", 11.0)]
+# From film/cards_v3/index.html: item ticks 0.30..1.80, next at 2.05,
+# glass swap 8.0..8.8, and the closing card fades out at 13.0..14.0.
+CARDS_BEATS = [("works now", 1.15), ("coming next", 5.0),
+               ("glass swap", 8.4), ("closing card", 10.9), ("fade out", 13.5)]
 
 
 def resolve(ref: str, root: Path) -> Path:
@@ -53,7 +57,7 @@ def beats_from_timeline(name: str, folder: str, duration: float) -> list[tuple[s
         return list(CARDS_BEATS)
     p = REPO / folder / "timeline.json"
     if not p.is_file():
-        return [(f"t {t:g}", float(t)) for t in range(3, int(duration), 3)]  # unknown: every 3 s
+        raise FileNotFoundError(f"{name}: timeline missing: {p}")
     d = json.loads(p.read_text(encoding="utf-8"))
     beats = []
     for s in d.get("segments", []) if isinstance(d.get("segments"), list) else []:
@@ -84,7 +88,10 @@ def build_beats(report: dict) -> list[dict]:
     rows = []
     for s in report["segments"]:
         start, dur = float(s["start"]), float(s["duration"])
-        last = max(0.0, dur - 1 / FPS)
+        frames = int(s.get("frames") or round(dur * FPS))
+        if frames < 1 or not math.isclose(start * FPS, round(start * FPS), abs_tol=0.001):
+            raise ValueError(f"{s['name']}: invalid frame count or start time in assembly report")
+        last = (frames - 1) / FPS
         inner = [] if s.get("slate") else beats_from_timeline(s["name"], folders.get(s["name"], ""), dur)
         items = [("first frame", 0.0)] + [(n, t) for n, t in inner if 0 < t < last] + [("last frame", last)]
         seen = set()
@@ -93,36 +100,59 @@ def build_beats(report: dict) -> list[dict]:
             if frame in seen:
                 continue
             seen.add(frame)
+            global_frame = round(start * FPS) + frame
             rows.append({"segment": s["name"], "beat": n, "seg_time": frame / FPS,
-                         "film_time": round(start + frame / FPS, 3), "join": n in ("first frame", "last frame"),
+                         "film_time": round(global_frame / FPS, 3), "frame": global_frame,
+                         "join": n in ("first frame", "last frame"),
                          "slate": bool(s.get("slate"))})
     return rows
 
 
-def extract(film: Path, t: float, out: Path):
-    # ffmpeg's -ss takes the first frame at or after t; aim a quarter frame early so a rounded time
-    # (e.g. 13.767 for frame 413 at 13.7667) still lands on the intended frame, not the next one.
-    t = max(0.0, round(t * FPS) / FPS - 0.25 / FPS)
-    subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-ss", f"{t:.4f}",
-                    "-i", str(film), "-frames:v", "1", "-q:v", "2", str(out)], check=True)
+def extract(film: Path, rows: list[dict], frames_dir: Path):
+    """Decode once and select exact frame numbers, including both sides of each cut."""
+    wanted = sorted({r["frame"] for r in rows})
+    for old in frames_dir.glob("selected_*.jpg"):
+        old.unlink()
+    expr = "+".join(f"eq(n\\,{n})" for n in wanted)
+    pattern = frames_dir / "selected_%04d.jpg"
+    subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y",
+                    "-i", str(film), "-vf", f"select={expr}", "-fps_mode", "vfr",
+                    "-q:v", "2", str(pattern)], check=True)
+    files = sorted(frames_dir.glob("selected_*.jpg"))
+    if len(files) != len(wanted):
+        raise ValueError(f"film yielded {len(files)} of {len(wanted)} requested frames; check report against film")
+    by_frame = dict(zip(wanted, files))
+    for r in rows:
+        r["file"] = by_frame[r["frame"]].name
 
 
 def sheet(items, width, out: Path, cols: int):
     from PIL import Image, ImageDraw, ImageFont
+    from textwrap import wrap
     h = round(width * 9 / 16)
     lab = max(18, width // 30)
     try:
         font = ImageFont.truetype("segoeui.ttf" if sys.platform == "win32" else "DejaVuSans.ttf", lab)
     except OSError:
         font = ImageFont.load_default()
-    pad, cap = 8, lab + 14
+    pad, cap = 8, 2 * (lab + 5) + 8
     rows = (len(items) + cols - 1) // cols
     canvas = Image.new("RGB", (cols * (width + pad) + pad, rows * (h + cap + pad) + pad), (22, 22, 22))
     d = ImageDraw.Draw(canvas)
     for i, (img_path, label) in enumerate(items):
         x, y = pad + (i % cols) * (width + pad), pad + (i // cols) * (h + cap + pad)
-        canvas.paste(Image.open(img_path).convert("RGB").resize((width, h), Image.LANCZOS), (x, y + cap))
-        d.text((x + 2, y + 4), label, fill=(235, 235, 235), font=font)
+        with Image.open(img_path) as src:
+            canvas.paste(src.convert("RGB").resize((width, h), Image.Resampling.LANCZOS), (x, y + cap))
+        # Two lines keep long tech-line names visible at phone size.
+        words, lines = label.split(), [""]
+        for word in words:
+            candidate = (lines[-1] + " " + word).strip()
+            if d.textlength(candidate, font=font) > width - 8 and lines[-1]:
+                lines.append(word)
+            else:
+                lines[-1] = candidate
+        for j, line in enumerate(lines[:2]):
+            d.text((x + 2, y + 4 + j * (lab + 5)), line, fill=(235, 235, 235), font=font)
     canvas.save(out, quality=88)
 
 
@@ -149,11 +179,10 @@ def main() -> int:
     out = resolve(args.out, root) if args.out else root / "review" / film.stem
     frames = out / "frames"
     frames.mkdir(parents=True, exist_ok=True)
+    extract(film, rows, frames)
     items = []
     for i, r in enumerate(rows):
-        p = frames / f"{i:03d}_{r['film_time']:08.3f}_{r['segment']}.jpg"
-        extract(film, r["film_time"], p)
-        r["file"] = p.name
+        p = frames / r["file"]
         items.append((p, f"{r['film_time']:.2f}s  {r['segment']}  {r['beat']}"))
     sheet(items, 960, out / "beats_full.jpg", cols=3)
     sheet(items, 480, out / "beats_phone.jpg", cols=4)
