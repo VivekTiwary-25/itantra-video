@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<link rel="stylesheet" href="./assets/glass/glass.css">
+<script src="./gsap.min.js"></script>
+<script src="./assets/data.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; margin: 0; overflow: hidden; background: #030507; }
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; isolation: isolate;
+    font-family: SceneSans, "Segoe UI", sans-serif; color: var(--text, #f3f5f8);
+    /* dark studio: near-black with a very soft light falling from the top */
+    background: radial-gradient(ellipse 1300px 760px at 46% -12%, #1d232b 0%, #10141a 38%, #06080b 70%, #030507 100%); }
+  #rings { position: absolute; inset: 0; pointer-events: none; }
+  #rings circle { fill: none; stroke: #4da3ff; stroke-width: 1.4; }
+  #floor { position: absolute; left: 260px; top: 860px; width: 1000px; height: 160px; pointer-events: none;
+    background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.55), transparent 70%); filter: blur(6px); }
+  #stage { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 760px 420px; transform-origin: 760px 540px; }
+  .layer { position: absolute; left: 0; top: 0; transform-style: preserve-3d; will-change: transform; }
+  .layer img { display: block; width: 100%; height: 100%; filter: drop-shadow(0 30px 40px rgba(0,0,0,.55)); }
+  #sweep { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: 0;
+    background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,.0) 42%, rgba(220,236,255,.55) 50%, rgba(255,255,255,0) 58%, transparent 62%);
+    background-size: 300% 100%; background-repeat: no-repeat;
+    -webkit-mask-image: url(./assets/layer_mid.png); mask-image: url(./assets/layer_mid.png);
+    -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+  .glow { position: absolute; border-radius: 50%; pointer-events: none; mix-blend-mode: screen; opacity: 0;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(220,238,255,.95) 0%, rgba(120,190,255,.55) 28%, rgba(77,163,255,.18) 52%, transparent 70%); }
+  .glow.gold { background: radial-gradient(circle, rgba(255,240,200,.95) 0%, rgba(245,196,81,.62) 28%, rgba(245,196,81,.2) 52%, transparent 70%); }
+  #leaders { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+  #leaders path { fill: none; stroke: rgba(220,236,255,.85); stroke-width: 2; }
+  #leaders circle { fill: #eaf4ff; }
+  #leaders .gold path, #leaders path.gold { stroke: rgba(255,226,160,.92); }
+  #leaders circle.gold { fill: #ffe6a8; }
+  .label.glass-panel { position: absolute; left: 1350px; width: 530px; padding: 26px 34px 28px; opacity: 0;
+    border-left: 3px solid rgba(77,163,255,.85); }
+  .label.gold { border-left-color: rgba(245,196,81,.95); }
+  .label .title { font-size: 52px; font-weight: 650; line-height: 1.08; letter-spacing: -.015em; }
+  .label .detail { display: block; margin-top: 12px; font-size: 34px; line-height: 1.22; color: rgba(243,245,248,.82); }
+  #endline { position: absolute; left: 360px; width: 1200px; top: 940px; text-align: center; font-size: 56px; font-weight: 650;
+    letter-spacing: -.015em; opacity: 0; text-shadow: 0 2px 18px rgba(0,0,0,.8); }
+  #vignette { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 200px 70px rgba(0,0,0,.6); }
+  #ph { position: absolute; right: 24px; top: 18px; font-size: 20px; color: rgba(255,255,255,.78); }
+</style>
+</head>
+<body>
+<main id="root" data-composition-id="exploded_v2" data-start="0" data-duration="16" data-width="1920" data-height="1080" data-fps="30">
+  <svg id="rings" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+  <div id="floor"></div>
+  <div id="stage">
+    <div class="layer" id="L_back"><img src="./assets/layer_back.png" alt=""></div>
+    <div class="layer" id="L_mid"><img src="./assets/layer_mid.png" alt=""><div id="sweep"></div></div>
+    <div class="layer" id="L_screen"><img src="./assets/layer_screen.png" alt=""></div>
+  </div>
+  <svg id="leaders" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+  <div id="labels"></div>
+  <div id="endline"></div>
+  <div id="vignette"></div>
+</main>
+<script>
+// Pure function of t: no clock, no randomness. All numbers come from timeline.json (via assets/data.js).
+const D = window.EXPLODED, T = D.timeline, LAY = T.layout, PX = LAY.layer_px;
+const NS = 'http://www.w3.org/2000/svg';
+const clamp = v => Math.max(0, Math.min(1, v));
+const smooth = v => { v = clamp(v); return v * v * (3 - 2 * v); };
+const inOut = v => { v = clamp(v); return v < .5 ? 2 * v * v : 1 - Math.pow(-2 * v + 2, 2) / 2; };   // power1-ish inOut
+const lerp = (a, b, k) => a + (b - a) * k;
+const L = { screen: document.getElementById('L_screen'), mid: document.getElementById('L_mid'), back: document.getElementById('L_back') };
+for (const el of Object.values(L)) { el.style.width = PX + 'px'; el.style.height = PX + 'px'; }
+const LX = LAY.label_x || 1350, LW = LAY.label_w || 530;
+const stage = document.getElementById('stage');
+stage.style.transformOrigin = `${T.push.origin[0]}px ${T.push.origin[1]}px`;
+
+// glows live inside the mid layer, in its own pixel space
+const scaleImg = PX / D.size[0];
+const glows = {};
+for (const [name, p] of Object.entries(D.parts)) {
+  const g = document.createElement('div');
+  g.className = 'glow';
+  const r = Math.max(70, Math.max(p.w, p.h) * scaleImg * 2.2);
+  g.style.width = g.style.height = r + 'px';
+  g.style.left = (p.cx * scaleImg) + 'px'; g.style.top = (p.cy * scaleImg) + 'px';
+  L.mid.appendChild(g); glows[name] = g;
+}
+// labels + leaders
+const labelRoot = document.getElementById('labels'), leaderSvg = document.getElementById('leaders');
+const labels = T.labels.map(lb => {
+  const el = document.createElement('div');
+  el.className = 'label glass-panel' + (lb.gold ? ' gold' : '');
+  el.style.left = LX + 'px'; el.style.width = LW + 'px';
+  const t = document.createElement('div'); t.className = 'title'; t.textContent = lb.title; el.appendChild(t);
+  for (const line of lb.lines) { const d = document.createElement('span'); d.className = 'detail'; d.textContent = line; el.appendChild(d); }
+  labelRoot.appendChild(el);
+  const g = document.createElementNS(NS, 'g');
+  const lines = lb.parts.map(() => { const p = document.createElementNS(NS, 'path'); if (lb.gold) p.classList.add('gold'); g.appendChild(p); return p; });
+  const dots = lb.parts.map(() => { const c = document.createElementNS(NS, 'circle'); c.setAttribute('r', '5'); if (lb.gold) c.classList.add('gold'); g.appendChild(c); return c; });
+  leaderSvg.appendChild(g);
+  return { lb, el, g, lines, dots };
+});
+labels.forEach(x => { x.h = x.el.offsetHeight || 160; });   // measured once at setup, never inside the timeline
+document.getElementById('endline').textContent = T.end_line.text;
+if (D.placeholder) { const ph = document.createElement('div'); ph.id = 'ph'; ph.textContent = 'placeholder layers'; document.getElementById('root').appendChild(ph); }
+
+const rings = document.getElementById('rings');
+const ringEls = Array.from({ length: 5 }, () => { const c = document.createElementNS(NS, 'circle'); rings.appendChild(c); return c; });
+
+function offsets(name, t) {
+  const tight = LAY.tight[name], ex = LAY.exploded[name];
+  const open = inOut((t - T.explode[0]) / (T.explode[1] - T.explode[0]));
+  const shut = inOut((t - T.close[0]) / (T.close[1] - T.close[0]));
+  const k = open * (1 - shut);
+  const live = k * Math.min(1, 1.6 * k);                 // independent drift only while apart
+  const ph = { screen: 0.0, mid: 1.7, back: 3.1 }[name];
+  return [lerp(tight[0], ex[0], k) + 6 * live * Math.sin(t * 0.9 + ph),
+          lerp(tight[1], ex[1], k) + 8 * live * Math.sin(t * 0.7 + ph + 1),
+          lerp(tight[2], ex[2], k)];
+}
+
+function draw(t) {
+  // background sonar rings, very faint, around the phone
+  const shut = inOut((t - T.close[0]) / (T.close[1] - T.close[0]));
+  const cx = lerp(LAY.center[0], LAY.end_center_x ?? LAY.center[0], shut), cy = LAY.center[1];
+  ringEls.forEach((c, i) => {
+    const r = (t * 34 + i * 170) % 850;
+    c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r.toFixed(1));
+    c.style.opacity = (0.10 * Math.sin(Math.PI * r / 850)).toFixed(3);
+  });
+  // slow camera push over the whole segment
+  const s = lerp(T.push.from, T.push.to, inOut(t / T.duration));
+  stage.style.transform = `scale(${s.toFixed(5)})`;
+  const pos = {};
+  for (const name of ['back', 'mid', 'screen']) {
+    const [x, y, z] = offsets(name, t);
+    pos[name] = [x, y];
+    L[name].style.transform = `translate3d(${(cx - PX / 2 + x).toFixed(2)}px, ${(cy - PX / 2 + y).toFixed(2)}px, ${z.toFixed(2)}px)`;
+  }
+  // light sweep across the metal frame once
+  const sw = (t - T.sweep[0]) / (T.sweep[1] - T.sweep[0]);
+  const sweep = document.getElementById('sweep');
+  sweep.style.opacity = (sw > 0 && sw < 1) ? (Math.sin(Math.PI * sw) * 0.9).toFixed(3) : '0';
+  sweep.style.backgroundPosition = `${(100 - 200 * clamp(sw)).toFixed(1)}% 0`;
+  // part position on screen: mid layer is at z = 0, so only translate + stage scale apply
+  const O = T.push.origin;
+  const partXY = name => {
+    const p = D.parts[name];
+    const x = cx - PX / 2 + pos.mid[0] + p.cx * scaleImg, y = cy - PX / 2 + pos.mid[1] + p.cy * scaleImg;
+    return [O[0] + (x - O[0]) * s, O[1] + (y - O[1]) * s];
+  };
+  for (const g of Object.values(glows)) g.style.opacity = '0';
+  for (const L2 of labels) {
+    const { lb, el, lines, dots } = L2;
+    const vis = smooth((t - lb.start) / 0.35) * (1 - smooth((t - (lb.end - 0.3)) / 0.3));
+    el.style.opacity = vis.toFixed(3);
+    el.style.transform = `translateX(${((1 - smooth((t - lb.start) / 0.35)) * 18).toFixed(1)}px)`;
+    // label vertical position: centred on its (first) part, kept on screen
+    const pts = lb.parts.map(partXY);
+    const h = L2.h;
+    const top = Math.max(60, Math.min(1080 - 60 - h, pts[0][1] - h / 2));
+    el.style.top = top.toFixed(1) + 'px';
+    const ax = LX, ay = top + Math.min(h / 2, 60);
+    lb.parts.forEach((name, i) => {
+      const [px, py] = pts[i];
+      const bend = Math.max(px + 60, LX - 100);
+      lines[i].setAttribute('d', `M ${ax} ${ay.toFixed(1)} L ${bend.toFixed(1)} ${ay.toFixed(1)} L ${px.toFixed(1)} ${py.toFixed(1)}`);
+      lines[i].style.opacity = (vis * 0.9).toFixed(3);
+      dots[i].setAttribute('cx', px.toFixed(1)); dots[i].setAttribute('cy', py.toFixed(1));
+      dots[i].style.opacity = vis.toFixed(3);
+      const g = glows[name];
+      g.classList.toggle('gold', !!lb.gold);
+      g.style.opacity = Math.max(+g.style.opacity, vis * (0.75 + 0.25 * Math.sin((t - lb.start) * 4))).toFixed(3);
+    });
+  }
+  const e = smooth((t - T.end_line.start) / 0.4);
+  const endEl = document.getElementById('endline');
+  endEl.style.opacity = e.toFixed(3);
+  endEl.style.left = (cx - 600).toFixed(1) + 'px';
+  endEl.style.transform = `translateY(${((1 - e) * 14).toFixed(1)}px)`;
+}
+
+const timeline = gsap.timeline({ paused: true, onUpdate: () => draw(timeline.time()) });
+timeline.to({}, { duration: T.duration }, 0);
+window.__timelines = window.__timelines || {};
+window.__timelines.exploded_v2 = timeline;
+window.addEventListener('hf-seek', e => draw(e.detail.time));
+draw(0);
+</script>
+</body>
+</html>

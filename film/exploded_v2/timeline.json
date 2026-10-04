@@ -1,0 +1,125 @@
+{
+  "_note": "Exploded view v2 (F0031). All times in segment seconds. Layout numbers are px on the 1920x1080 stage; tune them here when the real layers land (no code change).",
+  "duration": 16,
+  "fps": 30,
+  "push": {
+    "from": 1.0,
+    "to": 1.1,
+    "origin": [
+      760,
+      540
+    ]
+  },
+  "layout": {
+    "center": [
+      760,
+      540
+    ],
+    "layer_px": 900,
+    "tight": {
+      "screen": [
+        0,
+        -10,
+        8
+      ],
+      "mid": [
+        0,
+        0,
+        0
+      ],
+      "back": [
+        0,
+        10,
+        -8
+      ]
+    },
+    "exploded": {
+      "screen": [
+        270,
+        -230,
+        140
+      ],
+      "mid": [
+        0,
+        0,
+        0
+      ],
+      "back": [
+        -270,
+        230,
+        -140
+      ]
+    },
+    "label_x": 1350,
+    "label_w": 530,
+    "end_center_x": 960
+  },
+  "explode": [
+    1.5,
+    3.5
+  ],
+  "sweep": [
+    3.5,
+    4.8
+  ],
+  "labels": [
+    {
+      "start": 3.5,
+      "end": 5.875,
+      "parts": [
+        "microphone"
+      ],
+      "gold": false,
+      "title": "Microphone",
+      "lines": [
+        "Hold to talk"
+      ]
+    },
+    {
+      "start": 5.875,
+      "end": 8.25,
+      "parts": [
+        "processor"
+      ],
+      "gold": false,
+      "title": "Processor",
+      "lines": [
+        "Speech to text on the phone, without internet: IndicConformer, Whisper",
+        "Encryption: Google Tink"
+      ]
+    },
+    {
+      "start": 8.25,
+      "end": 10.625,
+      "parts": [
+        "bluetooth_chip",
+        "antenna"
+      ],
+      "gold": true,
+      "title": "Bluetooth chip and antenna",
+      "lines": [
+        "Hops phone to phone, encrypted at every hop: Bluetooth LE, Noise XX"
+      ]
+    },
+    {
+      "start": 10.625,
+      "end": 13.0,
+      "parts": [
+        "loudspeaker"
+      ],
+      "gold": false,
+      "title": "Loudspeaker",
+      "lines": [
+        "Reads it aloud: Piper, Meta MMS"
+      ]
+    }
+  ],
+  "close": [
+    13.0,
+    15.0
+  ],
+  "end_line": {
+    "start": 14.9,
+    "text": "No new hardware."
+  }
+}
