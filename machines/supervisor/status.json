@@ -1,9 +1,9 @@
 {
-  "time": "2026-10-04T06:21:52Z",
+  "time": "2026-10-04T06:27:50Z",
   "summary": "5/5 machines reachable",
   "machines": {
     "vivek-pc": "rate_limited \u00b7 rate-limited",
-    "yash-pc": "busy F0032r1",
+    "yash-pc": "idle",
     "utkarsh-pc": "rate_limited \u00b7 rate-limited",
     "yojitth-pc": "rate_limited \u00b7 rate-limited",
     "yojitth-codex-pc": "stopped by swarm stop"
