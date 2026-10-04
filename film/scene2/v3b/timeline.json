@@ -9,74 +9,89 @@
     {
       "name": "sonar_a",
       "start": 1.4,
-      "end": 8.4
+      "end": 5.12
     },
     {
       "name": "sonar_loop",
-      "start": 8.4,
-      "end": 27.9
+      "start": 5.12,
+      "end": 17.62
     },
     {
       "name": "relay_1",
-      "start": 27.9,
-      "end": 33.9
+      "start": 17.62,
+      "end": 23.62
     },
     {
       "name": "relay_2",
-      "start": 33.9,
-      "end": 39.9
+      "start": 23.62,
+      "end": 29.62
     },
     {
       "name": "relay_3",
-      "start": 39.9,
-      "end": 45.9
+      "start": 29.62,
+      "end": 35.62
     },
     {
       "name": "sonar_b",
-      "start": 45.9,
-      "end": 51.9
+      "start": 35.62,
+      "end": 41.62
     },
     {
       "name": "to_sos",
-      "start": 50.4,
-      "end": 51.9
+      "start": 40.99,
+      "end": 41.62
     }
   ],
   "narration_starts": {
     "N2": 1.4,
-    "N2a": 8.4,
-    "N2b": 12.3,
-    "N2c": 16.2,
-    "N2d": 20.1,
-    "N2e": 24.5,
-    "N2f": 27.9,
-    "N3": 48.7
+    "N2a": 5.12,
+    "N2b": 7.62,
+    "N2c": 10.12,
+    "N2d": 12.62,
+    "N2e": 15.12,
+    "N2f": 17.62,
+    "N3": 39.02
   },
   "beats": [
     {
+      "id": "N2",
+      "start": 1.4,
+      "end": 5.12
+    },
+    {
       "id": "N2a",
-      "start": 8.4,
-      "end": 12.3
+      "start": 5.12,
+      "end": 7.62
     },
     {
       "id": "N2b",
-      "start": 12.3,
-      "end": 16.2
+      "start": 7.62,
+      "end": 10.12
     },
     {
       "id": "N2c",
-      "start": 16.2,
-      "end": 20.1
+      "start": 10.12,
+      "end": 12.62
     },
     {
       "id": "N2d",
-      "start": 20.1,
-      "end": 24.5
+      "start": 12.62,
+      "end": 15.12
     },
     {
       "id": "N2e",
-      "start": 24.5,
-      "end": 27.9
+      "start": 15.12,
+      "end": 17.62
+    },
+    {
+      "id": "N2f",
+      "start": 17.62,
+      "end": 20.12
+    },
+    {
+      "id": "N3",
+      "start": 39.02,
+      "end": 40.96
     }
   ],
   "start_state": {
@@ -87,8 +102,8 @@
       540
     ],
     "slot": "RENDERS:scene2/app/yash_app.mp4",
-    "slot_time": 11.723,
-    "derivation": "s2a end_state.slot_time 11.69 + 1/30 (read at build)"
+    "slot_time": 19.467,
+    "derivation": "s2a end_state.slot_time 19.4334 + 1/30 (read at build)"
   },
   "end_state": {
     "card_html": "<div class=\"glass-card full\"><h1 class=\"card-title\"><span style=\"color:var(--red)\">SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div>",
@@ -96,5 +111,5 @@
     "title": "SOS",
     "subline": "help from anyone nearby, no saved contact needed"
   },
-  "duration": 51.9
+  "duration": 41.62
 }

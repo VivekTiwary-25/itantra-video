@@ -5,7 +5,7 @@
 #root,#push,#sonar,#mapFX,#card{position:absolute;inset:0;overflow:hidden}#root{background:#0a0d12}
 #push{background:#0a0d12}#phone{position:absolute;left:735px;top:40px;width:450px;height:1000px;transform-origin:center;border-radius:32px;overflow:hidden;background:#0c131b;border:1px solid #ffffff24;box-shadow:0 22px 65px #000a}
 #phone video,#phone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}#phone video{z-index:2}#phoneDark{position:absolute;inset:0;z-index:3;background:#050910;opacity:0}
-#sonar{display:none}#sonar>video,#sonar>img{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover}#sonarOpen{z-index:0}#sonar>video{z-index:1}#sonarLoop{z-index:2;opacity:0}
+#sonar{display:none}#sonar>video,#sonar>img{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover}#sonarOpen{z-index:0}#sonar>video{z-index:1}#sonarLoop{z-index:2;opacity:0}#sonarEnd{z-index:3;display:none}
 #mapFX{z-index:4;display:none;pointer-events:none}#mapFX svg{position:absolute;inset:0;width:1920px;height:1080px;overflow:visible}
 #mapFX .blue{stroke:var(--blue);fill:none}#mapFX .dots{stroke-dasharray:5 14;stroke-width:3;opacity:.8}#pulse{stroke-width:3;filter:drop-shadow(0 0 12px var(--blue))}
 #wave{stroke-width:5;stroke-linecap:round;filter:drop-shadow(0 0 10px var(--blue))}
@@ -25,6 +25,7 @@
 #walker{position:absolute;left:642px;top:713px;width:18px;height:18px;border-radius:50%;background:var(--blue);box-shadow:0 0 20px var(--blue);display:none}
 #hop{left:1000px;top:715px;font-size:52px;min-width:90px;text-align:center}
 #relayName{position:absolute;z-index:7;display:none;white-space:nowrap;font-size:44px;padding:12px 24px}
+#relayMask{position:absolute;z-index:6;display:none;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 30%),rgba(14,18,26,.72);backdrop-filter:blur(36px) saturate(1.4);-webkit-backdrop-filter:blur(36px) saturate(1.4);border:1px solid rgba(255,255,255,.09);border-radius:18px;box-shadow:0 0 22px 16px rgba(14,18,26,.22)}
 #frost{position:absolute;inset:0;z-index:8;background:#0e121a99;backdrop-filter:blur(0);opacity:0;pointer-events:none}
 #card{z-index:9;display:grid;place-items:center;text-align:center;opacity:0;pointer-events:none}
 #card .glass-card.full{display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -32,7 +33,7 @@
 </style></head><body>
 <div id="root" data-composition-id="scene2_v3b" data-start="0" data-duration="{{DURATION}}" data-width="1920" data-height="1080">
  <div id="push"><div id="phone"><img src="assets/yash_slot.jpg" alt=""><video id="yashSlot" class="clip" src="assets/yash_app.mp4" data-start="0" data-duration="1.4" data-media-start="{{SLOT_TIME}}" muted playsinline></video><div id="phoneDark"></div></div></div>
- <div id="sonar"><img id="sonarOpen" src="assets/sonar_open.jpg" alt=""><img id="sonarLoop" src="assets/sonar_loop.jpg" alt="">{{CLIPS}}
+ <div id="sonar"><img id="sonarOpen" src="assets/sonar_open.jpg" alt=""><img id="sonarLoop" src="assets/sonar_loop.jpg" alt=""><img id="sonarEnd" src="assets/sonar_end.jpg" alt="">{{CLIPS}}
   <div id="mapFX">
    <svg viewBox="0 0 1920 1080"><circle id="pulse" class="blue" cx="689" cy="381" r="0"></circle><path id="wave" class="blue" d=""></path><path id="route" class="blue dots" d="M689 381 Q525 410 534 586 Q600 650 644 715 Q790 670 916 749 Q1070 760 1211 822"></path><path id="leader" class="blue" stroke-width="2" d=""></path></svg>
    <div id="label" class="label-pin pill"></div><div id="msg" class="label-pin pill">Hey dude, I'm in the campus near the entry benches, where are you?</div>
@@ -40,7 +41,7 @@
    <div class="relayLock" id="lock1"></div><div class="relayLock" id="lock2"></div><div class="relayLock" id="lock3"></div>
    <div id="timer"></div><div id="walker"></div><div id="hop" class="label-pin pill"></div>
   </div>
-  <div id="relayName" class="label-pin"></div><div id="frost"></div>
+  <div id="relayMask"></div><div id="relayName" class="label-pin"></div><div id="frost"></div>
  </div>
  <div id="card"><div class="glass-card full"><h1 class="card-title"><span style="color:var(--red)">SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div></div>
  <div id="captions"></div>{{SOUNDS}}
@@ -52,11 +53,12 @@ const capEls=C.map(c=>{const e=document.createElement('div');e.className='captio
 const pins={relay_1:[534,586],relay_2:[644,715],relay_3:[916,749]};
 const people={relay_1:[850,195],relay_2:[590,190],relay_3:[400,190]};
 const relayNames={relay_1:'Trisha',relay_2:'Utkarsh',relay_3:'Vaishnavi'};
+const maskBoxes={relay_1:[1240,378,660,124],relay_2:[115,288,640,130],relay_3:[0,580,505,130]};
 function show(el,yes){el.style.display=yes?'block':'none'}
 function drawBeat(t){
- const loop=by.sonar_loop, active=t>=loop.start&&t<loop.end,fx=id('mapFX');show(fx,active);
+ const loop=by.sonar_loop, active=t>=Math.min(loop.start,by.sonar_a.start+7)&&t<loop.end,fx=id('mapFX');show(fx,active);
  if(!active)return;
- const phase=((t-loop.start)%2.8)/2.8;
+ const phase=(((t-loop.start)%2.8+2.8)%2.8)/2.8;
  id('pulse').setAttribute('r',(35+300*phase).toFixed(1));
  id('pulse').style.opacity=(.42*Math.sin(Math.PI*phase)).toFixed(3);
  const beat=T.beats.find(b=>t>=b.start&&t<b.end),name=beat?.id||'',u=beat?clamp((t-beat.start)/(beat.end-beat.start)):0;
@@ -103,17 +105,20 @@ function render(t){
  id('phoneDark').style.opacity=smooth((t-.1)/.35).toFixed(3);
  show(sonar,t>=.84);sonar.style.opacity=smooth((t-.82)/.4).toFixed(3);
  const loop=by.sonar_loop;
- id('sonarOpen').style.display=t>=1.4&&t<4.2?'block':'none';
- id('sonarOpen').style.transform=`scale(${(1.06-.06*smooth((t-1.4)/2.8)).toFixed(4)})`;
+ id('sonarOpen').style.display=t<by.sonar_a.start?'block':'none';
  for(const n of ['sonar_a','relay_1','relay_2','relay_3','sonar_b']){const s=by[n];show(id(n),t>=s.start&&t<s.end||n==='sonar_b'&&t>=T.duration)}
- id('sonar_a').style.opacity=smooth((t-3.3)/.9).toFixed(3);
- show(id('sonarLoop'),t>=loop.start-.5&&t<loop.end);id('sonarLoop').style.opacity=smooth((t-(loop.start-.5))/.5).toFixed(3);
+ id('sonar_a').style.opacity=smooth((t-by.sonar_a.start)/.35).toFixed(3);
+ const loopFade=Math.min(loop.start-.5,by.sonar_a.start+6.5);
+ show(id('sonarLoop'),t>=loopFade&&t<loop.end);id('sonarLoop').style.opacity=smooth((t-loopFade)/.5).toFixed(3);
+ show(id('sonarEnd'),t>=by.sonar_b.start+5.2&&t<by.sonar_b.end);
  drawBeat(t);
  const rn=id('relayName'),seg=['relay_1','relay_2','relay_3'].find(n=>t>=by[n].start&&t<by[n].end);show(rn,!!seg);
  if(seg){const u=t-by[seg].start,p=pins[seg],q=people[seg],f=smooth((u-.45)/.7);rn.textContent=relayNames[seg];rn.style.left=(p[0]+(q[0]-p[0])*f)+'px';rn.style.top=(p[1]-65+(q[1]-(p[1]-65))*f)+'px';rn.style.opacity=(smooth(u/.25)*smooth((6-u)/.35)).toFixed(3)}
+ const mask=id('relayMask'),maskOn=seg&&t-by[seg].start>=2.85&&t-by[seg].start<5.55;show(mask,maskOn);
+ if(maskOn){const [x,y,w,h]=maskBoxes[seg],u=t-by[seg].start;Object.assign(mask.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px',opacity:(smooth((u-2.85)/.25)*smooth((5.55-u)/.25)).toFixed(3)})}
  const out=smooth((t-by.to_sos.start)/1.5);
  id('frost').style.opacity=out.toFixed(3);id('frost').style.backdropFilter=`blur(${Math.round(32*out)}px) saturate(1.4)`;
- id('card').style.opacity=smooth((t-by.to_sos.start-.2)/.75).toFixed(3);
+ id('card').style.opacity=smooth((t-by.to_sos.start)/Math.min(.5,by.to_sos.end-by.to_sos.start)).toFixed(3);
  C.forEach((c,i)=>{const e=capEls[i],on=t>=c.start&&t<c.end;show(e,on);if(on)e.style.opacity=(smooth((t-c.start)/.1)*smooth((c.end-t)/.1)).toFixed(3)});
 }
 const tl=gsap.timeline({paused:true,onUpdate:()=>render(tl.time())});tl.to({},{duration:T.duration},0);

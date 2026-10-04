@@ -35,18 +35,25 @@ function timing(){
     card_html:'<div class="glass-card full"><h1 class="card-title"><span style="color:var(--red)">SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div>',
     class:'glass-card full',title:'SOS',subline:'help from anyone nearby, no saved contact needed'}};
   const seg=(name,start,end)=>T.segments.push({name,start:round(start),end:round(end)});
-  seg('push_in',0,1.4);seg('sonar_a',1.4,8.4);T.narration_starts.N2=1.4;
-  let t=8.4;
+  const duration=id=>{const d=Number(lines[id].duration);if(!(d>0))throw Error('Invalid '+id+' duration');return d+.4};
+  seg('push_in',0,1.4);T.narration_starts.N2=1.4;
+  let t=1.4+duration('N2');
+  T.beats.push({id:'N2',start:1.4,end:round(t)});
+  seg('sonar_a',1.4,t);
+  const loopStart=t;
   for(const id of ['N2a','N2b','N2c','N2d','N2e']){
-    const d=Number(lines[id].duration);if(!(d>0))throw Error('Invalid '+id+' duration');
-    T.narration_starts[id]=round(t);T.beats.push({id,start:round(t),end:round(t+d+.4)});t+=d+.4;
+    T.narration_starts[id]=round(t);T.beats.push({id,start:round(t),end:round(t+duration(id))});t+=duration(id);
   }
-  seg('sonar_loop',8.4,t);
+  seg('sonar_loop',loopStart,t);
+  T.narration_starts.N2f=round(t);T.beats.push({id:'N2f',start:round(t),end:round(t+duration('N2f'))});
   for(const id of ['relay_1','relay_2','relay_3']){seg(id,t,t+6);t+=6}
-  T.narration_starts.N2f=T.segments.find(s=>s.name==='relay_1').start;
-  seg('sonar_b',t,t+6);
-  T.narration_starts.N3=round(t+Math.max(0,4.4-Number(lines.N3.duration)));
-  seg('to_sos',t+4.5,t+6);T.duration=round(t+6);
+  const arrivalLength=Math.max(6,3.4+duration('N3')+.63);
+  seg('sonar_b',t,t+arrivalLength);
+  T.narration_starts.N3=round(t+3.4);
+  T.beats.push({id:'N3',start:round(t+3.4),end:round(t+3.4+duration('N3'))});
+  const cardStart=t+3.4+duration('N3')+.03;
+  seg('to_sos',cardStart,t+arrivalLength);T.duration=round(t+arrivalLength);
+  for(const b of T.beats)if(Math.abs(b.end-b.start-duration(b.id))>.002)throw Error('Narration beat length mismatch: '+b.id);
   return T;
 }
 function join(T){
@@ -67,17 +74,18 @@ function main(){
   for(const n of order){video(n,path.join(sonarDir,n+'.mp4'),lens[n],'1920x1080');sound(n+'_sfx',path.join(sfxDir,n,'assets',n+'_sfx.wav'),lens[n])}
   for(const [name,time] of [['sonar_open',2.5],['sonar_loop',6.5]])
     run('ffmpeg',['-v','error','-y','-ss',time,'-i',path.join(ASSETS,'sonar_a.mp4'),'-frames:v','1','-q:v','2',path.join(ASSETS,name+'.jpg')]);
+  run('ffmpeg',['-v','error','-y','-ss',5.2,'-i',path.join(ASSETS,'sonar_b.mp4'),'-frames:v','1','-q:v','2',path.join(ASSETS,'sonar_end.jpg')]);
   for(const id of names)sound(id,path.join(RENDERS,'narration','v4',id+'.wav'),Number(lines[id].duration));
   const C=names.filter(id=>lines[id].text).map(id=>({start:T.narration_starts[id],end:round(T.narration_starts[id]+Number(lines[id].duration)),text:lines[id].text}));
   fs.writeFileSync(path.join(HERE,'timeline.json'),JSON.stringify(T,null,2)+'\n');
   fs.writeFileSync(path.join(REPO,'film/captions/v3/s2b.json'),JSON.stringify(C,null,2)+'\n');
   fs.writeFileSync(path.join(HERE,'meta.json'),JSON.stringify({id:'scene2_v3b',name:'Scene 2 second half',width:1920,height:1080,fps:30,duration:T.duration})+'\n');
   const tpl=fs.readFileSync(path.join(HERE,'index.html.tpl'),'utf8');
-  const clips=order.map(n=>{const s=T.segments.find(x=>x.name===n);return `<video id="${n}" class="clip" src="assets/${n}.mp4" data-start="${s.start}" data-duration="${lens[n]}" data-media-start="0" muted playsinline></video>`}).join('\n');
+  const clips=order.map(n=>{const s=T.segments.find(x=>x.name===n),offset=n==='sonar_a'?Math.max(0,round(lens[n]-(s.end-s.start))):0;return `<video id="${n}" class="clip" src="assets/${n}.mp4" data-start="${s.start}" data-duration="${Math.min(lens[n],round(s.end-s.start))}" data-media-start="${offset}" muted playsinline></video>`}).join('\n');
   const sounds=[
     ...names.map(n=>({id:n,start:T.narration_starts[n],duration:Number(lines[n].duration),file:n+'.wav'})),
-    ...order.map(n=>({id:n+'_sfx',start:T.segments.find(s=>s.name===n).start,duration:lens[n],file:n+'_sfx.wav'}))
-  ].map(x=>`<audio id="audio_${x.id}" class="clip" src="assets/${x.file}" data-start="${x.start}" data-duration="${x.duration}"></audio>`).join('\n');
+    ...order.map(n=>{const s=T.segments.find(x=>x.name===n);return {id:n+'_sfx',start:s.start,duration:Math.min(lens[n],round(s.end-s.start)),offset:n==='sonar_a'?Math.max(0,round(lens[n]-(s.end-s.start))):0,file:n+'_sfx.wav'}})
+  ].map(x=>`<audio id="audio_${x.id}" class="clip" src="assets/${x.file}" data-start="${x.start}" data-duration="${x.duration}" data-media-start="${x.offset||0}"></audio>`).join('\n');
   fs.writeFileSync(path.join(HERE,'index.html'),tpl.replaceAll('{{TIMELINE}}',JSON.stringify(T)).replaceAll('{{CAPTIONS}}',JSON.stringify(C)).replaceAll('{{SLOT_TIME}}',String(slotTime)).replaceAll('{{DURATION}}',String(T.duration)).replaceAll('{{CLIPS}}',clips).replaceAll('{{SOUNDS}}',sounds));
   if(process.argv.includes('--render')&&missing.length)throw Error('Missing final assets: '+missing.join(', '));
   run('hyperframes.cmd',['check'],HERE);
@@ -87,9 +95,10 @@ function main(){
     run('hyperframes.cmd',['render','-q','high','-f','30','-o',out],HERE);
   }
   if(process.argv.includes('--preview')){
-    const out=path.join(REPO,'results','F0042','preview');fs.mkdirSync(out,{recursive:true});
-    const times=[.1,6.7,...T.beats.map(b=>round(b.start+.84*(b.end-b.start))),...['relay_1','relay_2','relay_3','sonar_b'].map(n=>round(T.segments.find(s=>s.name===n).start+3.6)),round(T.duration-1/30)];
-    const ids=['push','opening','N2a','N2b','N2c','N2d','N2e','relay1','relay2','relay3','arrival','sos'];
+    const out=path.join(REPO,'results','F0063','preview');fs.mkdirSync(out,{recursive:true});
+    const early=T.beats.filter(b=>b.id!=='N3'),n3=T.beats.find(b=>b.id==='N3');
+    const times=[.1,...early.map(b=>round(b.start+(b.id==='N2f'?.45:.7)*(b.end-b.start))),...['relay_1','relay_2','relay_3'].map(n=>round(T.segments.find(s=>s.name===n).start+3.6)),round(n3.start+.7*(n3.end-n3.start)),round(T.duration-1/30)];
+    const ids=['push',...early.map(b=>b.id),'relay1','relay2','relay3','N3','sos'];
     const tmp=path.join(out,'snapshots');fs.mkdirSync(tmp,{recursive:true});
     run('hyperframes.cmd',['snapshot','--at',times.join(','),'--no-end','-o',tmp],HERE);
     const pngs=fs.readdirSync(tmp).filter(x=>x.endsWith('.png')).sort();
