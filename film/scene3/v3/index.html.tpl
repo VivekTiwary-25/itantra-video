@@ -10,11 +10,9 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12
 .scene{position:absolute;inset:0;display:none;overflow:hidden;background:#0a0d12}
 .full{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover}
 .card-footage{filter:blur(32px) brightness(.22) saturate(.2);transform:scale(1.07)}
-#sos-card,#sos-card-clear{display:grid;place-items:center;text-align:center;transform-origin:50% 50%;z-index:2}
-#sos-card.glass-card.full.sos,#sos-card-clear.glass-card.full.sos{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,0) 30%),rgba(14,18,26,.86)}
-#sos-card h1,#sos-card-clear h1{font-size:64px;font-weight:650;line-height:1.08;margin:0}
-#sos-card h1 span,#sos-card-clear h1 span{color:var(--red)}
-#sos-card p,#sos-card-clear p{font-size:38px;margin:18px 0 0}
+/* F0051: the frame-0 card is s2b's end_state.card_html with s2b's own card CSS, so the join is identical */
+.sos-card-wrap{position:absolute;inset:0;overflow:hidden;display:grid;place-items:center;text-align:center;transform-origin:50% 50%;z-index:2}
+.sos-card-wrap .glass-card.full{display:flex;flex-direction:column;align-items:center;justify-content:center}
 .split .camera{position:absolute;left:0;top:0;width:1232px;height:1080px;overflow:hidden;background:#0a0d12}
 .camera-motion{position:absolute;left:-250px;top:0;width:1920px;height:1080px;max-width:none;object-fit:cover}
 .camera-vivek .camera-motion{left:-200px}

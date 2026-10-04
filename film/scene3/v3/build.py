@@ -284,13 +284,16 @@ def write_page(T, slots, sonar, missing):
            }
     rows = T["segments"]
     layers = []
+    # F0051: frame 0 uses s2b's exact join card (film/scene2/v3b/timeline.json end_state.card_html).
+    s2b_end = json.loads((REPO / "film/scene2/v3b/timeline.json").read_text(encoding="utf-8")).get("end_state", {})
+    card_html = s2b_end.get("card_html") or '<div class="glass-card full"><h1 class="card-title"><span style="color:var(--red)">SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div>'
     for row in rows:
         name, start, seconds = row["name"], row["start"], row["end"] - row["start"]
         if name == "card_out":
-            layers.append(f'<div class="scene" id="seg_card_out"><video id="video_card_out" class="full card-footage" src="{pic["vachana"]}" data-start="0" data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video><div class="glass-card full sos" id="sos-card"><div><h1><span>SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div></div></div>')
+            layers.append(f'<div class="scene" id="seg_card_out"><video id="video_card_out" class="full card-footage" src="{pic["vachana"]}" data-start="0" data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video><div class="sos-card-wrap" id="sos-card">{card_html}</div></div>')
         elif name in ("s3_open", "lab_open"):
             key = "vachana" if name == "s3_open" else "vivek"
-            cover = '<div class="glass-card full sos" id="sos-card-clear"><div><h1><span>SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div></div>' if name == "s3_open" else ''
+            cover = f'<div class="sos-card-wrap" id="sos-card-clear">{card_html}</div>' if name == "s3_open" else ''
             layers.append(f'<div class="scene" id="seg_{name}"><video id="video_{name}" class="full" src="{pic[key]}" data-start="{start:.6f}" data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video>{cover}</div>')
         elif name == "vivek_app":
             C = T["vivek_camera"]

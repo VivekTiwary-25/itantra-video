@@ -51,23 +51,30 @@
       });
       label.style.left=(v.x+70).toFixed(1)+'px';
       label.style.top=(v.y-225).toFixed(1)+'px';
-      if(t<beats.N5b.start){label.textContent='No saved contact needed';label.style.display='block';}
+      if(t<beats.N5b.start){label.textContent='No saved contact needed';label.style.display='block';label.style.opacity='1';}
       else if(t<beats.N6.start){
         label.textContent=bf<.34?'3 strongest phones':bf<.60?'5 phones at 10 s':bf<.84?'2 hops at 25 s':'3 hops at 60 s';
         label.style.display='block';
+        // F0051: while the clock runs fast to the next milestone the old label fades out, so a time is never shown beside
+        // a label it contradicts; the new label appears exactly when the clock lands on its value.
+        const run=[[.28,.34],[.54,.60],[.78,.84]].find(([a,b])=>bf>=a&&bf<b);
+        label.style.opacity=run?String(1-clamp((bf-run[0])/((run[1]-run[0])*.35))):'1';
       } else label.style.display='none';
       timer.style.left=(v.x+70).toFixed(1)+'px';timer.style.top=(v.y-140).toFixed(1)+'px';
       timer.style.display=inN5b?'block':'none';
       if(inN5b){
-        const knots=[[0,0],[.34,10],[.60,25],[.84,60],[1,60]];
+        // F0051: a stylised clock that agrees with the stage labels: 0 -> 3 s while the 3 strongest phones light,
+        // then quick counts land exactly on 10 / 25 / 60 s as each label appears; it holds the label's value
+        // in between. floor() means it never shows the next value before its label.
+        const knots=[[0,0],[.28,3],[.34,10],[.54,10],[.60,25],[.78,25],[.84,60],[1,60]];
         let seconds=60;
         for(let i=1;i<knots.length;i++)if(bf<=knots[i][0]){
           const a=knots[i-1],b=knots[i];
           seconds=a[1]+(b[1]-a[1])*(bf-a[0])/(b[0]-a[0]);break;
         }
-        timer.textContent=Math.round(seconds)+' s';
+        timer.textContent=Math.floor(seconds+1e-6)+' s';
       }
-      accept.style.left=(h.x+38).toFixed(1)+'px';accept.style.top=(h.y+16).toFixed(1)+'px';
+      accept.style.left=(h.x+30).toFixed(1)+'px';accept.style.top=(h.y+56).toFixed(1)+'px';  // F0051: below-right of the pin, clear of the Vivek label
       accept.style.display=inN6?'flex':'none';
       const af=inN6?clamp((t-beats.N6.start)/(beats.N6.end-beats.N6.start)):0;
       accept.children[0].classList.toggle('active',af>=.55);

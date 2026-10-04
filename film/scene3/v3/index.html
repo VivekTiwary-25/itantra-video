@@ -10,11 +10,9 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12
 .scene{position:absolute;inset:0;display:none;overflow:hidden;background:#0a0d12}
 .full{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover}
 .card-footage{filter:blur(32px) brightness(.22) saturate(.2);transform:scale(1.07)}
-#sos-card,#sos-card-clear{display:grid;place-items:center;text-align:center;transform-origin:50% 50%;z-index:2}
-#sos-card.glass-card.full.sos,#sos-card-clear.glass-card.full.sos{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,0) 30%),rgba(14,18,26,.86)}
-#sos-card h1,#sos-card-clear h1{font-size:64px;font-weight:650;line-height:1.08;margin:0}
-#sos-card h1 span,#sos-card-clear h1 span{color:var(--red)}
-#sos-card p,#sos-card-clear p{font-size:38px;margin:18px 0 0}
+/* F0051: the frame-0 card is s2b's end_state.card_html with s2b's own card CSS, so the join is identical */
+.sos-card-wrap{position:absolute;inset:0;overflow:hidden;display:grid;place-items:center;text-align:center;transform-origin:50% 50%;z-index:2}
+.sos-card-wrap .glass-card.full{display:flex;flex-direction:column;align-items:center;justify-content:center}
 .split .camera{position:absolute;left:0;top:0;width:1232px;height:1080px;overflow:hidden;background:#0a0d12}
 .camera-motion{position:absolute;left:-250px;top:0;width:1920px;height:1080px;max-width:none;object-fit:cover}
 .camera-vivek .camera-motion{left:-200px}
@@ -41,8 +39,8 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12
 #caption{display:none}
 </style></head>
 <body><div id="root" data-composition-id="scene3-v3" data-start="0" data-duration="56.300000" data-width="1920" data-height="1080">
-<div class="scene" id="seg_card_out"><video id="video_card_out" class="full card-footage" src="assets/vachana.mp4" data-start="0" data-duration="3.800000" data-media-start="0" muted playsinline></video><div class="glass-card full sos" id="sos-card"><div><h1><span>SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div></div></div>
-<div class="scene" id="seg_s3_open"><video id="video_s3_open" class="full" src="assets/vachana.mp4" data-start="3.800000" data-duration="2.866667" data-media-start="0" muted playsinline></video><div class="glass-card full sos" id="sos-card-clear"><div><h1><span>SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div></div></div>
+<div class="scene" id="seg_card_out"><video id="video_card_out" class="full card-footage" src="assets/vachana.mp4" data-start="0" data-duration="3.800000" data-media-start="0" muted playsinline></video><div class="sos-card-wrap" id="sos-card"><div class="glass-card full"><h1 class="card-title"><span style="color:var(--red)">SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div></div></div>
+<div class="scene" id="seg_s3_open"><video id="video_s3_open" class="full" src="assets/vachana.mp4" data-start="3.800000" data-duration="2.866667" data-media-start="0" muted playsinline></video><div class="sos-card-wrap" id="sos-card-clear"><div class="glass-card full"><h1 class="card-title"><span style="color:var(--red)">SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div></div></div>
 <div class="scene split" id="seg_vachana_sos"><div class="camera camera-vachana"><video id="video_vachana_sos_camera" class="camera-motion" src="assets/vachana.mp4" data-start="6.666667" data-duration="7.773333" data-media-start="2.866667" muted playsinline></video><div class="feather"></div></div><div class="app-field" id="vachana-field"><div class="screen" style="width:450.00px;background:#101820 url(assets/vachana_sos_first.jpg) center/100% 100% no-repeat"><video id="video_vachana_sos" src="assets/vachana_sos.mp4" data-start="6.666667" data-duration="12.966667" data-media-start="0" muted playsinline></video></div></div></div>
 <div class="scene" id="seg_sos_sonar"><canvas id="sos-map" width="1920" height="1080" data-layout-allow-overflow></canvas><svg id="sos-waves" viewBox="0 0 1920 1080" width="1920" height="1080" aria-hidden="true"><circle id="wave-0"/><circle id="wave-1"/></svg><div class="map-pin" id="pin-v"><i></i><span>Vachana</span></div><div id="search-dots"></div><div class="map-pin" id="pin-k"><i></i><span>Vivek</span></div><div class="map-pill" id="sos-label"></div><div class="map-pill" id="sos-timer"></div><div class="map-pill" id="sos-accept"><span>Accept</span><span>Decline</span></div></div>
 <div class="scene" id="seg_sos_dive"><video id="video_sos_dive" class="full" src="assets/sos_dive.mp4" data-start="33.333333" data-duration="1.500000" data-media-start="0" muted playsinline></video></div>
