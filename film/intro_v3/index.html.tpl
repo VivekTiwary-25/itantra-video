@@ -30,14 +30,15 @@
 .side-button.short{top:35%;height:42px}
 .notification{position:absolute;z-index:6;top:80px;left:20px;right:20px;min-height:83px;display:flex;align-items:center;gap:13px;padding:14px 17px;border-radius:18px;background:rgba(246,248,252,.97);color:#111821;box-shadow:0 15px 35px #0009;font-size:26px;font-weight:680;transform:translateY(-130px)}
 .app-dot{width:35px;height:35px;border-radius:11px;background:linear-gradient(145deg,#f7f9fc,#a9b1bc);flex:none;box-shadow:inset 0 1px 0 #fff}
-#circle{left:980px;top:80px;width:880px;height:880px;display:block;box-shadow:0 30px 80px rgba(0,0,0,.35),inset 0 2px 0 rgba(255,255,255,.72)}
+#circle{left:940px;top:80px;width:880px;height:880px;display:block;box-shadow:0 30px 80px rgba(0,0,0,.35),inset 0 2px 0 rgba(255,255,255,.72)}
 #circle-content{position:relative;width:100%;height:100%}
 #icons{position:absolute;inset:0}
 .icon-tile{position:absolute;width:136px;text-align:center;color:#14181f;font-size:30px;font-weight:650;line-height:1.02;white-space:normal}
-.icon-tile:nth-child(1){left:82px;top:165px}.icon-tile:nth-child(2){left:194px;top:78px}.icon-tile:nth-child(3){left:372px;top:45px}.icon-tile:nth-child(4){left:550px;top:78px}.icon-tile:nth-child(5){left:662px;top:165px}
+.icon-tile:nth-child(1){left:82px;top:165px}.icon-tile:nth-child(2){left:194px;top:78px}.icon-tile:nth-child(3){left:372px;top:45px}.icon-tile:nth-child(4){left:550px;top:78px}.icon-tile:nth-child(5){left:640px;top:165px;width:180px;white-space:nowrap}
 .icon-drawing{position:relative;display:block;width:92px;height:92px;margin:0 auto 14px}
 .icon-drawing .glass-icon{stroke-width:2.35}
-.glass-cross path:nth-child(2){stroke:#14181f!important}
+.glass-cross path:first-child{stroke:rgba(255,255,255,.94)!important;stroke-width:11.5}
+.glass-cross path:nth-child(2){stroke:var(--red)!important;stroke-width:8.7}
 .icon-tile.gold{color:#5c410e;text-shadow:0 0 13px rgba(245,196,81,.56)}
 .icon-tile.gold .icon-drawing{filter:drop-shadow(0 0 13px var(--gold))}
 #circle-phone{position:absolute;left:311px;top:315px;--glass-screen-height:510px;transform-origin:center center}
@@ -93,7 +94,7 @@ function render(t){
   show($('phone').querySelector('.notification'),phone&&t<T.no+.08);
   const circle=t>=T.no-.05&&t<T.full-.3;show($('circle'),circle);
   show($('circle-phone').querySelector('.notification'),circle&&t>=T.no+.08);
-  if(circle){const p=enter(clamp((t-T.no+.05)/.55));$('circle').style.opacity=p;$('circle').style.transform=`translateX(${drift}px) scale(${.93+.07*p})`;const settle=move(clamp((t-T.no+.05)/.48));$('circle-phone').style.transform=`perspective(1000px) translateY(${-220*(1-settle)}px) rotateY(${6-6*settle}deg) scale(${1.4-.4*settle})`;$('circle-phone').style.opacity=settle;tiles[4].parentElement.style.filter=`drop-shadow(0 0 ${12+8*Math.sin(t*9)**2}px rgba(245,196,81,.55))`}
+  if(circle){const p=enter(clamp((t-T.no+.05)/.55));$('circle').style.opacity=p;$('circle').style.transform=`scale(${.93+.07*p})`;const settle=move(clamp((t-T.no+.05)/.48));$('circle-phone').style.transform=`perspective(1000px) translateY(${-220*(1-settle)}px) rotateY(${6-6*settle}deg) scale(${1.4-.4*settle})`;$('circle-phone').style.opacity=settle;tiles[4].parentElement.style.filter=`drop-shadow(0 0 ${12+8*Math.sin(t*9)**2}px rgba(245,196,81,.55))`}
   const crossStarts=[T.no,T.network,T.needed,T.needed+.18];
   tiles.forEach((drawing,i)=>{if(i<4)Glass.cross(drawing,clamp((t-crossStarts[i])/.35))});
   const full=t>=T.lets;show($('full'),full);
