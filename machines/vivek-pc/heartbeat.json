@@ -1,18 +1,16 @@
 {
   "machine": "vivek-pc",
-  "time": "2026-10-04T15:27:29Z",
-  "status": "rate_limited",
+  "time": "2026-10-04T15:32:30Z",
+  "status": "idle",
   "current_task": null,
   "workers": [
     "codex-vivek"
   ],
-  "rate_limited_until": {
-    "codex-vivek": "2026-10-04T15:30:59.987768+00:00"
-  },
+  "rate_limited_until": null,
   "paused_by_safety_check": null,
   "listener_pid": 10692,
   "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-04T15:22:33Z"
+  "last_push_ok": "2026-10-04T15:27:34Z"
 }
