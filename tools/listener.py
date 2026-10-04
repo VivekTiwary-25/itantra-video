@@ -37,7 +37,7 @@ RESULT_PUSH_BUDGET = 240  # seconds for result / start commits; anything left ov
 NET_TIMEOUT = 45  # seconds for any single network git call: a half-dead connection must not block the listener for minutes
 NET = ["-c", "http.lowSpeedLimit=1000", "-c", "http.lowSpeedTime=20"]  # abort a transfer that has stalled for 20 s
 DEFAULT_TIMEOUT_MIN = 60
-RATE_RE = re.compile(r"rate.?limit(ed| reached| exceeded)|usage limit|too many requests|\b429\b|quota (exceeded|reached)|exceeded your|limit reached|try again (in|later|at)", re.I)
+RATE_RE = re.compile(r"rate.?limit(ed| reached| exceeded)|usage limit|too many requests|\b429\b|quota (exceeded|reached)|exceeded your|limit reached|try again (in|later|at)|session limit|hit your (session |usage |weekly )?limit|limit \S* ?resets", re.I)
 STATUS_RE = re.compile(r"^\s*status\s*:\s*[\"']?(done|failed|refused)\b", re.I | re.M)
 
 CFG = load_machine_config()

@@ -205,7 +205,9 @@ def check_failed_reports(state: dict) -> None:
         if fm.get("status") == "failed" and fm.get("written_by") == "listener":
             rl = "rate-limit" in text
             why = "rate limit" if rl else "worker stopped without a report or was killed"
-            queue_redo(rid, why, state, avoid=fm.get("worker", "") if rl else "")
+            # never hand a redo straight back to the worker that just failed it (a limit it did not report,
+            # a broken environment...): another worker takes it, or it waits until the lead reassigns it
+            queue_redo(rid, why, state, avoid=fm.get("worker", ""))
     state["baseline_done"] = True
 
 
