@@ -18,9 +18,20 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
 MACHINE = json.loads((REPO / "machine.local.json").read_text(encoding="utf-8"))
 RENDERS = Path(MACHINE["renders_dir"])
-OUT = RENDERS / "scene3/v3"
+try:
+    OUT = RENDERS / "scene3/v3"
+    OUT.mkdir(parents=True, exist_ok=True)
+except PermissionError:
+    # Existing scene3/ is read-only in this worker sandbox; new render subtrees are writable.
+    OUT = RENDERS / "F0060/scene3/v3"
+    OUT.mkdir(parents=True, exist_ok=True)
 FPS = 30
 SR = 48000
+# Source times in the uncut vivek_app slot. All cuts are idle frames; each join
+# dissolves for three frames. Keep the entire 7.78-11.63 s TTS playback.
+VIVEK_CUTS = ((1.0, 2.2), (3.7, 4.5), (5.5, 7.2),
+              (11 + 22 / FPS, 12 + 8 / FPS), (17 + 20 / FPS, 19 + 14 / FPS))
+DISSOLVE = 3 / FPS
 SONAR = {"sos_dive": 1.5}
 NARRATION = REPO / "film/common/narration_v4.json"
 CAPTION_DIALOGUE = (
@@ -42,6 +53,43 @@ def narration_lines():
         if float(lines[key]["duration"]) <= 0:
             raise ValueError(f"invalid narration duration: {key}")
     return lines
+
+
+def trimmed_time(source_time):
+    if any(a < source_time < b for a, b in VIVEK_CUTS):
+        raise ValueError(f"event inside an idle cut: {source_time}")
+    return source_time - sum(b - a + DISSOLVE for a, b in VIVEK_CUTS if source_time >= b)
+
+
+def trimmed_slots(slots):
+    result = {key: value.copy() for key, value in slots.items()}
+    item = result["vivek_app"]
+    for key in ("accept_at", "play_at", "ptt_down", "ptt_up", "sent_at", "duration"):
+        item[key] = trimmed_time(item[key])
+    return result
+
+
+def trim_vivek_slot(source, output):
+    ends = (0.0,) + tuple(b for _, b in VIVEK_CUTS)
+    starts = tuple(a for a, _ in VIVEK_CUTS) + (21.366667,)
+    spans = list(zip(ends, starts))
+    filters = []
+    for i, (a, b) in enumerate(spans):
+        filters.append(f"[0:v]trim=start_frame={round(a*FPS)}:end_frame={round(b*FPS)},setpts=PTS-STARTPTS,fps={FPS}[v{i}]")
+    duration = spans[0][1] - spans[0][0]
+    previous = "v0"
+    for i, (a, b) in enumerate(spans[1:], 1):
+        next_name = f"x{i}"
+        filters.append(f"[{previous}][v{i}]xfade=transition=fade:duration={DISSOLVE}:offset={duration-DISSOLVE:.6f}[{next_name}]")
+        duration += b - a - DISSOLVE
+        previous = next_name
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output.with_name(".vivek_app.trim.mp4")
+    run("ffmpeg", "-v", "error", "-y", "-i", source, "-filter_complex", ";".join(filters),
+        "-map", f"[{previous}]", "-frames:v", round(duration * FPS), "-an", "-c:v", "libx264",
+        "-preset", "medium", "-crf", "16", "-pix_fmt", "yuv420p", "-movflags", "+faststart", temporary)
+    temporary.replace(output)
+    check_video(output, duration - 1 / FPS)
 # T0040 camera windows. App-only takeover replaces every former held frame.
 LAB_OPEN_FRAMES = 39
 VIVEK_HOLD_A, VIVEK_HOLD_B, VIVEK_LAST = 39, 78, 230
@@ -67,6 +115,8 @@ def render_path(ref):
     relative = Path(ref[8:])
     if relative.is_absolute() or ".." in relative.parts:
         raise ValueError("slot path must be relative to renders_dir")
+    if relative.parts[:2] == ("scene3", "v3") and OUT != RENDERS / "scene3/v3":
+        return OUT.joinpath(*relative.parts[2:])
     return RENDERS / relative
 
 
@@ -76,12 +126,23 @@ def ensure_full_slots(slots):
                "vivek_app": ("scene3/app/vivek_take.mkv", 4.75)}
     for key, (relative, offset) in sources.items():
         output = render_path(slots[key]["path"])
-        if output.is_file():
-            continue
         source = RENDERS / relative
-        if source.is_file():
+        if not source.is_file():
+            continue
+        if key == "vivek_app":
+            full = OUT / "app/vivek_full.mp4"
+            if not full.is_file() or full.stat().st_mtime < source.stat().st_mtime:
+                run(sys.executable, HERE / "prep_slot.py", key, source, "--in", offset,
+                    "--dur", slots[key]["duration"], "--crop-top", 0, "--audio", "drop", "--out", full)
+            marker = output.with_suffix(".cuts.json")
+            spec = json.dumps(VIVEK_CUTS)
+            if (not output.is_file() or output.stat().st_mtime < full.stat().st_mtime
+                    or not marker.is_file() or marker.read_text(encoding="utf-8") != spec):
+                trim_vivek_slot(full, output)
+                marker.write_text(spec, encoding="utf-8")
+        elif not output.is_file() or output.stat().st_mtime < source.stat().st_mtime:
             run(sys.executable, HERE / "prep_slot.py", key, source, "--in", offset,
-                "--dur", slots[key]["duration"], "--crop-top", 0, "--audio", "drop")
+                "--dur", slots[key]["duration"], "--crop-top", 0, "--audio", "drop", "--out", output)
 
 
 def timeline(slots):
@@ -104,10 +165,11 @@ def timeline(slots):
     frame = round(rows[-1]["end"] * FPS)
     by = {row["name"]: row for row in rows}
     m2 = round((slots["vivek_app"]["ptt_down"] + .1 - (VIVEK_LINE_PLATE - VIVEK_HOLD_B / FPS)) * FPS)
-    m1_end = VIVEK_M1_AT + VIVEK_HOLD_B - VIVEK_HOLD_A
-    if not VIVEK_M1_AT < m1_end <= m2:
+    m1_from = trimmed_time(VIVEK_M1_AT / FPS)
+    m1_end = m1_from + (VIVEK_HOLD_B - VIVEK_HOLD_A) / FPS
+    if not m1_from < m1_end <= m2 / FPS:
         raise RuntimeError("vivek_app camera plan does not fit the slot timings")
-    vivek_camera = {"m1_from": VIVEK_M1_AT / FPS, "m1_to": m1_end / FPS, "m2_from": m2 / FPS,
+    vivek_camera = {"m1_from": m1_from, "m1_to": m1_end, "m2_from": m2 / FPS,
                     "m2_to": (m2 + VIVEK_LAST - VIVEK_HOLD_B) / FPS}
     sonar_start = by["sos_sonar"]["start"]
     narration_starts = {"N5": 0.0}
@@ -191,7 +253,7 @@ def asset(source, name=None):
 def prepare_sonar_still(slots):
     """Supply the existing sos_in builder with the slot's searching frame."""
     source = render_path(slots["vachana_sos"]["path"])
-    target = RENDERS / "scene3/app/vachana_sos_last.png"
+    target = OUT / "plates/vachana_sos_last.png"
     target.parent.mkdir(parents=True, exist_ok=True)
     if source.exists():
         info = check_video(source, slots["vachana_sos"]["duration"] - 1 / FPS)
@@ -223,7 +285,9 @@ def sonar_assets(app_still, preview_only=False):
     old_src = "SIDES_SRC = ('Video/sospart1.mp4', 10.5)"
     if old_src not in cues_text:
         raise RuntimeError("sos_in side source changed; review the v3 motion patch")
-    cues_path.write_text(cues_text.replace(old_src, "SIDES_SRC = ('Video/sospart1.mp4', 8.6)"), encoding="utf-8")
+    still_ref = "RENDERS:" + app_still.relative_to(RENDERS).as_posix()
+    cues_path.write_text(cues_text.replace(old_src, "SIDES_SRC = ('Video/sospart1.mp4', 8.6)")
+                         .replace("RENDERS:scene3/app/vachana_sos_last.png", still_ref), encoding="utf-8")
     sonar_build = staged_sonar / "build.py"
     source = sonar_build.read_text(encoding="utf-8")
     old_filter = "'-frames:v', '1', '-vf',\n        f\"{grade},gblur=sigma=40,eq=brightness=-0.02,colorchannelmixer=rr=0.55:gg=0.55:bb=0.55,loop=loop={n_in}:size=1:start=0,fps={fps},setpts=N/{fps}/TB\","
@@ -272,7 +336,7 @@ def screen(slot, name, start, seconds, missing):
     still(source, first, 0)
     overflow = ' data-layout-allow-overflow' if name == 'vivek_app' else ''
     tap = '<div class="accept-tap-ring" aria-hidden="true"></div>' if name == 'vivek_app' else ''
-    return f'<div class="screen"{overflow} style="width:{width:.2f}px;background:#101820 url({asset(first)}) center/100% 100% no-repeat">{contents}{tap}</div>'
+    return f'<div class="screen"{overflow} style="width:{width:.2f}px;background:#101820 url({asset(first)}) center/100% 100% no-repeat">{contents}<div class="status-mask" aria-hidden="true"></div>{tap}</div>'
 
 
 def write_page(T, slots, sonar, missing):
@@ -317,6 +381,8 @@ def write_page(T, slots, sonar, missing):
     by = {r["name"]: r for r in rows}
     captions = []
     for name, a, b, message in CAPTION_DIALOGUE:
+        if name == "vivek_app":
+            a, b = trimmed_time(a), trimmed_time(b)
         captions.append({"start": round(by[name]["start"] + a, 3),
                          "end": round(by[name]["start"] + b, 3), "text": message})
     for key, start in T["narration_starts"].items():
@@ -431,6 +497,8 @@ def audio(T, slots, stage):
     else:
         missing.append("RENDERS:tts_itantra/tts_sos.wav")
     for key, at in T["narration_starts"].items():
+        if narration_lines()[key].get("dropped"):
+            continue
         path = narration_file(key)
         if path.exists():
             # T0040: the cleaned narration files sit at -18 LUFS; one static +2 dB gain, no per-clip loudnorm.
@@ -502,8 +570,9 @@ def main():
     parser.add_argument("--audio-only", action="store_true", help="T0040: rebuild only the audio layers and the playable mp4 from the existing picture")
     args = parser.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
-    slots = json.loads((HERE / "slots.json").read_text(encoding="utf-8"))
-    ensure_full_slots(slots)
+    raw_slots = json.loads((HERE / "slots.json").read_text(encoding="utf-8"))
+    ensure_full_slots(raw_slots)
+    slots = trimmed_slots(raw_slots)
     T = timeline(slots)
     if args.page_only:
         preview_narration_placeholders()
@@ -523,7 +592,8 @@ def main():
         mux(T)
         print(json.dumps({"duration": T["duration"], "missing": missing}))
         return
-    videos, stage = sonar_assets(prepare_sonar_still(slots), preview_only=args.page_only)
+    app_still = prepare_sonar_still(slots)
+    videos, stage = sonar_assets(app_still, preview_only=args.page_only)
     missing = []
     write_page(T, slots, videos, missing)
     if missing and not args.page_only:

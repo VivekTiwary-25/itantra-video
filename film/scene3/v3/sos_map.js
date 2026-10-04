@@ -42,10 +42,8 @@
       });
       waves.forEach((el,i)=>{
         const f=((st/2.4+i*.5)%1+1)%1;
-        const source=i===1&&bf>=.60?(bf>=.84?DOTS[5]:DOTS[4]):V;
-        const centre=source===V?v:sonar.project(source[0],source[1],0);
         const reach=bf<.34?220:bf<.60?330:250;
-        el.setAttribute('cx',centre.x.toFixed(1));el.setAttribute('cy',centre.y.toFixed(1));
+        el.setAttribute('cx',v.x.toFixed(1));el.setAttribute('cy',v.y.toFixed(1));
         el.setAttribute('r',(24+reach*f).toFixed(1));
         el.style.opacity=(Math.sin(Math.PI*f)*.72).toFixed(3);
       });

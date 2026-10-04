@@ -20,6 +20,7 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12
 .app-field{position:absolute;left:1232px;top:0;width:688px;height:1080px;background:#0a0d12;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .screen{position:relative;height:1000px;max-width:560px;border-radius:32px;border:1px solid rgba(255,255,255,.14);overflow:hidden;background:#101820;box-shadow:0 22px 65px #000a;flex:none}
 .screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#101820}
+.status-mask{position:absolute;inset:0 0 auto;height:46px;background:#07111c;pointer-events:none;z-index:2}
 .accept-tap-ring{position:absolute;left:8%;top:14.35%;width:17.5%;height:4%;border:3px solid rgba(255,255,255,.95);border-radius:999px;box-shadow:0 0 0 5px rgba(255,255,255,.14);opacity:0;pointer-events:none}
 #sos-map,#sos-waves{position:absolute;inset:0}
 #sos-waves{pointer-events:none;overflow:visible}
@@ -33,7 +34,7 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12
 #sos-timer{font-variant-numeric:tabular-nums;font-size:44px;padding:10px 24px}
 #sos-accept{display:flex;gap:10px;font-size:42px;padding:8px}
 #sos-accept span{padding:9px 18px;border-radius:999px}
-#sos-accept .active{background:#ff4d5e;color:#15171b}
+#sos-accept .active{background:#34c759;color:#15171b}
 #techline-layer,#caption-layer{position:absolute;inset:0;pointer-events:none;z-index:20}
 #techline{display:none}
 #caption{display:none}

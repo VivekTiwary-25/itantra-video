@@ -6,7 +6,8 @@ import subprocess
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-RENDERS = HERE.parents[2] / "local/renders"
+REPO = HERE.parents[2]
+RENDERS = Path(json.loads((REPO / "machine.local.json").read_text(encoding="utf-8"))["renders_dir"])
 
 
 def probe(path):
@@ -26,6 +27,7 @@ def main():
     parser.add_argument("--crop-top", type=int, default=0)
     parser.add_argument("--audio", choices=("keep", "drop"), default="keep")
     parser.add_argument("--hold-last", type=float, default=0)
+    parser.add_argument("--out", type=Path, help="output path under renders_dir (default: scene slot)")
     args = parser.parse_args()
     raw = args.raw.resolve()
     if not raw.is_relative_to(RENDERS.resolve()) or raw.suffix.lower() not in (".mkv", ".mp4") or not raw.is_file():
@@ -40,7 +42,9 @@ def main():
     if args.audio == "keep" and not any(s["codec_type"] == "audio" for s in streams):
         parser.error("source has no audio; use --audio drop")
     frames = round(duration * 30)
-    output = RENDERS / "scene3/v3/app" / f"{args.slot}.mp4"
+    output = args.out.resolve() if args.out else RENDERS / "scene3/v3/app" / f"{args.slot}.mp4"
+    if not output.is_relative_to(RENDERS.resolve()) or output.suffix.lower() != ".mp4":
+        parser.error("--out must be an .mp4 under renders_dir")
     if raw == output.resolve():
         parser.error("raw source cannot be the prepared slot output")
     output.parent.mkdir(parents=True, exist_ok=True)

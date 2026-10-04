@@ -1,42 +1,52 @@
 [
   {
-    "start": 8.067,
-    "end": 10.667,
+    "start": 0.0,
+    "end": 3.5,
+    "text": "What if you need help but you don't know who is nearby?"
+  },
+  {
+    "start": 8.167,
+    "end": 10.767,
     "text": "I'm lost somewhere near\nthe construction site."
   },
   {
-    "start": 10.987,
-    "end": 11.727,
+    "start": 11.087,
+    "end": 11.827,
     "text": "Please reach me out."
   },
   {
-    "start": 12.167,
-    "end": 12.787,
+    "start": 12.267,
+    "end": 12.887,
     "text": "Help me anyone."
   },
   {
-    "start": 43.913,
-    "end": 45.86,
+    "start": 24.733,
+    "end": 30.623,
+    "text": "iTantra searches nearby for help. If someone accepts, they can hear the SOS and then reply."
+  },
+  {
+    "start": 37.613,
+    "end": 39.56,
     "text": "I'm lost somewhere near\nthe construction site."
   },
   {
-    "start": 45.86,
-    "end": 47.768,
+    "start": 39.56,
+    "end": 41.468,
     "text": "Please reach me out.\nHelp me anyone."
   },
   {
-    "start": 48.993,
-    "end": 49.473,
+    "start": 42.06,
+    "end": 42.54,
     "text": "Wait,"
   },
   {
-    "start": 49.473,
-    "end": 50.553,
+    "start": 42.54,
+    "end": 43.62,
     "text": "I'm in the chemistry lab."
   },
   {
-    "start": 50.553,
-    "end": 51.793,
+    "start": 43.62,
+    "end": 44.86,
     "text": "I'll come get you, wait."
   }
 ]
