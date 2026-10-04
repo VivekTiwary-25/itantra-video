@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1920,height=1080">
+<link rel="stylesheet" href="./assets/glass/glass.css">
+<script src="./three.min.js"></script><script src="./gsap.min.js"></script><script src="./assets/glass/glass.js"></script>
+<script src="./assets/timeline.js"></script><script src="./assets/captions.js"></script>
+<style>
+@font-face{font-family:SceneSans;src:local('Segoe UI Variable Display'),local('Segoe UI Variable'),local('Segoe UI');font-weight:100 900}
+*{box-sizing:border-box} html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#080c12;color:#f3f5f8;font-family:SceneSans,'Segoe UI',sans-serif}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(ellipse at 49% 62%,#1d2733 0,#0c121b 45%,#05080d 100%)}
+#lab{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover;transform-origin:34% 41%}
+#labShade{position:absolute;inset:0;background:#05080d;opacity:0}
+#studio{position:absolute;inset:0;opacity:0;background:radial-gradient(ellipse at 49% 65%,#1b2837 0,#0b111b 38%,#05080d 78%)}
+#rim{position:absolute;left:270px;top:-360px;width:1200px;height:1000px;border-radius:50%;background:radial-gradient(ellipse,rgba(94,148,192,.16),transparent 70%);filter:blur(90px)}
+#floor{position:absolute;left:130px;top:875px;width:1650px;height:150px;border-radius:50%;background:radial-gradient(ellipse,rgba(150,191,219,.18),rgba(42,63,83,.08) 41%,transparent 72%);filter:blur(16px)}
+#turntableA,#turntableB{position:absolute;top:852px;width:670px;height:96px;border-radius:50%;border:1px solid rgba(177,214,240,.18);background:radial-gradient(ellipse,#263746 0,#141f2b 46%,#070d14 72%);box-shadow:0 30px 45px #0009,0 0 22px rgba(117,167,212,.12);opacity:0}
+#turntableA{left:625px} #turntableB{left:1210px;width:490px}
+#phoneCanvas{position:absolute;inset:0;width:1920px;height:1080px}
+#teardown{position:absolute;inset:0;opacity:0;pointer-events:none}
+.layer{position:absolute;width:620px;height:930px;left:380px;top:64px;object-fit:contain;filter:drop-shadow(0 22px 24px #000a);transform-origin:center}
+#processorGlow{position:absolute;left:650px;top:240px;width:135px;height:100px;border-radius:18px;background:#8bd2ff;filter:blur(30px);mix-blend-mode:screen;opacity:0;pointer-events:none}
+#numberPanel{position:absolute;left:1190px;top:260px;width:610px;min-height:300px;padding:42px 48px;display:flex;flex-direction:column;justify-content:center;opacity:0;pointer-events:none}
+#numberMain{font-size:48px;font-weight:650;line-height:1.13;letter-spacing:-.02em} #numberMinor{font-size:34px;color:var(--text-dim);margin-top:18px}
+#bar{height:18px;margin-top:30px;border-radius:20px;background:rgba(255,255,255,.12);overflow:hidden;display:none}
+#barFill{height:100%;width:100%;border-radius:20px;background:linear-gradient(90deg,#4386bd,#9bd9ff);box-shadow:0 0 18px #4da3ff88}
+#packetTrack{position:absolute;left:685px;top:485px;width:570px;height:2px;background:linear-gradient(90deg,transparent,rgba(245,196,81,.32),transparent);opacity:0}
+#packet{position:absolute;left:680px;top:457px;width:55px;height:55px;border:2px solid #f5c451;border-radius:16px;background:rgba(245,196,81,.18);box-shadow:0 0 26px #f5c451aa;opacity:0}
+#packet:before{content:'';position:absolute;inset:14px;border:2px solid #ffe5a1;border-radius:5px}
+#bt{position:absolute;left:928px;top:390px;color:#f5c451;filter:drop-shadow(0 0 15px #f5c451);opacity:0} #bt svg{width:64px;height:64px}
+#waves{position:absolute;left:1580px;top:430px;width:170px;height:150px;opacity:0}
+#waves i{position:absolute;top:25px;height:95px;border:3px solid #9bd9ff;border-left:0;border-radius:50%;opacity:.7}
+#waves i:nth-child(1){left:0;width:35px}#waves i:nth-child(2){left:15px;width:75px}#waves i:nth-child(3){left:35px;width:115px}
+#packetText{position:absolute;left:480px;top:242px;max-width:960px;padding:22px 36px;opacity:0;font-size:41px;font-weight:600;text-align:center}
+#endline{position:absolute;left:0;right:0;top:118px;text-align:center;font-size:72px;font-weight:650;letter-spacing:-.025em;text-shadow:0 8px 35px #000;opacity:0}
+#caption{position:absolute;bottom:54px;left:180px;right:180px;z-index:9;text-align:center;display:none}
+#vignette{position:absolute;inset:0;box-shadow:inset 0 0 220px 70px #03060bd9;pointer-events:none}
+</style></head>
+<body><main id="root" data-composition-id="scene4" data-start="0" data-duration="{{DURATION}}" data-width="1920" data-height="1080" data-fps="30">
+<video id="lab" src="./assets/lab_bridge.mp4" data-start="0" data-duration="1.333333" data-media-start="0" muted playsinline></video><div id="labShade"></div>
+<div id="studio"><div id="rim"></div><div id="floor"></div><div id="turntableA"></div><div id="turntableB"></div></div>
+<canvas id="phoneCanvas" width="1920" height="1080"></canvas>
+<div id="teardown"><img class="layer" id="layerBack" src="./assets/layer_back.png" alt=""><img class="layer" id="layerMid" src="./assets/layer_mid.png" alt=""><img class="layer" id="layerScreen" src="./assets/layer_screen.png" alt=""><div id="processorGlow"></div></div>
+<div class="glass-panel" id="numberPanel"><div id="numberMain"></div><div id="numberMinor"></div><div id="bar"><div id="barFill"></div></div></div>
+<div id="packetTrack"></div><div id="packet"></div><div id="bt"></div><div id="waves"><i></i><i></i><i></i></div>
+<div class="glass-panel" id="packetText">~1.2 KB, 60 to 90× smaller than raw voice</div>
+<div id="endline">No new hardware.</div><div class="caption" id="caption"></div><div id="vignette"></div>
+</main><script>window.__timelines=window.__timelines||{};window.__timelines.scene4=null;</script><script src="./scene.js"></script></body></html>
