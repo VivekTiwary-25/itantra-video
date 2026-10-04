@@ -19,7 +19,7 @@ LEAD = Path(__file__).resolve().parent.parent
 STATE = LEAD / "local" / "render-runner-state.json"
 PS1 = LEAD / "local" / "rendering" / "render_utk.ps1"
 HOST, RDIR = "utkarsh", r"D:\Presentation_Itantra\itantra-render"
-SEGS = {"intro", "s2a", "s2b", "s3", "exploded", "cards"}
+SEGS = {"intro", "s2a", "s2b", "s3", "s4", "exploded", "cards"}
 
 
 def sh(cmd, timeout=7200):
