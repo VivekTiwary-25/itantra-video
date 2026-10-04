@@ -5,15 +5,15 @@
     {
       "name": "intro",
       "folder": "film/intro_v3/",
-      "status": "TODO: F0023 builds film/intro_v3/ (not landed on 4 Oct 10:55); set video, stems, render_cmd and expected_duration from its REPORT",
-      "render_cmd": "python film/intro_v3/build.py --render",
+      "status": "built (F0023+F0029); audio embedded (voice + sfx)",
+      "render_cmd": "film\\intro_v3\render.cmd",
       "video": "RENDERS:intro_v3/intro_v3.mp4",
       "stems": {
         "dx": "embedded",
         "sfx": null
       },
       "tts_windows": [],
-      "expected_duration": null
+      "expected_duration": 13.8
     },
     {
       "name": "s2a",
