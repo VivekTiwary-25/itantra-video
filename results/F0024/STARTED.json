@@ -1,0 +1,10 @@
+{
+  "id": "F0024",
+  "machine": "yojitth-pc",
+  "worker": "claude-second",
+  "time": "2026-10-04T05:00:08Z",
+  "model": "opus",
+  "effort": "medium",
+  "pid": 50096,
+  "timeout_min": 60
+}
