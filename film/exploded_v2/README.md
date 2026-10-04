@@ -6,7 +6,7 @@ HyperFrames, 1920x1080, 30 fps. Three still layers (screen / metal mid-frame wit
 | File | What it is |
 |---|---|
 | `index.html` | The composition, a pure function of t. All numbers come from `timeline.json` (via `assets/data.js`). |
-| `timeline.json` | Beat times, label times and text (spec items 24-28), layout. **Tune layout here** for the real images, no code change: `layer_px` (square box each layer is drawn in), `center`, per-layer `tight` / `exploded` offsets `[x, y, z]`, `label_x`/`label_w`, `end_center_x`. |
+| `timeline.json` | Beat times, label times and text (spec items 24-28), layout. `layer_px` sets image width; height follows the source aspect ratio. `center`, per-layer `tight` / `exploded` offsets `[x, y, z]`, `label_x`/`label_w`, and `end_center_x` control placement. |
 | `build.py` | Stages `assets/`: the layers, `data.js` (timeline + parts), the glass kit, GSAP. `--placeholders` makes placeholder layers first if the real ones are missing. |
 | `make_placeholders.py` | Grey placeholder layers + `parts_placeholder.json` (never overwrites real layers unless `--force`). |
 | `ticks.py` | One glass tick per label, at the label start times → `RENDERS:exploded_v2/ticks.wav`. |
@@ -20,7 +20,7 @@ HyperFrames, 1920x1080, 30 fps. Three still layers (screen / metal mid-frame wit
 - **14.9-16 s:** `No new hardware.` (56 px), centred below the phone.
 
 ## Swapping in the real images (F0030)
-1. Put `layer_screen.png`, `layer_mid.png`, `layer_back.png` in `RENDERS:exploded_v2/`, replacing the placeholders: same names, same square size for all three, transparent background.
+1. Put `layer_screen.png`, `layer_mid.png`, `layer_back.png` in `RENDERS:exploded_v2/`, replacing the placeholders: same names, same 1366 x 2048 portrait canvas for all three, transparent background.
 2. `results/F0030/parts.json` is picked up automatically, and the placeholder parts are then ignored. Coordinates are pixels in `layer_mid.png`. Required parts: `microphone`, `processor`, `bluetooth_chip`, `antenna`, `loudspeaker` (`battery` is optional). Accepted shapes:
    - `{"parts": {name: {...}}}` or `{name: {...}}`
    - per part: `center`/`centre` `[x, y]` and/or `bbox`/`box` (`[x, y, w, h]` or `[x0, y0, x1, y1]`), or `x,y,w,h` / `cx,cy`
