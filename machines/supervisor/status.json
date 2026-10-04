@@ -1,9 +1,9 @@
 {
-  "time": "2026-10-04T15:32:19Z",
+  "time": "2026-10-04T15:38:19Z",
   "summary": "4/5 machines reachable",
   "machines": {
-    "vivek-pc": "rate_limited \u00b7 rate-limited",
-    "yash-pc": "idle \u00b7 50 unpushed commit(s)",
+    "vivek-pc": "idle",
+    "yash-pc": "idle \u00b7 51 unpushed commit(s)",
     "utkarsh-pc": "UNREACHABLE",
     "yojitth-pc": "stopped by swarm stop",
     "yojitth-codex-pc": "stopped by swarm stop"
