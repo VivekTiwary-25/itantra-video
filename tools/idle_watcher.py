@@ -29,7 +29,8 @@ IDLE_ALERT_MIN = 10
 STALE_ALERT_MIN = 15
 REPING_MIN = 30
 LOG_MAX = 1_000_000
-NTFY_VAR = "Ntfy Topic"
+NTFY_VARS = ("Ntfy Topic", "NTFY_TOPIC")
+NTFY_VAR = NTFY_VARS[0]
 
 LOG_PATH: Path | None = None
 
@@ -177,14 +178,16 @@ def pool_ok(task: dict, worker: str, winfo: dict) -> bool:
 
 # ---------------------------------------------------------------- ntfy
 def ntfy_topic() -> str | None:
-    topic = os.environ.get(NTFY_VAR)
+    topic = next((os.environ[v] for v in NTFY_VARS if os.environ.get(v)), None)
     if not topic and sys.platform == "win32":
-        try:
-            import winreg
-            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as k:
-                topic = winreg.QueryValueEx(k, NTFY_VAR)[0]
-        except OSError:
-            topic = None
+        import winreg
+        for v in NTFY_VARS:
+            try:
+                with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as k:
+                    topic = winreg.QueryValueEx(k, v)[0]
+                break
+            except OSError:
+                topic = None
     return (topic or "").strip() or None
 
 
