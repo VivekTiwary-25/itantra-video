@@ -24,3 +24,8 @@ __pycache__/
 film/*/assets/
 film/*/snaps/
 film/*/.hyperframes/
+
+# v3: build-time assets and app-frame snapshots never go in git (spec section 0)
+film/**/assets/
+film/**/snaps*/
+!film/common/glass/

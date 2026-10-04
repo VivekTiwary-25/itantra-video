@@ -83,6 +83,7 @@ Works now / Coming next (~8 s, 3.20 and 3.21; big and readable; "Coming next" cl
 20. `WORKS NOW`: `Speech to text on the phone, English + 9 Indian languages` / `Encrypted: relays can't read it` / `6 hops over Bluetooth LE, shown on real phones` / `SOS to anyone nearby, no saved contact needed`
 21. `COMING NEXT`: `Field trials with more phones` / `SOS chat after a helper accepts`
 22. `iTantra` / `Speak. Send. Be heard.` / `Team chmod 777 · Team ID 148903` / `SIH26173 · NIE Mysuru`
+23. Map and sonar pins: `Vachana` / `Yash` / `Vivek` (added 4 Oct, lead)
 
 ## 4. Sound and music
 One restrained music bed across the film: quiet under dialogue, ducked under TTS and speech, a little more tension in SOS, rises into the cards, resolves on the closing card. Procedural/offline only. A glass-tick family for the exploded view. Existing cues from T0035 (`RENDERS:sound/`). Final loudness -16 LUFS, true peak <= -1.5 dBTP.
