@@ -13,7 +13,7 @@ import argparse, json, subprocess, sys, time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import push_files_direct  # noqa: E402
+from common import NO_WINDOW, push_files_direct  # noqa: E402
 
 LEAD = Path(__file__).resolve().parent.parent
 STATE = LEAD / "local" / "render-runner-state.json"
@@ -23,7 +23,8 @@ SEGS = {"intro", "s2a", "s2b", "s3", "exploded", "cards"}
 
 
 def sh(cmd, timeout=7200):
-    r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, encoding="utf-8", errors="replace")
+    r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, encoding="utf-8", errors="replace",
+                       creationflags=NO_WINDOW)
     return r.returncode, (r.stdout or "") + (r.stderr or "")
 
 
@@ -74,7 +75,7 @@ def run(rid, fm):
 
 
 def once(clone):
-    subprocess.run(["git", "-C", str(clone), "pull", "--ff-only", "-q"], capture_output=True, timeout=120)
+    subprocess.run(["git", "-C", str(clone), "pull", "--ff-only", "-q"], capture_output=True, timeout=120, creationflags=NO_WINDOW)
     state = json.loads(STATE.read_text()) if STATE.exists() else {"done": []}
     for f in sorted((clone / "queue" / "render").glob("*.md")):
         rid = f.stem
