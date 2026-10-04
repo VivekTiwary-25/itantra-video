@@ -37,7 +37,7 @@ REPO = Path(__file__).resolve().parents[2]
 FPS = 30
 RATE = 48000
 TARGET_I = -16.0
-TARGET_TP = -1.8          # margin for AAC; the encoded film must stay <= -1.5 dBTP
+TARGET_TP = -2.3          # margin for AAC (was -1.8; AAC overshot to -1.43 on the 4:16 film); the encoded film must stay <= -1.5 dBTP
 DIALOGUE_REF = -18.0      # MIX.md: dialogue about -18 LUFS; bed section levels assume it
 SLATE_S = 2.0
 MIN_MUSIC_SECTION = 6.0   # shorter segments (slates) are merged into a neighbour for the music cue sheet

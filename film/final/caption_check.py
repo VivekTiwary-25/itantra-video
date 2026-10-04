@@ -46,7 +46,10 @@ def transcribe(audio: Path, model_dir: Path) -> list[dict]:
     except ImportError:
         sys.exit("caption_check.py: faster-whisper is not installed (pip install faster-whisper), or pass --words")
     model = WhisperModel(str(model_dir) if model_dir.is_dir() else "medium.en", device="cpu", compute_type="int8")
-    segments, _ = model.transcribe(str(audio), language="en", word_timestamps=True, vad_filter=True,
+    import subprocess, numpy as np  # decode with ffmpeg: some PyAV versions break faster-whisper's own decoder
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(audio), "-ac", "1", "-ar", "16000", "-f", "f32le", "-"],
+                         capture_output=True, check=True).stdout
+    segments, _ = model.transcribe(np.frombuffer(raw, dtype="<f4"), language="en", word_timestamps=True, vad_filter=True,
                                    condition_on_previous_text=False)
     return [{"word": w.word.strip(), "start": round(w.start, 3), "end": round(w.end, 3)}
             for seg in segments for w in (seg.words or [])]

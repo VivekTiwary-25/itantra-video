@@ -203,8 +203,7 @@
       "text": "When Vachana speaks, her phone turns her voice into text right there. No internet.",
       "file": "RENDERS:narration/v4/N2a.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N2a.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
@@ -288,8 +287,7 @@
       "text": "The text gets locked, so only Yash can open it, and it's tiny, about 1.2 kilobytes.",
       "file": "RENDERS:narration/v4/N2b.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N2b.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
@@ -388,8 +386,7 @@
       "text": "Then it jumps from phone to phone over Bluetooth. Each phone passes it on, but none of them can read it.",
       "file": "RENDERS:narration/v4/N2c.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N2c.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
@@ -503,8 +500,7 @@
       "text": "If nobody is in range, it just waits, up to 24 hours, and moves along as people walk.",
       "file": "RENDERS:narration/v4/N2d.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N2d.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
@@ -608,8 +604,7 @@
       "text": "We have tested 6 hops on real phones.",
       "file": "RENDERS:narration/v4/N2e.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N2e.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
@@ -663,8 +658,7 @@
       "text": "Trisha, Utkarsh and Vaishnavi carry it, but they can't read it.",
       "file": "RENDERS:narration/v4/N2f.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N2f.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
@@ -888,8 +882,7 @@
       "text": "SOS doesn't need a saved contact. It just calls out to whoever is around.",
       "file": "RENDERS:narration/v4/N5a.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N5a.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
@@ -973,8 +966,7 @@
       "text": "It reaches the three strongest phones nearby first, then keeps widening, hop by hop.",
       "file": "RENDERS:narration/v4/N5b.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N5b.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
@@ -1141,8 +1133,7 @@
       "text": "Everything you just saw runs on the phone itself.",
       "file": "RENDERS:narration/v4/N7.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N7.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
@@ -1200,8 +1191,7 @@
       "text": "One speech model covers 9 Indian languages in just 697 MB. Separate models would need about 5.9 GB.",
       "file": "RENDERS:narration/v4/N7a.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N7a.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
@@ -1300,8 +1290,7 @@
       "text": "10 seconds of speech turns into text in about 1.3 seconds on an ordinary mid-range phone.",
       "file": "RENDERS:narration/v4/N7b.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N7b.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
@@ -1405,8 +1394,7 @@
       "text": "And each message is about 1.2 kilobytes, 60 to 90 times smaller than the raw recording.",
       "file": "RENDERS:narration/v4/N7c.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N7c.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
@@ -1505,8 +1493,7 @@
       "text": "No new hardware, just the phone you already have.",
       "file": "RENDERS:narration/v4/N7d.wav",
       "status": "real",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true,
+      "note": "real take (finish-mode drop cleared 5 Oct 02:20)",
       "take": "N7d.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
