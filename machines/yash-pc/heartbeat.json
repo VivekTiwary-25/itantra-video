@@ -1,8 +1,8 @@
 {
   "machine": "yash-pc",
-  "time": "2026-10-04T17:33:25Z",
-  "status": "idle",
-  "current_task": null,
+  "time": "2026-10-04T17:33:37Z",
+  "status": "busy",
+  "current_task": "F0062r1",
   "workers": [
     "codex-f1"
   ],
@@ -11,6 +11,6 @@
   "listener_pid": 26120,
   "last_task_usage": null,
   "codex_rate_limits": null,
-  "unpushed_commits": 1,
-  "last_push_ok": "2026-10-04T10:46:38Z"
+  "unpushed_commits": 0,
+  "last_push_ok": "2026-10-04T17:33:37Z"
 }
