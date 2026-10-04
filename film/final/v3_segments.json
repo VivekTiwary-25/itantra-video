@@ -6,7 +6,7 @@
       "name": "intro",
       "folder": "film/intro_v3/",
       "status": "built (F0023+F0029); audio embedded (voice + sfx)",
-      "render_cmd": "film\\intro_v3\render.cmd",
+      "render_cmd": "film/intro_v3/render.cmd",
       "video": "RENDERS:intro_v3/intro_v3.mp4",
       "stems": {
         "dx": "embedded",
