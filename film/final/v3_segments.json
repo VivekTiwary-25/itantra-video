@@ -69,6 +69,19 @@
       "expected_duration": 51.4
     },
     {
+      "name": "exploded",
+      "folder": "film/exploded_v2",
+      "status": "exploded v2 photoreal teardown (F0030/F0034 layers, F0031+F0032r1)",
+      "render_cmd": "film/exploded_v2/render.cmd",
+      "video": "RENDERS:exploded_v2/exploded_v2.mp4",
+      "stems": {
+        "dx": null,
+        "sfx": "RENDERS:exploded_v2/ticks.wav"
+      },
+      "tts_windows": [],
+      "expected_duration": 16.0
+    },
+    {
       "name": "cards",
       "folder": "film/cards_v3/",
       "status": "built; render.cmd renders the picture (no audio); cards_sfx.py writes the tick stem",
