@@ -133,7 +133,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N2a.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     },
     "N2b": {
       "segment": "s2b",
@@ -142,7 +143,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N2b.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     },
     "N2c": {
       "segment": "s2b",
@@ -151,7 +153,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N2c.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     },
     "N2d": {
       "segment": "s2b",
@@ -160,7 +163,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N2d.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     },
     "N2e": {
       "segment": "s2b",
@@ -169,7 +173,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N2e.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     },
     "N2f": {
       "segment": "s2b",
@@ -178,7 +183,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N2f.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     },
     "N3": {
       "segment": "s2b",
@@ -301,7 +307,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N5a.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     },
     "N5b": {
       "segment": "s3",
@@ -310,7 +317,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N5b.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     },
     "N6": {
       "segment": "s3",
@@ -411,7 +419,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N7.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     },
     "N7a": {
       "segment": "s4",
@@ -420,7 +429,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N7a.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     },
     "N7b": {
       "segment": "s4",
@@ -429,7 +439,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N7b.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     },
     "N7c": {
       "segment": "s4",
@@ -438,7 +449,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N7c.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     },
     "N7d": {
       "segment": "s4",
@@ -447,7 +459,8 @@
       "text": "",
       "file": "RENDERS:narration/v4/N7d.wav",
       "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true
     }
   }
 }

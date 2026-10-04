@@ -508,8 +508,10 @@ def main():
     if args.page_only:
         preview_narration_placeholders()
     if not args.page_only:
+        preview_narration_placeholders()  # silent wavs for lines dropped in finish mode
         placeholders = [key for key in ("N5", "N5a", "N5b", "N6")
-                        if narration_lines()[key].get("status") == "placeholder"]
+                        if narration_lines()[key].get("status") == "placeholder"
+                        and not narration_lines()[key].get("dropped")]
         if placeholders:
             sys.exit("production render needs final narration: " + ", ".join(placeholders))
         required_audio = [RENDERS / "tts_itantra/tts_sos.wav"]
