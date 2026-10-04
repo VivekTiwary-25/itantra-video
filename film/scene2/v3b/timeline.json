@@ -1,21 +1,100 @@
 {
   "fps": 30,
-  "duration": 32.4,
   "segments": [
-    {"name":"push_in","start":0,"end":1.4},
-    {"name":"sonar_a","start":1.4,"end":8.4},
-    {"name":"relay_1","start":8.4,"end":14.4},
-    {"name":"relay_2","start":14.4,"end":20.4},
-    {"name":"relay_3","start":20.4,"end":26.4},
-    {"name":"sonar_b","start":26.4,"end":32.4},
-    {"name":"to_sos","start":30.9,"end":32.4,"over":"sonar_b"}
+    {
+      "name": "push_in",
+      "start": 0,
+      "end": 1.4
+    },
+    {
+      "name": "sonar_a",
+      "start": 1.4,
+      "end": 8.4
+    },
+    {
+      "name": "sonar_loop",
+      "start": 8.4,
+      "end": 27.9
+    },
+    {
+      "name": "relay_1",
+      "start": 27.9,
+      "end": 33.9
+    },
+    {
+      "name": "relay_2",
+      "start": 33.9,
+      "end": 39.9
+    },
+    {
+      "name": "relay_3",
+      "start": 39.9,
+      "end": 45.9
+    },
+    {
+      "name": "sonar_b",
+      "start": 45.9,
+      "end": 51.9
+    },
+    {
+      "name": "to_sos",
+      "start": 50.4,
+      "end": 51.9
+    }
   ],
-  "narration_starts":{"N2":1.4,"N3":30.4},
-  "tech_lines":[
-    {"start":4.45,"end":7.5,"text":"Speech becomes text on the phone"},
-    {"start":9.1,"end":12.7,"text":"Encrypted: relays can't read it"},
-    {"start":26.85,"end":30.15,"text":"Hops phone to phone over Bluetooth LE","small":"6 hops shown on real phones"}
+  "narration_starts": {
+    "N2": 1.4,
+    "N2a": 8.4,
+    "N2b": 12.3,
+    "N2c": 16.2,
+    "N2d": 20.1,
+    "N2e": 24.5,
+    "N2f": 27.9,
+    "N3": 48.7
+  },
+  "beats": [
+    {
+      "id": "N2a",
+      "start": 8.4,
+      "end": 12.3
+    },
+    {
+      "id": "N2b",
+      "start": 12.3,
+      "end": 16.2
+    },
+    {
+      "id": "N2c",
+      "start": 16.2,
+      "end": 20.1
+    },
+    {
+      "id": "N2d",
+      "start": 20.1,
+      "end": 24.5
+    },
+    {
+      "id": "N2e",
+      "start": 24.5,
+      "end": 27.9
+    }
   ],
-  "start_state":{"field":"#0a0d12","screen_height":1000,"phone_center":[960,540],"slot":"RENDERS:scene2/app/yash_app.mp4","slot_time":11.724,"derivation":"play_at 7.63 + TTS delay 0.15 + TTS duration 3.343673 + 0.6"},
-  "end_state":{"card":"SOS: help from anyone nearby","class":"glass-card full sos","color":"--red"}
+  "start_state": {
+    "field": "#0a0d12",
+    "screen_height": 1000,
+    "phone_center": [
+      960,
+      540
+    ],
+    "slot": "RENDERS:scene2/app/yash_app.mp4",
+    "slot_time": 11.723,
+    "derivation": "s2a end_state.slot_time 11.69 + 1/30 (read at build)"
+  },
+  "end_state": {
+    "card_html": "<div class=\"glass-card full\"><h1 class=\"card-title\"><span style=\"color:var(--red)\">SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div>",
+    "class": "glass-card full",
+    "title": "SOS",
+    "subline": "help from anyone nearby, no saved contact needed"
+  },
+  "duration": 51.9
 }
