@@ -1,0 +1,145 @@
+iTantra current final cut: team notes review (nothing was changed)
+Film: 3:21.9, 1080p master. All times are film time (m:ss.s).
+Re-render note: every fix below needs a re-render on utkarsh-pc and a re-assembly (about 15 min). utkarsh-pc has been unreachable since about 21:30 local
+(last heartbeat 20:58 local), so none of the fixes can start until it is back or another render machine is used.
+Render time per segment: intro 11 min, s2a 9 min, s3 9 min, s4 4.5 min. The "fix time" below is my editing time plus the render and assembly.
+
+=====================================================================
+1. 0:06  Which transition is it?
+=====================================================================
+ON SCREEN: Up to 0:06.7, Vachana stands on the garden steps holding her phone. A glass name card on the right reads "Vachana / Team chmod 777 /
+Problem statement SIH26173", with the caption "ISRO's problem statement, SIH26173." At 0:06.84 the picture jumps to a different shot of her in front of a
+green hedge. The name card is gone and a glass panel with a phone showing the iTantra app appears on the right. The caption is now "But what does that mean?"
+CAUSE: A hard cut at exactly 6.842 s from the opening camera clip to the explain camera clip. Her new line starts at about 6.96 s. Nothing blends the two
+shots, and the panel content changes on the same frame, so the left side, the background and the right panel all change at once. The intro code switches the
+two clips with a plain show/hide (opening-camera until the cut, explain-camera after it).
+FIX: Add a 0.35 to 0.4 s cross-dissolve inside the natural pause (about 6.5 to 6.95 s), and morph the name card into the phone panel instead of swapping it.
+The explain source clip has about 0.3 s of footage before the cut point, so both shots can overlap. Alternative: a short push-in or whip on both shots.
+FIX TIME: about 15 min to edit and test, 11 min intro render, 15 min assembly: about 40 to 45 min.
+
+=====================================================================
+2. Phone status bars (hotspot "devices" pill): every place a status bar is visible
+=====================================================================
+I scanned the whole film for the blue hotspot pill icon and checked the hits by eye. The pill is in these places:
+  a) 0:06.8 to about 0:31.3  INTRO, both phone mock-ups. Status bar "11:56 [pill: 1 device]". Starts right after the cut in note 1. The scan sees the pill
+     at 0:06.8-0:08.5 and 0:15.8-0:31; the phone is just smaller in between.
+  b) 1:01.6 to 1:14.8  s2a, Yash's phone recording. "3:52 [pill: 2 devices]". An iTantra notification banner is on screen at about 1:03 to 1:05.
+  c) 2:55.0 to 3:07.8  s4, the turntable phone and the second phone. "11:56 [pill: 1 device]" (same home-screen image as the intro).
+Status bars visible WITHOUT the pill (still cluttered with notification icons, a red screen-recording icon, a Bluetooth icon and a battery):
+  d) 2:06.4 to 2:19.3  s3, Vachana's SOS recording. Clock 5:06 / 5:07. This includes 2:16: the pill is NOT there, but the status bar is busy.
+  e) 2:33.4 to 2:53.6  s3, Vivek's recording. Clock 5:20, including the "SOS . Vachana" notification banner at 2:35 to 2:37.
+Not visible: Vachana's recording in s2a (0:37 to 0:50). The status bar is cropped off at the source, so it starts at the iTantra title.
+Also note the clocks disagree (11:56, 3:52, 5:06, 5:20), which a careful viewer may notice.
+CAUSE: The intro and s4 reuse one home-screen screenshot with the status bar included. The s2a Yash and s3 recordings are raw screen recordings with their
+status bars. Only Vachana's s2a recording was trimmed to hide it.
+FIX: (1) Clean the home-screen image once (paint out the status bar), which fixes the intro and s4. (2) For the three recordings (Yash, Vachana SOS, Vivek),
+cover the status strip with a solid bar in the app's own background colour on the phone layer, the same look as Vachana's s2a recording. This is a mask, not a
+zoom or crop, so the "no zoom on app recordings" rule is kept. The red banner at 2:35 would also be hidden.
+FIX TIME: about 30 min to edit and test, then renders of intro, s2a, s3 and s4 (about 34 min) and 15 min assembly: about 1 h 20 min total.
+
+=====================================================================
+3. 2:29  The pulse should come only from Vachana. What else is pulsing?
+=====================================================================
+ON SCREEN (2:29.0): Dark wireframe map. "Vachana" has a white dot with a red ring. Seven nearby phone dots, five of them lit red, and "Vivek" with an Accept
+chip below him. A SECOND, LARGE RED RING is drawn on the far right, around one of the nearby red dots (not around Vachana). Caption: "iTantra searches nearby
+for help. If someone accepts, they can hear the SOS and then reply."
+CAUSE: The map draws two expanding rings. Ring 1 always comes from Vachana. Ring 2 is moved on purpose to a nearby phone's dot once the "hops" stage starts:
+first one dot, then another (the code switches its source when the timer reaches the 25 s and 60 s labels). That second ring is the one on the right.
+The lit dots are static red glows, not pulsing.
+FIX: Keep both rings centred on Vachana (offset in time so it still loops smoothly) and remove the re-sourcing of ring 2. The hop idea is already carried by the
+"2 hops at 25 s / 3 hops at 60 s" labels. About 10 minutes to edit, then s3 render (9 min) and assembly (15 min): about 35 min.
+
+=====================================================================
+4. 2:30  The Accept button should be green. Sonar graphic or the real app?
+=====================================================================
+ON SCREEN (2:29.0 to 2:30.4): the SONAR GRAPHIC chip, in our own map render. A small pill under "Vivek" reads "Accept  Decline". From about 2:28.4 "Accept"
+is filled red-pink with dark text.
+CAUSE: The chip's active state is hard-coded red (#ff4d5e) in the s3 map style, because the film rule was "red = SOS accent".
+The REAL APP recording is separate and comes later: the Android notification at 2:35 to 2:36.5 shows grey system buttons "Accept" and "Decline", and a
+white tap ring appears on Accept at about 2:36.5. Those are Android's own grey buttons, not our colour.
+FIX: In the graphic, change the active chip to green (one CSS colour) and keep the text legible. Note this adds green, a colour that was not in the film's palette
+(blue = Normal, red = SOS, gold = Bluetooth). I would confirm that is wanted. The real notification cannot be changed without a new recording; the green chip
+only affects the graphic. About 5 minutes to edit, then the s3 render (9 min) and assembly (15 min): about 30 min. This can be done together with note 3.
+
+=====================================================================
+5. 2:54  A 2 to 3 s freeze: what is frozen? Plus every other freeze over 0.5 s
+=====================================================================
+ON SCREEN: What you see as a freeze is at 2:50.8 to 2:53.3 (2.5 s). It is Vivek's app "New message" screen showing his typed reply "Wait, I'm in the chemistry lab.
+I'll come get you, wait.", with the red Send button, completely still. Just before it, 2:49.4 to 2:50.7 (1.3 s), the screen with the transcribing mic button is nearly still.
+At 2:53.6 the film cuts to scene 4, and the live lab camera is moving from there, so 2:54 itself is not frozen.
+CAUSE: The screen recording has idle time. Vivek's spoken reply ends at 2:49.4 and the text is on screen by 2:50.8, but he taps Send only at 2:53.2, about 2.4 s later.
+The scene deliberately ends 0.4 s after the Send tap, so the idle stretch stays in.
+FIX: Trim about 2 s of the idle stretch from the recording (allowed under the rule: trim idle, never speed up) and keep the Send tap sound in sync. The film gets about
+2 s shorter. About 25 min to edit (the Send sound and camera timings must be re-fitted), s3 render 9 min, assembly 15 min: about 50 min.
+
+ALL FREEZES OVER 0.5 s (from the QC, 34 stretches). None is live camera. I viewed sample frames from the stretches in every segment:
+  INTRO
+   0:32.0-0:32.6 (0.6 s)   "How the app works" glass title card dropping in.
+  s2a
+   0:43.7-0:46.1 (2.4 s), 0:46.3-0:47.6 (1.3 s), 0:47.7-0:49.3 (1.6 s)   Vachana's app alone on dark: transcribing, then "New message" with the contact list.
+   0:56.3-0:58.4 (2.1 s)   Campus overhead map, "~300 m, walking distance".
+   1:03.7-1:04.3 (0.6 s), 1:04.4-1:05.0 (0.6 s)   Yash's phone: Vachana's message screen.
+   1:13.3-1:14.2 (1.0 s)   Yash's phone: "Sent to Vachana" check screen.
+  s2b (sonar map while the labels play; the map is still between label animations)
+   1:24.4-1:25.0, 1:26.5-1:27.1, 1:27.4-1:27.9, 1:28.4-1:29.1, 1:29.1-1:30.5 (1.4 s), 1:30.9-1:32.1 (1.2 s), 1:32.1-1:32.9, 1:33.5-1:35.3 (1.8 s)
+  s3
+   1:59.6-2:02.3 (2.7 s) and 2:02.3-2:03.1 (0.8 s)   SOS title card with the N5 caption.
+   2:14.2-2:15.8, 2:16.0-2:18.0, 2:18.6-2:19.3   Vachana's app: typed message, SOS (red) screen, "SOS sent" check.
+   2:34.1-2:36.2, 2:36.9-2:38.6, 2:38.9-2:41.0, 2:42.3-2:43.2, 2:43.2-2:44.3   Vivek's app: notification, Logs list, Vachana's SOS message, play-audio screen.
+   2:49.4-2:50.7 and 2:50.8-2:53.3   Vivek's app, as described above.
+  s4
+   2:56.2-2:56.7 and 2:56.7-2:57.3 (about 1.1 s together)   The 3D phone on the turntable is almost motionless before the teardown starts.
+  CARDS (allowed graphic holds)
+   3:10.3-3:11.6, 3:11.6-3:13.0, 3:13.0-3:14.4, 3:14.4-3:15.9   "Works now / Coming next" card between bullet reveals.
+The ones I would look at hardest are the s3 app screens at 2:34 to 2:44 (about 8 s of nearly still app UI in total) and the s4 phone at 2:56.
+The s3 holds are the same kind of idle recording time as the one in this note.
+
+=====================================================================
+6. On-screen text with no narration
+=====================================================================
+Durations are the time the text is on screen, including its short fades. Times come from the build files and frames I checked.
+
+0:34 (range 0:33.9 to 0:36.9)
+  0:33.9-0:36.9 (3.0 s)  Title "Normal" with the line "a private message to someone you trust" (glass card over the bench shot).
+  Nothing else in this range.
+
+1:22 to 1:52 (the sonar explanation and the three relay clips)
+  1:22.0-1:35.6 (whole time)  Pin labels "Vachana" and "Yash" on the map (small white labels).
+  1:23.1-1:25.6 (2.5 s)  "Speech to text on the phone, without internet"
+  1:23.98-1:26.45 (2.5 s)  "Hey dude, I'm in the campus near the entry benches, where are you?" (message pill; from 1:25.6 it shrinks into a capsule)
+  1:25.6-1:28.1 (2.5 s)  "Sealed for Yash only" with the small line "Google Tink"
+  1:26.7-1:28.1 (1.4 s)  "~1.2 KB"
+  1:28.1-1:30.6 (2.5 s)  "Bluetooth LE, encrypted at every hop" ("Bluetooth LE" in gold)
+  1:30.6-1:33.1 (2.5 s)  "Waits up to 24 h and moves as people walk"
+  1:33.1-1:35.6 (2.5 s)  "6 hops, tested on real phones"
+  1:33.1-1:35.6 (2.5 s total)  hop counter "1" "2" "3" "4" "5" "6", each digit about 0.4 s
+  1:35.6-1:41.6 (6.0 s)  Name label "Trisha" (relay clip 1)
+  1:38.6-1:41.0 (2.4 s)  "Her phone passes the message on." / "She just keeps walking."
+  1:41.6-1:47.6 (6.0 s)  Name label "Utkarsh" (relay clip 2)
+  1:44.6-1:47.0 (2.4 s)  "His phone relays it in the background." / "His call carries on."
+  1:47.6-1:53.6 (6.0 s)  Name label "Vaishnavi" (relay clip 3)
+  1:50.6-1:53.0 (2.4 s)  "Her phone hands it forward." / "She keeps going."
+  (The pin names "Vachana" and "Yash" also appear on the map shots between the relay clips.)
+  Note: the relay captions at 1:38.6, 1:44.6 and 1:50.6 read like narration and are baked into the relay clips. They show for 2.4 s each (1.8 s fully visible).
+
+3:03 to 3:20 (scene 4 end and the cards)
+  3:02.7-3:04.7 (2.0 s)  "~1.2 KB, 60 to 90× smaller than raw voice" (above the two phones)
+  3:05.0-3:07.9 (2.9 s)  "No new hardware."
+  3:08.0-3:15.9 (7.9 s)  Card "WORKS NOW", with bullets appearing one by one:
+      3:08.2  "Speech to text on the phone, English + 9 Indian languages" (on screen about 7.7 s)
+      3:08.7  "Encrypted: relays can't read it" (about 7.2 s)
+      3:09.2  "6 hops over Bluetooth LE, shown on real phones" (about 6.7 s)
+      3:09.7  "SOS to anyone nearby, no saved contact needed" (about 6.2 s)
+      3:09.95 "COMING NEXT" with "Field trials with more phones" and "SOS chat after a helper accepts" (about 5.9 s)
+  3:16.0-3:21.9 (about 5.9 s, fades to black from 3:20.9)  Closing card:
+      "iTantra" / "Speak. Send. Be heard." / "Team chmod 777 · Team ID 148903" / "SIH26173 · NIE Mysuru"
+  Within 3:03 to 3:20 the "WORKS NOW" card is on screen for 7.9 s and the closing card for 4.0 s, with no voice at all.
+Wording check on the card "Works now" bullet 3: it says "6 hops over Bluetooth LE, shown on real phones". Matches the spec text.
+
+=====================================================================
+SUMMARY OF FIXES AND ORDER
+=====================================================================
+  Group A (intro only): note 1 (transition) and the intro part of note 2. Intro render 11 min.
+  Group B (s3 only): notes 3, 4, 5 and the s3 part of note 2. One s3 render 9 min. Together about 1 h of editing.
+  Group C: s2a (Yash status bar) and s4 (home-screen image).
+  Doing everything in one pass: about 1 h 45 min editing and about 40 min of renders, then 15 min assembly. Nothing starts until utkarsh-pc is back.

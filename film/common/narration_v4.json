@@ -2,6 +2,15 @@
   "_note": "Film v4 narration (Vivek re-recording all lines). status placeholder = estimated duration, silent wav; the lead replaces with real takes (prep.py) and fills duration + text. Compositions read duration at build time and stretch their beats; never cut a line.",
   "dir": "RENDERS:narration/v4",
   "lines": {
+    "N0": {
+      "segment": "s2a",
+      "beat": "over the Normal card",
+      "duration": 4.2,
+      "text": "First, a normal message. It's private, just for someone you trust.",
+      "script": "First, a normal message. It's private, just for someone you trust.",
+      "file": "RENDERS:narration/v4/N0.wav",
+      "status": "placeholder"
+    },
     "N1": {
       "segment": "s2a",
       "beat": "walk",
@@ -461,6 +470,24 @@
       "status": "placeholder",
       "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
       "dropped": true
+    },
+    "N8": {
+      "segment": "cards",
+      "beat": "over Works now / Coming next",
+      "duration": 3.4,
+      "text": "Here's what works today, and what we're building next.",
+      "script": "Here's what works today, and what we're building next.",
+      "file": "RENDERS:narration/v4/N8.wav",
+      "status": "placeholder"
+    },
+    "N9": {
+      "segment": "cards",
+      "beat": "over the closing card",
+      "duration": 2.6,
+      "text": "iTantra. Speak. Send. Be heard.",
+      "script": "iTantra. Speak. Send. Be heard.",
+      "file": "RENDERS:narration/v4/N9.wav",
+      "status": "placeholder"
     }
   }
 }
