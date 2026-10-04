@@ -1,0 +1,3 @@
+F0040 could not be completed. The required word timings, faster-whisper model, and RNNoise models are missing. I recorded the blocker and cross-correlation results in [REPORT.md](/<REPO>/results/F0040/REPORT.md). The matching camera clip is `20261002_072612_long_intro_2.mp4`.
+
+**TLDR:** No intro rebuild or previews were produced. Please provide the word-timing JSON and both RNNoise models, or the faster-whisper model and both RNNoise models, for a new task.
