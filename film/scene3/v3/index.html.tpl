@@ -23,6 +23,7 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12
 .screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#101820}
 .accept-tap-ring{position:absolute;left:8%;top:14.35%;width:17.5%;height:4%;border:3px solid rgba(255,255,255,.95);border-radius:999px;box-shadow:0 0 0 5px rgba(255,255,255,.14);opacity:0;pointer-events:none}
 #techline-layer,#caption-layer{position:absolute;inset:0;pointer-events:none;z-index:20}
+#join-darken{position:absolute;inset:0;z-index:30;pointer-events:none;background:#05070a;opacity:0}
 #techline{display:none}
 #caption{display:none}
 </style></head>
@@ -30,6 +31,7 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12
 {{LAYERS}}
 <div id="techline-layer"><div class="techline" id="techline"></div></div>
 <div id="caption-layer"><div class="caption" id="caption"></div></div>
+<div id="join-darken"></div>
 </div>
 <script>
 const T={{TIMELINE}},CAPTIONS={{CAPTIONS}},rows=T.segments;
@@ -42,6 +44,7 @@ function takeover(field,camera,amount){
   if(camera){camera.style.transform=`translateX(${-1232*f}px)`;camera.style.opacity=1-f;}
 }
 function render(t){
+  document.getElementById('join-darken').style.opacity=ease(clamp((t-(T.duration-.3))/(.3-1/30)));
   document.querySelectorAll('.scene').forEach(el=>el.style.display='none');
   for(const [id,name] of [['vachana-field','vachana_sos'],['vivek-field','vivek_app']]){
     const field=document.getElementById(id),parent=document.getElementById('seg_'+name);
@@ -62,6 +65,7 @@ function render(t){
   ce.style.maxWidth=phoneCentered?'640px':phoneSplit?'1020px':'1560px';
   if(r.name==='card_out'){
     const f=ease(clamp(st/1.6)),card=document.getElementById('sos-card');
+    e.querySelector('.card-red').style.opacity=.68*(1-ease(clamp((st-.1)/.7)))+.04*ease(clamp((st-.1)/.7));
     card.style.transform=`scale(${1-.78*f})`;
     card.style.opacity=1-clamp((st-.9)/.7);
   }

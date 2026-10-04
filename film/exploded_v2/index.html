@@ -46,6 +46,7 @@
     letter-spacing: -.015em; opacity: 0; text-shadow: 0 2px 18px rgba(0,0,0,.8); }
   #vignette { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 200px 70px rgba(0,0,0,.6); }
   #ph { position: absolute; right: 24px; top: 18px; font-size: 20px; color: rgba(255,255,255,.78); }
+  #join-fade { position: absolute; inset: 0; z-index: 20; pointer-events: none; background: #05070a; opacity: .985; }
 </style>
 </head>
 <body>
@@ -61,6 +62,7 @@
   <div id="labels"></div>
   <div id="endline"></div>
   <div id="vignette"></div>
+  <div id="join-fade"></div>
 </main>
 <script>
 // Pure function of t: no clock, no randomness. All numbers come from timeline.json (via assets/data.js).
@@ -124,6 +126,7 @@ function offsets(name, t) {
 }
 
 function draw(t) {
+  document.getElementById('join-fade').style.opacity = (.985 * (1 - smooth(t / .4))).toFixed(4);
   // background sonar rings, very faint, around the phone
   const shut = inOut((t - T.close[0]) / (T.close[1] - T.close[0]));
   const cx = lerp(LAY.center[0], LAY.end_center_x ?? LAY.center[0], shut), cy = LAY.center[1];
