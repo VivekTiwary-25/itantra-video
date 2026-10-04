@@ -13,4 +13,4 @@ Source: the team-notes review of `FINAL/iTantra_SIH26173_chmod777_1080p_REVIEW.m
    - While narration plays over the relay clips (s2b, N2f), hide their baked-in captions ("Her phone passes the message on..." etc.) so they don't collide with the narration captions.
    - Every narrated beat stretches to its take + 0.4 s (reads `duration` from the manifest at build). This also holds each scene 4 number label at least 2.5 s.
    - Stand-in wavs exist for every line (silence for new lines) so production builds run now; the real takes replace them automatically (render runner on vivek-pc runs `film/narration/prep_v4.py`).
-7. Rendering on utkarsh-pc (yash-pc fallback). Final: 1080p master + 2560x1440 lanczos upscale, into `D:\projects\SIH\Presentation\FINAL\` with a README (the lead does this).
+7. Rendering on utkarsh-pc (yash-pc fallback). Final: 1080p master ONLY (Vivek, 22:40: no 1440p upscale), into `D:\projects\SIH\Presentation\FINAL\` with a README (the lead does this).
