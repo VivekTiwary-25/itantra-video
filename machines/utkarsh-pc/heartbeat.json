@@ -1,7 +1,7 @@
 {
   "machine": "utkarsh-pc",
-  "time": "2026-10-04T05:39:56Z",
-  "status": "restarting",
+  "time": "2026-10-04T05:43:27Z",
+  "status": "idle",
   "current_task": null,
   "workers": [
     "codex-f2"
@@ -10,9 +10,9 @@
     "codex-f2": "2026-10-04T08:11:00+00:00"
   },
   "paused_by_safety_check": null,
-  "listener_pid": 1432,
+  "listener_pid": 25372,
   "last_task_usage": null,
   "codex_rate_limits": null,
-  "unpushed_commits": 0,
+  "unpushed_commits": 1,
   "last_push_ok": "2026-10-04T05:37:07Z"
 }
