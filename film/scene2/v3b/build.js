@@ -73,6 +73,7 @@ function main() {
     const n=order[i];stageVideo(n,path.join(sonarDir,`${n}.mp4`),durations[i],'1920x1080');
     stageSound(`${n}_sfx`,path.join(sfxDir,n,'assets',`${n}_sfx.wav`));
   }
+  run('ffmpeg',['-v','error','-y','-ss','2.5','-i',path.join(ASSETS,'sonar_a.mp4'),'-frames:v','1','-q:v','3',path.join(ASSETS,'sonar_open.jpg')]);
   for (const n of ['N2','N3']) {
     const cfg=JSON.parse(fs.readFileSync(path.join(REPO,'film/common/narration.json'),'utf8'));
     const src=cfg.voice==='vivek' ? path.join(RENDERS,'narration','vivek',`${n}.wav`)
@@ -89,13 +90,15 @@ function main() {
     verified(out,T.duration);
   }
   if (preview) {
-    const out=path.join(REPO,'results','F0009','preview');fs.mkdirSync(out,{recursive:true});
+    const out=path.join(REPO,'results','F0017','preview');fs.mkdirSync(out,{recursive:true});
     const times=[0,.7,1.4,5.2,10.5,17,27.8,29.2,31.4,32.367];
-    const tmp=path.join(RENDERS,'scene2','v3b','snapshots');fs.mkdirSync(tmp,{recursive:true});
+    const tmp=path.join(REPO,'results','F0017','snapshots');fs.mkdirSync(tmp,{recursive:true});
     run('hyperframes.cmd',['snapshot','--at',times.join(','),'--no-end','-o',tmp],HERE);
     const pngs=fs.readdirSync(tmp).filter(x=>x.endsWith('.png')).sort();
     if (pngs.length!==times.length) throw Error(`Expected ${times.length} snapshots, got ${pngs.length}: ${pngs}`);
     for (let i=0;i<pngs.length;i++) run('ffmpeg',['-v','error','-y','-i',path.join(tmp,pngs[i]),'-vf','scale=960:-2','-q:v','3',path.join(out,`${String(i).padStart(2,'0')}-${String(times[i]).replace('.','p')}s.jpg`)]);
+    run('python',['-c',`from PIL import Image\nfrom pathlib import Path\np=Path(__import__('sys').argv[1]); frames=[Image.open(f).convert('RGB').resize((480,270),Image.Resampling.LANCZOS) for f in sorted(p.glob('[0-9][0-9]-*s.jpg'))]; sheet=Image.new('RGB',(480,270*len(frames))); [sheet.paste(frame,(0,i*270)) for i,frame in enumerate(frames)]; sheet.save(p/'phone-review.jpg',quality=90,optimize=True)`,out]);
+    fs.rmSync(tmp,{recursive:true,force:true});
   }
   console.log(JSON.stringify({duration:T.duration,slot_time:slotTime,placeholder_assets:missing,checked:true,preview}));
 }

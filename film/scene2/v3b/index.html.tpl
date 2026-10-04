@@ -10,6 +10,7 @@
 #phone video,#phone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 #phone img{z-index:1}#phone video{z-index:2}#phoneDark{position:absolute;inset:0;background:#050910;z-index:3;opacity:0}
 #sonar video{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover}
+#sonarOpen{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover}
 #sonarFade{position:absolute;inset:0;background:#050910;pointer-events:none}
 #redTint{position:absolute;inset:0;background:radial-gradient(circle at 55% 48%,rgba(255,77,94,.46),rgba(116,20,38,.72));opacity:0;pointer-events:none}
 #frost{position:absolute;inset:0;background:rgba(14,18,26,.12);backdrop-filter:blur(0px) saturate(1.4);opacity:0;pointer-events:none}
@@ -24,6 +25,7 @@
 <div id="root" data-composition-id="scene2_v3b" data-start="0" data-duration="32.4" data-width="1920" data-height="1080">
   <div id="push"><div id="phone"><img src="assets/yash_slot.jpg" alt=""><video id="yashSlot" class="clip" src="assets/yash_app.mp4" data-start="0" data-duration="1.4" data-media-start="11.724" muted playsinline></video><div id="phoneDark"></div></div></div>
   <div id="sonar">
+    <img id="sonarOpen" src="assets/sonar_open.jpg" alt="">
     <video id="sonar_a" class="clip" src="assets/sonar_a.mp4" data-start="1.4" data-duration="7" data-media-start="0" muted playsinline></video>
     <video id="relay_1" class="clip" src="assets/relay_1.mp4" data-start="8.4" data-duration="6" data-media-start="0" muted playsinline></video>
     <video id="relay_2" class="clip" src="assets/relay_2.mp4" data-start="14.4" data-duration="6" data-media-start="0" muted playsinline></video>
@@ -31,7 +33,7 @@
     <video id="sonar_b" class="clip" src="assets/sonar_b.mp4" data-start="26.4" data-duration="6" data-media-start="0" muted playsinline></video>
     <div id="sonarFade"></div><div id="redTint"></div><div id="frost"></div>
   </div>
-  <div id="sos"><div class="glass-card full"><h1 class="card-title">SOS: help from anyone nearby</h1></div></div>
+  <div id="sos"><div class="glass-card full sos"><h1 class="card-title">SOS: help from anyone nearby</h1></div></div>
   <div id="lines"><div class="techline">Speech becomes text on the phone</div><div class="techline">Encrypted: relays can't read it</div><div class="techline">Hops phone to phone over Bluetooth LE<small>6 hops shown on real phones</small></div></div>
   <div id="captions"></div>
   <audio id="narrationN2" class="clip" src="assets/N2.wav" data-start="1.4" data-duration="3.35"></audio>
@@ -61,6 +63,10 @@ function render(t){
   for(const n of ['sonar_a','relay_1','relay_2','relay_3','sonar_b']){
     const s=by[n],e=id(n);e.style.display=t>=s.start&&t<s.end?'block':'none';
   }
+  const open=id('sonarOpen');
+  open.style.display=t>=1.4&&t<4.2?'block':'none';
+  open.style.transform=`scale(${(1.06-.06*smooth((t-1.4)/2.8)).toFixed(4)})`;
+  id('sonar_a').style.opacity=smooth((t-3.3)/.9).toFixed(3);
   if(t>=32.4)id('sonar_b').style.display='block';
   // The tint, blur and tiny scale motion carry the last moving sonar image into a frosted SOS field.
   const out=smooth((t-30.9)/1.5);

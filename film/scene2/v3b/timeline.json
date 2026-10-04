@@ -17,5 +17,5 @@
     {"start":26.85,"end":30.15,"text":"Hops phone to phone over Bluetooth LE","small":"6 hops shown on real phones"}
   ],
   "start_state":{"field":"#0a0d12","screen_height":1000,"phone_center":[960,540],"slot":"RENDERS:scene2/app/yash_app.mp4","slot_time":11.724,"derivation":"play_at 7.63 + TTS delay 0.15 + TTS duration 3.343673 + 0.6"},
-  "end_state":{"card":"SOS: help from anyone nearby","class":"glass-card full","color":"--red"}
+  "end_state":{"card":"SOS: help from anyone nearby","class":"glass-card full sos","color":"--red"}
 }
