@@ -1,0 +1,152 @@
+{
+  "video": "full_film_v3.mp4",
+  "mode": "v3",
+  "status": "REVIEW",
+  "media": {
+    "video_duration": 60.0,
+    "audio_duration": 60.0,
+    "frames_decoded": 1800
+  },
+  "freezes": [
+    {
+      "start": 14.0,
+      "end": 15.067,
+      "duration": 1.067,
+      "segment": "s2a",
+      "segment_start": 4.0,
+      "segment_end": 5.067
+    }
+  ],
+  "picture": {
+    "decoded_frames": 1800,
+    "black": [],
+    "frozen": [
+      {
+        "start": 14.0,
+        "end": 15.067,
+        "duration": 1.067
+      }
+    ],
+    "flat": [],
+    "vfr_ratio": 0.0,
+    "vfr_changed_frames": 0
+  },
+  "loudness": {
+    "integrated_lufs": -16.01,
+    "true_peak_dbtp": -3.9,
+    "windows_10s": [
+      {
+        "start": 0,
+        "end": 10,
+        "median_short_term_lufs": -16.1,
+        "min_short_term_lufs": -16.2,
+        "max_short_term_lufs": -15.9
+      },
+      {
+        "start": 10,
+        "end": 20,
+        "median_short_term_lufs": -15.9,
+        "min_short_term_lufs": -16.1,
+        "max_short_term_lufs": -14.2
+      },
+      {
+        "start": 20,
+        "end": 30,
+        "median_short_term_lufs": -15.8,
+        "min_short_term_lufs": -16.1,
+        "max_short_term_lufs": -14.3
+      },
+      {
+        "start": 30,
+        "end": 40,
+        "median_short_term_lufs": -15.7,
+        "min_short_term_lufs": -16.0,
+        "max_short_term_lufs": -14.1
+      },
+      {
+        "start": 40,
+        "end": 50,
+        "median_short_term_lufs": -18.1,
+        "min_short_term_lufs": -20.1,
+        "max_short_term_lufs": -15.8
+      },
+      {
+        "start": 50,
+        "end": 60,
+        "median_short_term_lufs": -17.4,
+        "min_short_term_lufs": -18.3,
+        "max_short_term_lufs": -16.3
+      }
+    ]
+  },
+  "audio": {
+    "decoded_sample_pairs": 2880000,
+    "full_scale_samples": 0,
+    "left_rms_dbfs": -19.63,
+    "right_rms_dbfs": -19.43,
+    "channel_gap_db": 0.2,
+    "silence": []
+  },
+  "contact_sheet": {
+    "every_s": 5.0,
+    "tiles": 12,
+    "sheet": "fx_contact.jpg",
+    "small": "fx_contact_960.jpg"
+  },
+  "checks": [
+    {
+      "status": "INFO",
+      "check": "format",
+      "observed": "1920x1080 h264 yuv420p 30/1 / aac 48000 Hz 2 ch",
+      "expected": "1920x1080 h264 yuv420p 30/1 / aac 48000 Hz 2 ch"
+    },
+    {
+      "status": "INFO",
+      "check": "A/V alignment",
+      "observed": 0.0,
+      "expected": "video and audio <= 0.050 s apart"
+    },
+    {
+      "status": "INFO",
+      "check": "length vs assembly report",
+      "observed": 0.0,
+      "expected": "<= 0.050 s from report"
+    },
+    {
+      "status": "REVIEW",
+      "check": "freeze >= 0.5 s in s2a",
+      "observed": "film 14.00-15.07 s = s2a 4.00-5.07 s",
+      "expected": "live camera never freezes: check this hold"
+    },
+    {
+      "status": "INFO",
+      "check": "black frames",
+      "observed": [],
+      "expected": "none >= 1.0 s (end fade allowed)"
+    },
+    {
+      "status": "INFO",
+      "check": "integrated loudness",
+      "observed": -16.01,
+      "expected": "-16 +/-1 LUFS"
+    },
+    {
+      "status": "INFO",
+      "check": "true peak",
+      "observed": -3.9,
+      "expected": "<= -1.5 dBTP"
+    },
+    {
+      "status": "INFO",
+      "check": "full-scale samples",
+      "observed": 0,
+      "expected": "0"
+    },
+    {
+      "status": "INFO",
+      "check": "silence > 1.5 s",
+      "observed": [],
+      "expected": "none"
+    }
+  ]
+}

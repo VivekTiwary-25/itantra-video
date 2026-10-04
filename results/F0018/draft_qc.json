@@ -1,0 +1,219 @@
+{
+  "video": "full_film_v3_draft.mp4",
+  "mode": "v3",
+  "status": "PASS",
+  "media": {
+    "video_duration": 12.0,
+    "audio_duration": 12.0,
+    "frames_decoded": 360
+  },
+  "freezes": [
+    {
+      "start": 0.0,
+      "end": 2.0,
+      "duration": 2.0,
+      "segment": "intro",
+      "segment_start": 0.0,
+      "segment_end": 2.0
+    },
+    {
+      "start": 2.0,
+      "end": 4.0,
+      "duration": 2.0,
+      "segment": "s2a",
+      "segment_start": 0.0,
+      "segment_end": 2.0
+    },
+    {
+      "start": 4.0,
+      "end": 6.0,
+      "duration": 2.0,
+      "segment": "s2b",
+      "segment_start": 0.0,
+      "segment_end": 2.0
+    },
+    {
+      "start": 6.0,
+      "end": 8.0,
+      "duration": 2.0,
+      "segment": "s3",
+      "segment_start": 0.0,
+      "segment_end": 2.0
+    },
+    {
+      "start": 8.0,
+      "end": 10.0,
+      "duration": 2.0,
+      "segment": "exploded",
+      "segment_start": 0.0,
+      "segment_end": 2.0
+    },
+    {
+      "start": 10.0,
+      "end": 12.0,
+      "duration": 2.0,
+      "segment": "cards",
+      "segment_start": 0.0,
+      "segment_end": 2.0
+    }
+  ],
+  "picture": {
+    "decoded_frames": 360,
+    "black": [],
+    "frozen": [
+      {
+        "start": 0.0,
+        "end": 2.0,
+        "duration": 2.0
+      },
+      {
+        "start": 2.0,
+        "end": 4.0,
+        "duration": 2.0
+      },
+      {
+        "start": 4.0,
+        "end": 6.0,
+        "duration": 2.0
+      },
+      {
+        "start": 6.0,
+        "end": 8.0,
+        "duration": 2.0
+      },
+      {
+        "start": 8.0,
+        "end": 10.0,
+        "duration": 2.0
+      },
+      {
+        "start": 10.0,
+        "end": 12.0,
+        "duration": 2.0
+      }
+    ],
+    "flat": [],
+    "vfr_ratio": 0.0,
+    "vfr_changed_frames": 0
+  },
+  "loudness": {
+    "integrated_lufs": -16.0,
+    "true_peak_dbtp": -3.22,
+    "windows_10s": [
+      {
+        "start": 0,
+        "end": 10,
+        "median_short_term_lufs": -15.3,
+        "min_short_term_lufs": -17.0,
+        "max_short_term_lufs": -14.7
+      },
+      {
+        "start": 10,
+        "end": 20,
+        "median_short_term_lufs": -15.5,
+        "min_short_term_lufs": -17.4,
+        "max_short_term_lufs": -14.9
+      }
+    ]
+  },
+  "audio": {
+    "decoded_sample_pairs": 576000,
+    "full_scale_samples": 0,
+    "left_rms_dbfs": -18.64,
+    "right_rms_dbfs": -17.79,
+    "channel_gap_db": 0.86,
+    "silence": []
+  },
+  "contact_sheet": {
+    "every_s": 5.0,
+    "tiles": 3,
+    "sheet": "full_film_v3_draft_contact.jpg",
+    "small": "full_film_v3_draft_contact_960.jpg"
+  },
+  "checks": [
+    {
+      "status": "INFO",
+      "check": "format",
+      "observed": "1920x1080 h264 yuv420p 30/1 / aac 48000 Hz 2 ch",
+      "expected": "1920x1080 h264 yuv420p 30/1 / aac 48000 Hz 2 ch"
+    },
+    {
+      "status": "INFO",
+      "check": "A/V alignment",
+      "observed": 0.0,
+      "expected": "video and audio <= 0.050 s apart"
+    },
+    {
+      "status": "INFO",
+      "check": "length vs assembly report",
+      "observed": 0.0,
+      "expected": "<= 0.050 s from report"
+    },
+    {
+      "status": "INFO",
+      "check": "freeze >= 0.5 s in intro (slate)",
+      "observed": "film 0.00-2.00 s = intro 0.00-2.00 s",
+      "expected": "graphic hold, allowed"
+    },
+    {
+      "status": "INFO",
+      "check": "freeze >= 0.5 s in s2a (slate)",
+      "observed": "film 2.00-4.00 s = s2a 0.00-2.00 s",
+      "expected": "graphic hold, allowed"
+    },
+    {
+      "status": "INFO",
+      "check": "freeze >= 0.5 s in s2b (slate)",
+      "observed": "film 4.00-6.00 s = s2b 0.00-2.00 s",
+      "expected": "graphic hold, allowed"
+    },
+    {
+      "status": "INFO",
+      "check": "freeze >= 0.5 s in s3 (slate)",
+      "observed": "film 6.00-8.00 s = s3 0.00-2.00 s",
+      "expected": "graphic hold, allowed"
+    },
+    {
+      "status": "INFO",
+      "check": "freeze >= 0.5 s in exploded (slate)",
+      "observed": "film 8.00-10.00 s = exploded 0.00-2.00 s",
+      "expected": "graphic hold, allowed"
+    },
+    {
+      "status": "INFO",
+      "check": "freeze >= 0.5 s in cards (slate)",
+      "observed": "film 10.00-12.00 s = cards 0.00-2.00 s",
+      "expected": "graphic hold, allowed"
+    },
+    {
+      "status": "INFO",
+      "check": "black frames",
+      "observed": [],
+      "expected": "none >= 1.0 s (end fade allowed)"
+    },
+    {
+      "status": "INFO",
+      "check": "integrated loudness",
+      "observed": -16.0,
+      "expected": "-16 +/-1 LUFS"
+    },
+    {
+      "status": "INFO",
+      "check": "true peak",
+      "observed": -3.22,
+      "expected": "<= -1.5 dBTP"
+    },
+    {
+      "status": "INFO",
+      "check": "full-scale samples",
+      "observed": 0,
+      "expected": "0"
+    },
+    {
+      "status": "INFO",
+      "check": "silence > 1.5 s",
+      "observed": [],
+      "expected": "none"
+    }
+  ]
+}

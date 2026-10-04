@@ -1,0 +1,203 @@
+{
+  "draft": false,
+  "total_seconds": 60.0,
+  "total_frames": 1800,
+  "video_assembly": "stream_copy",
+  "segments": [
+    {
+      "name": "intro",
+      "start": 0.0,
+      "end": 10.0,
+      "duration": 10.0,
+      "frames": 300,
+      "slate": false,
+      "source": "RENDERS:intro_v3/intro_v3.mp4",
+      "dx": "embedded",
+      "sfx": null,
+      "tts_windows": []
+    },
+    {
+      "name": "s2a",
+      "start": 10.0,
+      "end": 20.0,
+      "duration": 10.0,
+      "frames": 300,
+      "slate": false,
+      "source": "RENDERS:scene2/v3a/scene2_v3a.mp4",
+      "dx": "embedded",
+      "sfx": null,
+      "tts_windows": [
+        [
+          6.056,
+          9.4
+        ]
+      ]
+    },
+    {
+      "name": "s2b",
+      "start": 20.0,
+      "end": 30.0,
+      "duration": 10.0,
+      "frames": 300,
+      "slate": false,
+      "source": "RENDERS:scene2/v3b/scene2_v3b.mp4",
+      "dx": "embedded",
+      "sfx": null,
+      "tts_windows": []
+    },
+    {
+      "name": "s3",
+      "start": 30.0,
+      "end": 40.0,
+      "duration": 10.0,
+      "frames": 300,
+      "slate": false,
+      "source": "RENDERS:scene3/v3/scene3_picture.mp4",
+      "dx": "RENDERS:scene3/v3/scene3_dialogue_sfx.wav",
+      "sfx": null,
+      "tts_windows": [
+        [
+          6.2,
+          8.9
+        ]
+      ]
+    },
+    {
+      "name": "exploded",
+      "start": 40.0,
+      "end": 50.0,
+      "duration": 10.0,
+      "frames": 300,
+      "slate": false,
+      "source": "RENDERS:exploded/exploded.mp4",
+      "dx": null,
+      "sfx": "RENDERS:exploded/ticks.wav",
+      "tts_windows": []
+    },
+    {
+      "name": "cards",
+      "start": 50.0,
+      "end": 60.0,
+      "duration": 10.0,
+      "frames": 300,
+      "slate": false,
+      "source": "RENDERS:cards_v3/cards_v3.mp4",
+      "dx": null,
+      "sfx": "RENDERS:cards_v3/cards_sfx.wav",
+      "tts_windows": []
+    }
+  ],
+  "music": {
+    "cue_sheet": "RENDERS:full_film_v3_work/cues_film.json",
+    "sections": [
+      {
+        "name": "intro",
+        "start": 0.0,
+        "end": 10.0,
+        "lufs": -28.0
+      },
+      {
+        "name": "s2a",
+        "start": 10.0,
+        "end": 20.0,
+        "lufs": -25.0
+      },
+      {
+        "name": "s2b",
+        "start": 20.0,
+        "end": 30.0,
+        "lufs": -25.0
+      },
+      {
+        "name": "s3",
+        "start": 30.0,
+        "end": 40.0,
+        "lufs": -24.0
+      },
+      {
+        "name": "exploded",
+        "start": 40.0,
+        "end": 50.0,
+        "lufs": -25.0
+      },
+      {
+        "name": "cards",
+        "start": 50.0,
+        "end": 60.0,
+        "lufs": -23.0,
+        "closing_chord_at": 55.7
+      }
+    ],
+    "tts_windows": [
+      {
+        "start": 16.056,
+        "end": 19.4,
+        "note": "s2a"
+      },
+      {
+        "start": 36.2,
+        "end": 38.9,
+        "note": "s3"
+      }
+    ],
+    "bed": true,
+    "bed_trim_db": -10.0
+  },
+  "loudness": {
+    "dialogue_stem": {
+      "integrated_lufs": -31.07,
+      "true_peak_dbtp": -21.1,
+      "lra": 1.8
+    },
+    "mix_before_master": {
+      "integrated_lufs": -32.08,
+      "true_peak_dbtp": -19.74,
+      "lra": 2.4
+    },
+    "master_gain_db": 16.08,
+    "master_method": "linear_gain",
+    "encoded_film": {
+      "integrated_lufs": -16.01,
+      "true_peak_dbtp": -3.9,
+      "lra": 2.4
+    },
+    "stems": {
+      "dx": {
+        "integrated_lufs": -14.99,
+        "true_peak_dbtp": -5.02,
+        "lra": 1.9
+      },
+      "sfx": {
+        "integrated_lufs": -19.5,
+        "true_peak_dbtp": -6.91,
+        "lra": 6.3
+      },
+      "music": {
+        "integrated_lufs": -21.79,
+        "true_peak_dbtp": -4.79,
+        "lra": 12.6
+      }
+    }
+  },
+  "checks": {
+    "full_film_v3.mp4": {
+      "frames": 1800,
+      "audio_duration": 60.0
+    },
+    "full_film_v3_nomusic.mp4": {
+      "frames": 1800,
+      "audio_duration": 60.0
+    }
+  },
+  "outputs": [
+    "RENDERS:full_film_v3.mp4",
+    "RENDERS:full_film_v3_nomusic.mp4",
+    "RENDERS:full_film_v3_stems/dx.wav",
+    "RENDERS:full_film_v3_stems/sfx.wav",
+    "RENDERS:full_film_v3_stems/music.wav"
+  ],
+  "warnings": [
+    "s3: dx stem is 10.300 s, 0.300 s longer than the picture; the tail after the last frame is dropped (check it holds no speech)",
+    "cards: sfx stem is 14.000 s, 4.000 s longer than the picture; the tail after the last frame is dropped (check it holds no speech)"
+  ]
+}

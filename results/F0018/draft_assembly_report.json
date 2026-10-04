@@ -1,0 +1,158 @@
+{
+  "draft": true,
+  "total_seconds": 12.0,
+  "total_frames": 360,
+  "video_assembly": "libx264_crf18",
+  "segments": [
+    {
+      "name": "intro",
+      "start": 0.0,
+      "end": 2.0,
+      "duration": 2.0,
+      "frames": 60,
+      "slate": true,
+      "source": "slate",
+      "dx": null,
+      "sfx": null,
+      "tts_windows": []
+    },
+    {
+      "name": "s2a",
+      "start": 2.0,
+      "end": 4.0,
+      "duration": 2.0,
+      "frames": 60,
+      "slate": true,
+      "source": "slate",
+      "dx": null,
+      "sfx": null,
+      "tts_windows": []
+    },
+    {
+      "name": "s2b",
+      "start": 4.0,
+      "end": 6.0,
+      "duration": 2.0,
+      "frames": 60,
+      "slate": true,
+      "source": "slate",
+      "dx": null,
+      "sfx": null,
+      "tts_windows": []
+    },
+    {
+      "name": "s3",
+      "start": 6.0,
+      "end": 8.0,
+      "duration": 2.0,
+      "frames": 60,
+      "slate": true,
+      "source": "slate",
+      "dx": null,
+      "sfx": null,
+      "tts_windows": []
+    },
+    {
+      "name": "exploded",
+      "start": 8.0,
+      "end": 10.0,
+      "duration": 2.0,
+      "frames": 60,
+      "slate": true,
+      "source": "slate",
+      "dx": null,
+      "sfx": null,
+      "tts_windows": []
+    },
+    {
+      "name": "cards",
+      "start": 10.0,
+      "end": 12.0,
+      "duration": 2.0,
+      "frames": 60,
+      "slate": true,
+      "source": "slate",
+      "dx": null,
+      "sfx": "RENDERS:cards_v3/cards_sfx.wav",
+      "tts_windows": []
+    }
+  ],
+  "music": {
+    "cue_sheet": "RENDERS:full_film_v3_draft_work/cues_film.json",
+    "sections": [
+      {
+        "name": "intro",
+        "start": 0.0,
+        "end": 12.0,
+        "lufs": -28.0
+      }
+    ],
+    "tts_windows": [],
+    "bed": true,
+    "bed_trim_db": 0.0
+  },
+  "loudness": {
+    "dialogue_stem": {
+      "integrated_lufs": -Infinity,
+      "true_peak_dbtp": -Infinity,
+      "lra": 0.0
+    },
+    "mix_before_master": {
+      "integrated_lufs": -28.95,
+      "true_peak_dbtp": -16.06,
+      "lra": 2.3
+    },
+    "master_gain_db": 12.95,
+    "master_method": "linear_gain",
+    "encoded_film": {
+      "integrated_lufs": -16.0,
+      "true_peak_dbtp": -3.22,
+      "lra": 2.2
+    },
+    "stems": {
+      "dx": {
+        "integrated_lufs": -Infinity,
+        "true_peak_dbtp": -Infinity,
+        "lra": 0.0
+      },
+      "sfx": {
+        "integrated_lufs": -21.82,
+        "true_peak_dbtp": -10.04,
+        "lra": 3.0
+      },
+      "music": {
+        "integrated_lufs": -15.8,
+        "true_peak_dbtp": -5.2,
+        "lra": 3.2
+      }
+    }
+  },
+  "checks": {
+    "full_film_v3_draft.mp4": {
+      "frames": 360,
+      "audio_duration": 12.0
+    },
+    "full_film_v3_draft_nomusic.mp4": {
+      "frames": 360,
+      "audio_duration": 12.0
+    }
+  },
+  "outputs": [
+    "RENDERS:full_film_v3_draft.mp4",
+    "RENDERS:full_film_v3_draft_nomusic.mp4",
+    "RENDERS:full_film_v3_draft_stems/dx.wav",
+    "RENDERS:full_film_v3_draft_stems/sfx.wav",
+    "RENDERS:full_film_v3_draft_stems/music.wav"
+  ],
+  "warnings": [
+    "intro: RENDERS:intro_v3/intro_v3.mp4 missing; using a 2 s slate",
+    "s2a: RENDERS:scene2/v3a/scene2_v3a.mp4 missing; using a 2 s slate",
+    "s2b: RENDERS:scene2/v3b/scene2_v3b.mp4 missing; using a 2 s slate",
+    "s3: RENDERS:scene3/v3/scene3_picture.mp4 missing; using a 2 s slate",
+    "s3: dx stem RENDERS:scene3/v3/scene3_dialogue_sfx.wav missing; silence used",
+    "exploded: RENDERS:exploded/exploded.mp4 missing; using a 2 s slate",
+    "exploded: sfx stem RENDERS:exploded/ticks.wav missing; silence used",
+    "cards: RENDERS:cards_v3/cards_v3.mp4 missing; using a 2 s slate",
+    "music: 5 short section(s) merged for the bed (anything under 6 s)"
+  ]
+}

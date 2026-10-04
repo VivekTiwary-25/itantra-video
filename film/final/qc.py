@@ -2,6 +2,8 @@
 """Measured quality check for iTantra scene and final renders.
 
 Usage: python film/final/qc.py VIDEO [--report REPORT.json]
+       python film/final/qc.py --v3 VIDEO --segments-report full_film_v3_report.json [--report QC.json]
+                               [--contact SHEET.jpg] [--contact-small SHEET_960.jpg]
 Requires ffmpeg and ffprobe on PATH. No third-party Python packages.
 """
 
@@ -99,7 +101,7 @@ def parse_intervals(log, pattern, duration):
     return rows
 
 
-def picture(path, duration):
+def picture(path, duration, freeze_d=1.0):
     flat = []
     active = None
 
@@ -118,7 +120,7 @@ def picture(path, duration):
     # pic_th=1.0: a frame counts as black only if EVERY pixel is below pix_th. The sonar sections are mostly
     # black with thin luminous lines and points, which a 99 % rule wrongly reported as black (claude-second, T0027).
     vf = ("blackdetect=d=0:pix_th=0.02:pic_th=1.0,"
-          "freezedetect=n=-60dB:d=1.0,vfrdet,"
+          f"freezedetect=n=-60dB:d={freeze_d},vfrdet,"
           f"scale={FRAME_W}:{FRAME_H}:flags=area,format=rgb24")
     count, log = stream_bytes(["ffmpeg", "-hide_banner", "-nostdin", "-i", str(path),
                                "-map", "0:v:0", "-an", "-vf", vf, "-fps_mode", "passthrough",
@@ -302,6 +304,118 @@ def check(path):
             "placeholder": place_data, "loudness": loud, "audio": audio, "checks": issues}
 
 
+# ---------------------------------------------------------------- film v3 (F0018)
+V3_HOLD_OK = ("cards", "exploded")  # graphic segments where a still hold is allowed; live camera never freezes
+V3_FREEZE_S = 0.5
+
+
+def contact_font():
+    """System font for the contact-sheet time labels, found at run time (no committed absolute path)."""
+    import os
+    windir = os.environ.get("WINDIR")
+    for cand in ([Path(windir) / "Fonts" / f for f in ("segoeui.ttf", "arial.ttf")] if windir else []) + \
+            [Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")]:
+        if cand.is_file():
+            return cand.as_posix().replace(":", r"\:")
+    return None
+
+
+def contact_sheet(path, duration, out, small=None, every=5.0, cols=6):
+    """One frame every `every` seconds, tiled, with the film time on each tile."""
+    count = max(1, math.ceil(duration / every - 1e-6))  # frames at 0, 5, 10 ... < duration
+    rows = math.ceil(count / cols)
+    font = contact_font()
+    label = (f",drawtext=fontfile='{font}':text='%{{pts\\:hms}}':x=8:y=h-th-8:fontsize=22:"
+             "fontcolor=white:box=1:boxcolor=black@0.6:boxborderw=4") if font else ""
+    # select (not fps) keeps each tile's real timestamp: the frame AT 0, 5, 10 s, labelled with its own time
+    pick = f"select='isnan(prev_selected_t)+gte(t-prev_selected_t\\,{every - 0.5 / FPS})'"
+    vf = f"{pick},scale=320:-2{label},tile={cols}x{rows}:padding=4:margin=4"
+    command(["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-i", str(path),
+             "-vf", vf, "-fps_mode", "passthrough", "-frames:v", "1", "-q:v", "3", str(out)])
+    if small:
+        command(["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-i", str(out),
+                 "-vf", "scale=960:-2", "-q:v", "4", str(small)])
+    return {"every_s": every, "tiles": count, "sheet": Path(out).name, "small": Path(small).name if small else None}
+
+
+def segment_at(segments, t):
+    for s in segments:
+        if s["start"] - 1e-6 <= t < s["end"] - 1e-6:
+            return s
+    return segments[-1] if segments else None
+
+
+def check_v3(path, seg_report, contact=None, contact_small=None):
+    """Film v3 QC: per-segment freezes >= 0.5 s, black, loudness/peak, silence, A/V alignment, contact sheet."""
+    info, videos, audios = probe(path)
+    issues = []
+    if len(videos) != 1 or len(audios) != 1:
+        issue(issues, "streams", f"{len(videos)} video / {len(audios)} audio", "1 video / 1 audio")
+        return {"video": path.name, "mode": "v3", "status": "FAIL", "checks": issues}
+    v, a = videos[0], audios[0]
+    vd = float(v.get("duration") or info["format"]["duration"])
+    ad = float(a.get("duration") or info["format"]["duration"])
+    segments = seg_report.get("segments", [])
+    expected_total = seg_report.get("total_seconds")
+
+    issue(issues, "format", f"{v.get('width')}x{v.get('height')} {v.get('codec_name')} {v.get('pix_fmt')} "
+          f"{v.get('avg_frame_rate')} / {a.get('codec_name')} {a.get('sample_rate')} Hz {a.get('channels')} ch",
+          "1920x1080 h264 yuv420p 30/1 / aac 48000 Hz 2 ch",
+          not ((v.get("width"), v.get("height")) == (1920, 1080) and v.get("codec_name") == "h264"
+               and v.get("pix_fmt") == "yuv420p" and math.isclose(ratio(v.get("avg_frame_rate", "0/1")) or 0, FPS, abs_tol=0.01)
+               and a.get("codec_name") == "aac" and int(a.get("sample_rate", 0)) == SAMPLE_RATE and a.get("channels") == 2))
+    issue(issues, "A/V alignment", round(abs(vd - ad), 3), "video and audio <= 0.050 s apart", abs(vd - ad) > 0.050)
+    if expected_total is not None:
+        issue(issues, "length vs assembly report", round(vd - expected_total, 3), "<= 0.050 s from report",
+              abs(vd - expected_total) > 0.050)
+
+    pic = picture(path, vd, freeze_d=V3_FREEZE_S)
+    freezes = []
+    for f in pic["frozen"]:
+        seg = segment_at(segments, f["start"])
+        name = seg["name"] if seg else "?"
+        row = dict(f, segment=name, segment_start=round(f["start"] - (seg["start"] if seg else 0), 3),
+                   segment_end=round(f["end"] - (seg["start"] if seg else 0), 3))
+        freezes.append(row)
+        allowed = seg is None or seg.get("slate") or name in V3_HOLD_OK
+        issues.append({"status": "INFO" if allowed else "REVIEW",
+                       "check": f"freeze >= {V3_FREEZE_S} s in {name}" + (" (slate)" if seg and seg.get("slate") else ""),
+                       "observed": f"film {f['start']:.2f}-{f['end']:.2f} s = {name} {row['segment_start']:.2f}-{row['segment_end']:.2f} s",
+                       "expected": "live camera never freezes: check this hold" if not allowed else "graphic hold, allowed"})
+    if not freezes:
+        issue(issues, f"freezes >= {V3_FREEZE_S} s", [], "none", False)
+
+    black_fail, black_info = [], []
+    for b in pic["black"]:
+        end_fade = abs(b["end"] - vd) < 0.1 and b["duration"] <= 1.5
+        (black_info if (b["duration"] < MAX_BLACK_S or end_fade) else black_fail).append(b)
+    issue(issues, "black frames", black_fail or black_info, f"none >= {MAX_BLACK_S} s (end fade allowed)", bool(black_fail))
+
+    loud = loudness(path)
+    issue(issues, "integrated loudness", loud["integrated_lufs"], "-16 +/-1 LUFS", not -17 <= loud["integrated_lufs"] <= -15)
+    issue(issues, "true peak", loud["true_peak_dbtp"], "<= -1.5 dBTP", loud["true_peak_dbtp"] > -1.5)
+
+    audio = audio_scan(path, ad)
+    issue(issues, "full-scale samples", audio["full_scale_samples"], "0", audio["full_scale_samples"] > 0)
+    for s in audio["silence"]:
+        seg = segment_at(segments, s["start"])
+        name = seg["name"] if seg else "?"
+        ok = seg is not None and (name == "cards" or seg.get("slate"))
+        issues.append({"status": "INFO" if ok else "FAIL", "check": f"silence > 1.5 s in {name}",
+                       "observed": f"film {s['start']:.2f}-{s['end']:.2f} s ({s['duration']:.2f} s)",
+                       "expected": "INFO for cards/slates; elsewhere no silent stretch"})
+    if not audio["silence"]:
+        issue(issues, "silence > 1.5 s", [], "none", False)
+
+    sheet = contact_sheet(path, vd, contact, contact_small) if contact else None
+    status = "FAIL" if any(x["status"] == "FAIL" for x in issues) else (
+        "REVIEW" if any(x["status"] == "REVIEW" for x in issues) else "PASS")
+    return {"video": path.name, "mode": "v3", "status": status,
+            "media": {"video_duration": vd, "audio_duration": ad, "frames_decoded": pic["decoded_frames"]},
+            "freezes": freezes, "picture": pic, "loudness": loud, "audio": audio,
+            "contact_sheet": sheet, "checks": issues}
+
+
 def display(report):
     print(f"QC {report['status']}: {report['video']}")
     print(f"{'STATUS':<7} {'CHECK':<30} {'OBSERVED':<57} EXPECTED")
@@ -322,9 +436,19 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("video", type=Path)
     parser.add_argument("--report", type=Path, help="write full JSON report here")
+    parser.add_argument("--v3", action="store_true", help="film v3 checks (needs --segments-report from assemble_v3.py)")
+    parser.add_argument("--segments-report", type=Path, help="v3: full_film_v3_report.json written by assemble_v3.py")
+    parser.add_argument("--contact", type=Path, help="v3: write a contact sheet (one frame every 5 s) here")
+    parser.add_argument("--contact-small", type=Path, help="v3: 960 px wide copy of the contact sheet "
+                                                            "(default: <contact>_960.jpg)")
     args = parser.parse_args()
     try:
-        report = check(args.video)
+        if args.v3:
+            seg = json.loads(args.segments_report.read_text(encoding="utf-8")) if args.segments_report else {}
+            small = args.contact_small or (args.contact.with_name(args.contact.stem + "_960.jpg") if args.contact else None)
+            report = check_v3(args.video, seg, args.contact, small)
+        else:
+            report = check(args.video)
     except (OSError, ValueError, RuntimeError, KeyError) as exc:
         report = {"video": args.video.name, "status": "FAIL", "checks": [
             {"status": "FAIL", "check": "analysis", "observed": str(exc), "expected": "successful decode"}]}
