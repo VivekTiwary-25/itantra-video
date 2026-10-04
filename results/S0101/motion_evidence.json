@@ -1,0 +1,22 @@
+[
+  {
+    "overhead_time": 0.2,
+    "rendered_mean_abs_gray_255": 22.04,
+    "source_mean_abs_gray_255": 23.85
+  },
+  {
+    "overhead_time": 0.6,
+    "rendered_mean_abs_gray_255": 19.34,
+    "source_mean_abs_gray_255": 8.65
+  },
+  {
+    "overhead_time": 4.3,
+    "rendered_mean_abs_gray_255": 19.48,
+    "source_mean_abs_gray_255": 1.88
+  },
+  {
+    "overhead_time": 4.967,
+    "rendered_mean_abs_gray_255": 2.18,
+    "source_mean_abs_gray_255": 1.6
+  }
+]

@@ -1,6 +1,6 @@
 {
   "fps": 30,
-  "duration": 44.154,
+  "duration": 43.274,
   "segments": [
     {
       "name": "card_out",
@@ -44,7 +44,7 @@
     {
       "name": "walk",
       "start": 18.78,
-      "end": 24.78,
+      "end": 23.9,
       "source": "FOOTAGE:Video/normalpart2.mp4",
       "source_ranges": [
         [
@@ -73,29 +73,33 @@
     },
     {
       "name": "overhead",
-      "start": 24.78,
-      "end": 29.78,
-      "walk_transition": 0.6
+      "start": 23.9,
+      "end": 28.9,
+      "walk_video_media_start": 5.12,
+      "walk_video_duration": 0.88,
+      "yash_video_media_start": 0,
+      "yash_video_starts_at": 4.02,
+      "yash_video_duration": 0.98
     },
     {
       "name": "yash_before_notification",
-      "start": 29.78,
-      "end": 32.43,
+      "start": 28.9,
+      "end": 31.55,
       "source": "FOOTAGE:Video/normalpart6.mp4",
-      "source_in": 0,
-      "source_out": 2.65
+      "source_in": 0.98,
+      "source_out": 3.63
     },
     {
       "name": "yash_app",
-      "start": 32.43,
-      "end": 44.154,
+      "start": 31.55,
+      "end": 43.274,
       "slot": "yash_app",
       "slot_in": 0,
       "slot_out": 11.724,
       "camera_source": "FOOTAGE:Video/normalpart6.mp4",
       "camera_early": [
-        2.65,
-        7.1
+        3.63,
+        8.08
       ],
       "camera_reply": null
     }
