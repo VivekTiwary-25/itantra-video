@@ -21,7 +21,27 @@ RENDERS = Path(MACHINE["renders_dir"])
 OUT = RENDERS / "scene3/v3"
 FPS = 30
 SR = 48000
-SONAR = {"sos_in": 2.0, "sos_sonar": 9.0, "sos_dive": 1.5}
+SONAR = {"sos_dive": 1.5}
+NARRATION = REPO / "film/common/narration_v4.json"
+CAPTION_DIALOGUE = (
+    ("vachana_sos", 1.400333, 4.000333, "I'm lost somewhere near\nthe construction site."),
+    ("vachana_sos", 4.320333, 5.060333, "Please reach me out."),
+    ("vachana_sos", 5.500333, 6.120333, "Help me anyone."),
+    ("vivek_app", 7.779667, 9.726667, "I'm lost somewhere near\nthe construction site."),
+    ("vivek_app", 9.726667, 11.634667, "Please reach me out.\nHelp me anyone."),
+    ("vivek_app", 12.859667, 13.339667, "Wait,"),
+    ("vivek_app", 13.339667, 14.419667, "I'm in the chemistry lab."),
+    ("vivek_app", 14.419667, 15.659667, "I'll come get you, wait."),
+)
+
+
+def narration_lines():
+    lines = json.loads(NARRATION.read_text(encoding="utf-8"))["lines"]
+    required = ("N5", "N5a", "N5b", "N6")
+    for key in required:
+        if float(lines[key]["duration"]) <= 0:
+            raise ValueError(f"invalid narration duration: {key}")
+    return lines
 # T0040 camera windows. App-only takeover replaces every former held frame.
 LAB_OPEN_FRAMES = 39
 VIVEK_HOLD_A, VIVEK_HOLD_B, VIVEK_LAST = 39, 78, 230
@@ -50,18 +70,33 @@ def render_path(ref):
     return RENDERS / relative
 
 
+def ensure_full_slots(slots):
+    """Prepare the original 2400 px app captures with their whole screen visible."""
+    sources = {"vachana_sos": ("scene3/app/vachana_sos.mkv", .64),
+               "vivek_app": ("scene3/app/vivek_take.mkv", 4.75)}
+    for key, (relative, offset) in sources.items():
+        output = render_path(slots[key]["path"])
+        if output.is_file():
+            continue
+        source = RENDERS / relative
+        if source.is_file():
+            run(sys.executable, HERE / "prep_slot.py", key, source, "--in", offset,
+                "--dur", slots[key]["duration"], "--crop-top", 0, "--audio", "drop")
+
+
 def timeline(slots):
+    lines = narration_lines()
     rows, frame = [], 0
     def add(name, seconds, **extra):
         nonlocal frame
         length = round(seconds * FPS)
         rows.append(dict(name=name, start=frame / FPS, end=(frame + length) / FPS, **extra))
         frame += length
-    add("card_out", 1.6, source="FOOTAGE:Video/sospart1.mp4")
+    add("card_out", lines["N5"]["duration"] + .4, source="FOOTAGE:Video/sospart1.mp4")
     add("s3_open", 2.866667, source="FOOTAGE:Video/sospart1.mp4", source_in=0)
     add("vachana_sos", slots["vachana_sos"]["duration"], camera="FOOTAGE:Video/sospart1.mp4", camera_in=2.866667)
-    for name, duration in SONAR.items():
-        add(name, duration)
+    add("sos_sonar", sum(lines[k]["duration"] + .4 for k in ("N5a", "N5b", "N6")))
+    add("sos_dive", SONAR["sos_dive"])
     add("lab_open", LAB_OPEN_FRAMES / FPS, source="FOOTAGE:Video/sospart2.mp4", source_in=3.0)
     add("vivek_app", slots["vivek_app"]["duration"], camera="FOOTAGE:Video/sospart2.mp4", camera_in=3.0 + LAB_OPEN_FRAMES / FPS)
     # The last 0.4 s follows the visible Send tap and its sound.
@@ -75,16 +110,16 @@ def timeline(slots):
     vivek_camera = {"m1_from": VIVEK_M1_AT / FPS, "m1_to": m1_end / FPS, "m2_from": m2 / FPS,
                     "m2_to": (m2 + VIVEK_LAST - VIVEK_HOLD_B) / FPS}
     sonar_start = by["sos_sonar"]["start"]
-    techlines = [
-        {"start": sonar_start, "end": sonar_start + 2.6, "text": "No saved contact needed"},
-        {"start": sonar_start + 2.6, "end": sonar_start + 5.9,
-         "text": "Reaches the 3 strongest phones nearby first, then widens the search"},
-        {"start": sonar_start + 8.0, "end": sonar_start + 10.5, "text": "The helper must accept"},
-    ]
+    narration_starts = {"N5": 0.0}
+    beat = []
+    at = sonar_start
+    for key in ("N5a", "N5b", "N6"):
+        narration_starts[key] = at
+        beat.append({"name": key, "start": at, "end": at + lines[key]["duration"] + .4})
+        at = beat[-1]["end"]
     return {"fps": FPS, "duration": frame / FPS, "segments": rows, "vivek_camera": vivek_camera,
-            "techlines": techlines,
-            "narration_starts": {"N5": by["s3_open"]["start"] + .3,
-                                 "N6": by["sos_sonar"]["start"] + 1.0},
+            "techlines": [], "sos_beats": beat,
+            "narration_starts": narration_starts,
             "slot_fields": {k: {a: b for a, b in v.items() if a != "path"} for k, v in slots.items()}}
 
 
@@ -252,10 +287,11 @@ def write_page(T, slots, sonar, missing):
     for row in rows:
         name, start, seconds = row["name"], row["start"], row["end"] - row["start"]
         if name == "card_out":
-            layers.append(f'<div class="scene" id="seg_card_out"><video id="video_card_out" class="full card-footage" src="{pic["vachana"]}" data-start="0" data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video><div class="card-red"></div><div class="glass-card full sos" id="sos-card"><h1>SOS: help from anyone nearby</h1></div></div>')
+            layers.append(f'<div class="scene" id="seg_card_out"><video id="video_card_out" class="full card-footage" src="{pic["vachana"]}" data-start="0" data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video><div class="glass-card full sos" id="sos-card"><div><h1><span>SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div></div></div>')
         elif name in ("s3_open", "lab_open"):
             key = "vachana" if name == "s3_open" else "vivek"
-            layers.append(f'<div class="scene" id="seg_{name}"><video id="video_{name}" class="full" src="{pic[key]}" data-start="{start:.6f}" data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video></div>')
+            cover = '<div class="glass-card full sos" id="sos-card-clear"><div><h1><span>SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div></div>' if name == "s3_open" else ''
+            layers.append(f'<div class="scene" id="seg_{name}"><video id="video_{name}" class="full" src="{pic[key]}" data-start="{start:.6f}" data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video>{cover}</div>')
         elif name == "vivek_app":
             C = T["vivek_camera"]
             c = "".join(
@@ -268,18 +304,37 @@ def write_page(T, slots, sonar, missing):
             c = (f'<video id="video_vachana_sos_camera" class="camera-motion" src="{pic["vachana"]}" data-start="{start:.6f}" '
                  f'data-duration="{(10.64-2.866667):.6f}" data-media-start="2.866667" muted playsinline></video>')
             layers.append(f'<div class="scene split" id="seg_{name}"><div class="camera camera-vachana">{c}<div class="feather"></div></div><div class="app-field" id="vachana-field">{screen(slots[name],name,start,seconds,missing)}</div></div>')
+        elif name == "sos_sonar":
+            layers.append(f'<div class="scene" id="seg_sos_sonar"><canvas id="sos-map" width="1920" height="1080" data-layout-allow-overflow></canvas><svg id="sos-waves" viewBox="0 0 1920 1080" width="1920" height="1080" aria-hidden="true"><circle id="wave-0"/><circle id="wave-1"/></svg><div class="map-pin" id="pin-v"><i></i><span>Vachana</span></div><div id="search-dots"></div><div class="map-pin" id="pin-k"><i></i><span>Vivek</span></div><div class="map-pill" id="sos-label"></div><div class="map-pill" id="sos-timer"></div><div class="map-pill" id="sos-accept"><span>Accept</span><span>Decline</span></div></div>')
         elif name in SONAR:
             src = asset(sonar[name], f"{name}.mp4")
             check_video(sonar[name], seconds - 1 / FPS)
             layers.append(f'<div class="scene" id="seg_{name}"><video id="video_{name}" class="full" src="{src}" data-start="{start:.6f}" data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video></div>')
     page = (HERE / "index.html.tpl").read_text(encoding="utf-8")
-    captions = json.loads((REPO / "film/captions/v3/s3.json").read_text(encoding="utf-8"))
+    by = {r["name"]: r for r in rows}
+    captions = []
+    for name, a, b, message in CAPTION_DIALOGUE:
+        captions.append({"start": round(by[name]["start"] + a, 3),
+                         "end": round(by[name]["start"] + b, 3), "text": message})
+    for key, start in T["narration_starts"].items():
+        line = narration_lines()[key]
+        if line["text"].strip():
+            captions.append({"start": round(start, 3), "end": round(start + line["duration"], 3),
+                             "text": line["text"]})
+    captions.sort(key=lambda c: c["start"])
+    (REPO / "film/captions/v3/s3.json").write_text(json.dumps(captions, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     if not all(0 <= c["start"] < c["end"] <= T["duration"] for c in captions):
         raise RuntimeError("caption outside scene 3 duration")
     glass = HERE / "assets/glass"
     glass.mkdir(parents=True, exist_ok=True)
     for filename in ("glass.css", "glass.js", "noise.png"):
         shutil.copyfile(REPO / "film/common/glass" / filename, glass / filename)
+    sonar_dir = HERE / "assets/sonar"
+    sonar_dir.mkdir(parents=True, exist_ok=True)
+    for source, name in ((REPO / "film/vendor/three/three.min.js", "three.min.js"),
+                         (REPO / "film/scene3/sonar/shared/sonar.js", "sonar.js"),
+                         (REPO / "film/scene3/sonar/sos_sonar/geo.js", "geo.js")):
+        shutil.copyfile(source, sonar_dir / name)
     page = page.replace("{{DURATION}}", f'{T["duration"]:.6f}').replace("{{TIMELINE}}", json.dumps(T, separators=(",", ":")))
     page = page.replace("{{CAPTIONS}}", json.dumps(captions, separators=(",", ":")).replace("<", "\\u003c"))
     page = page.replace("{{LAYERS}}", "\n".join(layers))
@@ -340,11 +395,16 @@ def wav(path, samples):
 
 
 def narration_file(key):
-    config = REPO / "film/common/narration.json"
-    voice = json.loads(config.read_text(encoding="utf-8")).get("voice", "david") if config.exists() else "david"
-    if voice not in ("david", "vivek"):
-        raise ValueError("film/common/narration.json voice must be david or vivek")
-    return (RENDERS / "narration/vivek" / f"{key}.wav") if voice == "vivek" else (RENDERS / "scene3/narration/david" / f"{key}.wav")
+    return render_path(narration_lines()[key]["file"])
+
+
+def preview_narration_placeholders():
+    import numpy as np
+    for key in ("N5", "N5a", "N5b", "N6"):
+        line = narration_lines()[key]
+        path = narration_file(key)
+        if line.get("status") == "placeholder" and not path.exists():
+            wav(path, np.zeros(round(line["duration"] * SR), dtype=np.float32))
 
 
 def audio(T, slots, stage):
@@ -372,7 +432,7 @@ def audio(T, slots, stage):
         if path.exists():
             # T0040: the cleaned narration files sit at -18 LUFS; one static +2 dB gain, no per-clip loudnorm.
             clip = pcm(path) * 10 ** (2 / 20)
-            limit = 3.4 if key == "N5" else 7.2
+            limit = narration_lines()[key]["duration"] + .4
             if len(clip) / SR > limit:
                 print(f"WARNING: {key} narration exceeds {limit:.1f} s", file=sys.stderr)
             put(dialogue, clip, at); events.append((at, at + len(clip) / SR, "narration " + key))
@@ -393,6 +453,24 @@ def audio(T, slots, stage):
         if not sfx.exists():
             raise FileNotFoundError(sfx)
         put(dialogue, pcm(sfx)[:round(seconds * SR)], by[name]["start"])
+    # The explanatory pulse is a seamless self-rendered loop; repeat its short
+    # sound bed to the new narration-driven length with quiet crossfades.
+    pulse_sfx = stage / "film/scene3/sonar/sos_sonar/assets/sos_sonar_sfx.wav"
+    if pulse_sfx.exists():
+        bed = pcm(pulse_sfx)
+        if len(bed):
+            target = round((by["sos_sonar"]["end"] - by["sos_sonar"]["start"]) * SR)
+            repeat = np.resize(bed, target).astype(np.float32)
+            seam_fade = min(round(.05 * SR), len(bed) // 4)
+            for seam in range(len(bed), target, len(bed)):
+                left = min(seam_fade, seam)
+                right = min(seam_fade, target - seam)
+                repeat[seam-left:seam] *= np.linspace(1, 0, left)
+                repeat[seam:seam+right] *= np.linspace(0, 1, right)
+            fade = min(round(.15 * SR), target // 2)
+            repeat[:fade] *= np.linspace(0, 1, fade)
+            repeat[-fade:] *= np.linspace(1, 0, fade)
+            put(dialogue, repeat, by["sos_sonar"]["start"])
     # F0024: no scene music. The film uses one film-wide bed (film/music/), so the scene's own mix is dialogue + sfx only.
     wav(OUT / "scene3_dialogue_sfx.wav", dialogue)
     events.sort()
@@ -422,9 +500,16 @@ def main():
     args = parser.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     slots = json.loads((HERE / "slots.json").read_text(encoding="utf-8"))
+    ensure_full_slots(slots)
     T = timeline(slots)
+    if args.page_only:
+        preview_narration_placeholders()
     if not args.page_only:
-        required_audio = [RENDERS / "tts_itantra/tts_sos.wav", narration_file("N5"), narration_file("N6")]
+        placeholders = [key for key in ("N5", "N5a", "N5b", "N6")
+                        if narration_lines()[key].get("status") == "placeholder"]
+        if placeholders:
+            sys.exit("production render needs final narration: " + ", ".join(placeholders))
+        required_audio = [RENDERS / "tts_itantra/tts_sos.wav"]
         absent = ["RENDERS:" + p.relative_to(RENDERS).as_posix() for p in required_audio if not p.is_file()]
         if absent:
             sys.exit("missing required speech assets: " + ", ".join(absent))

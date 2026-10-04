@@ -1,13 +1,42 @@
 [
-  {"start":1.900,"end":5.500,"text":"What if you need help,\nbut don't know who's nearby?"},
-  {"start":5.867,"end":8.467,"text":"I'm lost somewhere near\nthe construction site."},
-  {"start":8.787,"end":9.527,"text":"Please reach me out."},
-  {"start":9.967,"end":10.587,"text":"Help me anyone."},
-  {"start":20.433,"end":23.633,"text":"iTantra searches nearby for help."},
-  {"start":23.633,"end":26.933,"text":"If someone accepts, they can hear\nthe SOS and reply."},
-  {"start":39.013,"end":40.960,"text":"I'm lost somewhere near\nthe construction site."},
-  {"start":40.960,"end":42.868,"text":"Please reach me out.\nHelp me anyone."},
-  {"start":44.093,"end":44.573,"text":"Wait,"},
-  {"start":44.573,"end":45.653,"text":"I'm in the chemistry lab."},
-  {"start":45.653,"end":46.893,"text":"I'll come get you, wait."}
+  {
+    "start": 8.067,
+    "end": 10.667,
+    "text": "I'm lost somewhere near\nthe construction site."
+  },
+  {
+    "start": 10.987,
+    "end": 11.727,
+    "text": "Please reach me out."
+  },
+  {
+    "start": 12.167,
+    "end": 12.787,
+    "text": "Help me anyone."
+  },
+  {
+    "start": 43.913,
+    "end": 45.86,
+    "text": "I'm lost somewhere near\nthe construction site."
+  },
+  {
+    "start": 45.86,
+    "end": 47.768,
+    "text": "Please reach me out.\nHelp me anyone."
+  },
+  {
+    "start": 48.993,
+    "end": 49.473,
+    "text": "Wait,"
+  },
+  {
+    "start": 49.473,
+    "end": 50.553,
+    "text": "I'm in the chemistry lab."
+  },
+  {
+    "start": 50.553,
+    "end": 51.793,
+    "text": "I'll come get you, wait."
+  }
 ]

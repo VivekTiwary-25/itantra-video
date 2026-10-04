@@ -23,7 +23,7 @@ def main():
     parser.add_argument("raw", type=Path, help="source .mkv or .mp4 under local/renders/")
     parser.add_argument("--in", dest="start", type=float, required=True)
     parser.add_argument("--dur", type=float)
-    parser.add_argument("--crop-top", type=int, default=110)
+    parser.add_argument("--crop-top", type=int, default=0)
     parser.add_argument("--audio", choices=("keep", "drop"), default="keep")
     parser.add_argument("--hold-last", type=float, default=0)
     args = parser.parse_args()
@@ -40,7 +40,7 @@ def main():
     if args.audio == "keep" and not any(s["codec_type"] == "audio" for s in streams):
         parser.error("source has no audio; use --audio drop")
     frames = round(duration * 30)
-    output = RENDERS / "scene3/app" / f"{args.slot}.mp4"
+    output = RENDERS / "scene3/v3/app" / f"{args.slot}.mp4"
     if raw == output.resolve():
         parser.error("raw source cannot be the prepared slot output")
     output.parent.mkdir(parents=True, exist_ok=True)

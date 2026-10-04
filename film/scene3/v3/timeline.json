@@ -1,53 +1,48 @@
 {
   "fps": 30,
-  "duration": 51.4,
+  "duration": 56.3,
   "segments": [
     {
       "name": "card_out",
       "start": 0.0,
-      "end": 1.6,
+      "end": 3.8,
       "source": "FOOTAGE:Video/sospart1.mp4"
     },
     {
       "name": "s3_open",
-      "start": 1.6,
-      "end": 4.466666666666667,
+      "start": 3.8,
+      "end": 6.666666666666667,
       "source": "FOOTAGE:Video/sospart1.mp4",
       "source_in": 0
     },
     {
       "name": "vachana_sos",
-      "start": 4.466666666666667,
-      "end": 17.433333333333334,
+      "start": 6.666666666666667,
+      "end": 19.633333333333333,
       "camera": "FOOTAGE:Video/sospart1.mp4",
       "camera_in": 2.866667
     },
     {
-      "name": "sos_in",
-      "start": 17.433333333333334,
-      "end": 19.433333333333334
-    },
-    {
       "name": "sos_sonar",
-      "start": 19.433333333333334,
-      "end": 28.433333333333334
+      "start": 19.633333333333333,
+      "end": 33.333333333333336
     },
     {
       "name": "sos_dive",
-      "start": 28.433333333333334,
-      "end": 29.933333333333334
+      "start": 33.333333333333336,
+      "end": 34.833333333333336
     },
     {
       "name": "lab_open",
-      "start": 29.933333333333334,
-      "end": 31.233333333333334,
+      "start": 34.833333333333336,
+      "end": 36.13333333333333,
       "source": "FOOTAGE:Video/sospart2.mp4",
       "source_in": 3.0
     },
     {
       "name": "vivek_app",
-      "start": 31.233333333333334,
-      "end": 51.400000000000006,
+      "start": 36.13333333333333,
+      "end": 56.3,
       "camera": "FOOTAGE:Video/sospart2.mp4",
       "camera_in": 4.3
     }
@@ -58,26 +53,29 @@
     "m2_from": 10.866666666666667,
     "m2_to": 15.933333333333334
   },
-  "techlines": [
+  "techlines": [],
+  "sos_beats": [
     {
-      "start": 19.433333333333334,
-      "end": 22.033333333333335,
-      "text": "No saved contact needed"
+      "name": "N5a",
+      "start": 19.633333333333333,
+      "end": 22.53333333333333
     },
     {
-      "start": 22.033333333333335,
-      "end": 25.333333333333336,
-      "text": "Reaches the 3 strongest phones nearby first, then widens the search"
+      "name": "N5b",
+      "start": 22.53333333333333,
+      "end": 28.93333333333333
     },
     {
-      "start": 27.433333333333334,
-      "end": 29.933333333333334,
-      "text": "The helper must accept"
+      "name": "N6",
+      "start": 28.93333333333333,
+      "end": 33.33333333333333
     }
   ],
   "narration_starts": {
-    "N5": 1.9000000000000001,
-    "N6": 20.433333333333334
+    "N5": 0.0,
+    "N5a": 19.633333333333333,
+    "N5b": 22.53333333333333,
+    "N6": 28.93333333333333
   },
   "slot_fields": {
     "vachana_sos": {

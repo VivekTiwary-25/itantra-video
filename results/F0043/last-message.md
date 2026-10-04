@@ -1,0 +1,3 @@
+F0043 is complete. The neutral SOS card, narration-timed sonar explanation, and stable full-screen app views are in place. [Review the 480 px still sheet](/<REPO>/results/F0043/preview/sheet-480.jpg) and [REPORT.md](/<REPO>/results/F0043/REPORT.md).
+
+HyperFrames check passed. No full-length render was made. Production rendering awaits the final v4 narration; the report also notes the matching s2b card needed for the join.

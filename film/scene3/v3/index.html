@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1920,height=1080">
-<script src="./gsap.min.js"></script><script src="./assets/glass/glass.js"></script>
+<script src="./gsap.min.js"></script><script src="./assets/glass/glass.js"></script><script src="./assets/sonar/three.min.js"></script><script src="./assets/sonar/geo.js"></script><script src="./assets/sonar/sonar.js"></script><script src="./sos_map.js"></script>
 <link rel="stylesheet" href="./assets/glass/glass.css">
 <style>
 @font-face{font-family:SceneSans;src:local('Segoe UI Variable Display'),local('Segoe UI Variable'),local('Segoe UI');font-weight:100 900}
@@ -9,10 +9,12 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12
 #root{position:relative;width:1920px;height:1080px;overflow:hidden}
 .scene{position:absolute;inset:0;display:none;overflow:hidden;background:#0a0d12}
 .full{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover}
-.card-footage{filter:blur(40px) brightness(.58) saturate(.85);transform:scale(1.07)}
-.card-red{position:absolute;inset:0;background:rgba(105,17,30,.16)}
-#sos-card{display:grid;place-items:center;text-align:center;transform-origin:50% 50%;z-index:2}
-#sos-card h1{font-size:64px;font-weight:650;line-height:1.08;margin:0}
+.card-footage{filter:blur(32px) brightness(.22) saturate(.2);transform:scale(1.07)}
+#sos-card,#sos-card-clear{display:grid;place-items:center;text-align:center;transform-origin:50% 50%;z-index:2}
+#sos-card.glass-card.full.sos,#sos-card-clear.glass-card.full.sos{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,0) 30%),rgba(14,18,26,.86)}
+#sos-card h1,#sos-card-clear h1{font-size:64px;font-weight:650;line-height:1.08;margin:0}
+#sos-card h1 span,#sos-card-clear h1 span{color:var(--red)}
+#sos-card p,#sos-card-clear p{font-size:38px;margin:18px 0 0}
 .split .camera{position:absolute;left:0;top:0;width:1232px;height:1080px;overflow:hidden;background:#0a0d12}
 .camera-motion{position:absolute;left:-250px;top:0;width:1920px;height:1080px;max-width:none;object-fit:cover}
 .camera-vivek .camera-motion{left:-200px}
@@ -21,39 +23,45 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12
 .screen{position:relative;height:1000px;max-width:560px;border-radius:32px;border:1px solid rgba(255,255,255,.14);overflow:hidden;background:#101820;box-shadow:0 22px 65px #000a;flex:none}
 .screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#101820}
 .accept-tap-ring{position:absolute;left:8%;top:14.35%;width:17.5%;height:4%;border:3px solid rgba(255,255,255,.95);border-radius:999px;box-shadow:0 0 0 5px rgba(255,255,255,.14);opacity:0;pointer-events:none}
+#sos-map,#sos-waves{position:absolute;inset:0}
+#sos-waves{pointer-events:none;overflow:visible}
+#sos-waves circle{fill:none;stroke:#ff4d5e;stroke-width:3;filter:drop-shadow(0 0 12px #ff4d5e)}
+.map-pin,.search-dot{position:absolute;left:0;top:0;z-index:3}
+.map-pin i,.search-dot i{display:block;width:22px;height:22px;margin:-11px;border-radius:50%;background:#f3f5f8;box-shadow:0 0 0 9px #ff4d5e44,0 0 24px #ff4d5e}
+.map-pin span{position:absolute;left:32px;top:-22px;font-size:44px;font-weight:600;text-shadow:0 2px 10px #000}
+.search-dot i{width:22px;height:22px;margin:-11px;background:#96b3ce;box-shadow:0 0 16px #86aed4}
+.search-dot.lit i{background:#ff4d5e;box-shadow:0 0 0 12px #ff4d5e44,0 0 25px #ff4d5e}
+.map-pill{position:absolute;z-index:4;padding:16px 30px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(14,18,26,.82);backdrop-filter:blur(28px);font-size:48px;font-weight:600;white-space:nowrap;box-shadow:0 16px 40px #0009}
+#sos-timer{font-variant-numeric:tabular-nums;font-size:44px;padding:10px 24px}
+#sos-accept{display:flex;gap:10px;font-size:42px;padding:8px}
+#sos-accept span{padding:9px 18px;border-radius:999px}
+#sos-accept .active{background:#ff4d5e;color:#15171b}
 #techline-layer,#caption-layer{position:absolute;inset:0;pointer-events:none;z-index:20}
-#join-darken{position:absolute;inset:0;z-index:30;pointer-events:none;background:#05070a;opacity:0}
 #techline{display:none}
 #caption{display:none}
 </style></head>
-<body><div id="root" data-composition-id="scene3-v3" data-start="0" data-duration="51.400000" data-width="1920" data-height="1080">
-<div class="scene" id="seg_card_out"><video id="video_card_out" class="full card-footage" src="assets/vachana.mp4" data-start="0" data-duration="1.600000" data-media-start="0" muted playsinline></video><div class="card-red"></div><div class="glass-card full sos" id="sos-card"><h1>SOS: help from anyone nearby</h1></div></div>
-<div class="scene" id="seg_s3_open"><video id="video_s3_open" class="full" src="assets/vachana.mp4" data-start="1.600000" data-duration="2.866667" data-media-start="0" muted playsinline></video></div>
-<div class="scene split" id="seg_vachana_sos"><div class="camera camera-vachana"><video id="video_vachana_sos_camera" class="camera-motion" src="assets/vachana.mp4" data-start="4.466667" data-duration="7.773333" data-media-start="2.866667" muted playsinline></video><div class="feather"></div></div><div class="app-field" id="vachana-field"><div class="screen" style="width:471.62px;background:#101820 url(assets/vachana_sos_first.jpg) center/100% 100% no-repeat"><video id="video_vachana_sos" src="assets/vachana_sos.mp4" data-start="4.466667" data-duration="12.966667" data-media-start="0" muted playsinline></video></div></div></div>
-<div class="scene" id="seg_sos_in"><video id="video_sos_in" class="full" src="assets/sos_in.mp4" data-start="17.433333" data-duration="2.000000" data-media-start="0" muted playsinline></video></div>
-<div class="scene" id="seg_sos_sonar"><video id="video_sos_sonar" class="full" src="assets/sos_sonar.mp4" data-start="19.433333" data-duration="9.000000" data-media-start="0" muted playsinline></video></div>
-<div class="scene" id="seg_sos_dive"><video id="video_sos_dive" class="full" src="assets/sos_dive.mp4" data-start="28.433333" data-duration="1.500000" data-media-start="0" muted playsinline></video></div>
-<div class="scene" id="seg_lab_open"><video id="video_lab_open" class="full" src="assets/vivek.mp4" data-start="29.933333" data-duration="1.300000" data-media-start="0" muted playsinline></video></div>
-<div class="scene split" id="seg_vivek_app"><div class="camera camera-vivek"><video id="video_vivek_app_camera1" class="camera-motion" src="assets/vivek.mp4" data-start="38.733333" data-duration="1.300000" data-media-start="1.300000" muted playsinline></video><video id="video_vivek_app_camera2" class="camera-motion" src="assets/vivek.mp4" data-start="42.100000" data-duration="5.066667" data-media-start="2.600000" muted playsinline></video><div class="feather"></div></div><div class="app-field" id="vivek-field"><div class="screen" data-layout-allow-overflow data-layout-allow-overflow style="width:471.62px;background:#101820 url(assets/vivek_app_first.jpg) center/100% 100% no-repeat"><video id="video_vivek_app" src="assets/vivek_app.mp4" data-start="31.233333" data-duration="20.166667" data-media-start="0" muted playsinline></video><div class="accept-tap-ring" aria-hidden="true"></div></div></div></div>
-
-
-
+<body><div id="root" data-composition-id="scene3-v3" data-start="0" data-duration="56.300000" data-width="1920" data-height="1080">
+<div class="scene" id="seg_card_out"><video id="video_card_out" class="full card-footage" src="assets/vachana.mp4" data-start="0" data-duration="3.800000" data-media-start="0" muted playsinline></video><div class="glass-card full sos" id="sos-card"><div><h1><span>SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div></div></div>
+<div class="scene" id="seg_s3_open"><video id="video_s3_open" class="full" src="assets/vachana.mp4" data-start="3.800000" data-duration="2.866667" data-media-start="0" muted playsinline></video><div class="glass-card full sos" id="sos-card-clear"><div><h1><span>SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div></div></div>
+<div class="scene split" id="seg_vachana_sos"><div class="camera camera-vachana"><video id="video_vachana_sos_camera" class="camera-motion" src="assets/vachana.mp4" data-start="6.666667" data-duration="7.773333" data-media-start="2.866667" muted playsinline></video><div class="feather"></div></div><div class="app-field" id="vachana-field"><div class="screen" style="width:450.00px;background:#101820 url(assets/vachana_sos_first.jpg) center/100% 100% no-repeat"><video id="video_vachana_sos" src="assets/vachana_sos.mp4" data-start="6.666667" data-duration="12.966667" data-media-start="0" muted playsinline></video></div></div></div>
+<div class="scene" id="seg_sos_sonar"><canvas id="sos-map" width="1920" height="1080" data-layout-allow-overflow></canvas><svg id="sos-waves" viewBox="0 0 1920 1080" width="1920" height="1080" aria-hidden="true"><circle id="wave-0"/><circle id="wave-1"/></svg><div class="map-pin" id="pin-v"><i></i><span>Vachana</span></div><div id="search-dots"></div><div class="map-pin" id="pin-k"><i></i><span>Vivek</span></div><div class="map-pill" id="sos-label"></div><div class="map-pill" id="sos-timer"></div><div class="map-pill" id="sos-accept"><span>Accept</span><span>Decline</span></div></div>
+<div class="scene" id="seg_sos_dive"><video id="video_sos_dive" class="full" src="assets/sos_dive.mp4" data-start="33.333333" data-duration="1.500000" data-media-start="0" muted playsinline></video></div>
+<div class="scene" id="seg_lab_open"><video id="video_lab_open" class="full" src="assets/vivek.mp4" data-start="34.833333" data-duration="1.300000" data-media-start="0" muted playsinline></video></div>
+<div class="scene split" id="seg_vivek_app"><div class="camera camera-vivek"><video id="video_vivek_app_camera1" class="camera-motion" src="assets/vivek.mp4" data-start="43.633333" data-duration="1.300000" data-media-start="1.300000" muted playsinline></video><video id="video_vivek_app_camera2" class="camera-motion" src="assets/vivek.mp4" data-start="47.000000" data-duration="5.066667" data-media-start="2.600000" muted playsinline></video><div class="feather"></div></div><div class="app-field" id="vivek-field"><div class="screen" data-layout-allow-overflow style="width:450.00px;background:#101820 url(assets/vivek_app_first.jpg) center/100% 100% no-repeat"><video id="video_vivek_app" src="assets/vivek_app.mp4" data-start="36.133333" data-duration="20.166667" data-media-start="0" muted playsinline></video><div class="accept-tap-ring" aria-hidden="true"></div></div></div></div>
 <div id="techline-layer"><div class="techline" id="techline"></div></div>
 <div id="caption-layer"><div class="caption" id="caption"></div></div>
-<div id="join-darken"></div>
 </div>
 <script>
-const T={"fps":30,"duration":51.4,"segments":[{"name":"card_out","start":0,"end":1.6,"source":"FOOTAGE:Video/sospart1.mp4"},{"name":"s3_open","start":1.6,"end":4.466666666666667,"source":"FOOTAGE:Video/sospart1.mp4","source_in":0},{"name":"vachana_sos","start":4.466666666666667,"end":17.433333333333334,"camera":"FOOTAGE:Video/sospart1.mp4","camera_in":2.866667},{"name":"sos_in","start":17.433333333333334,"end":19.433333333333334},{"name":"sos_sonar","start":19.433333333333334,"end":28.433333333333334},{"name":"sos_dive","start":28.433333333333334,"end":29.933333333333334},{"name":"lab_open","start":29.933333333333334,"end":31.233333333333334,"source":"FOOTAGE:Video/sospart2.mp4","source_in":3},{"name":"vivek_app","start":31.233333333333334,"end":51.400000000000006,"camera":"FOOTAGE:Video/sospart2.mp4","camera_in":4.3}],"vivek_camera":{"m1_from":7.5,"m1_to":8.8,"m2_from":10.866666666666667,"m2_to":15.933333333333334},"techlines":[{"start":19.433333333333334,"end":22.033333333333335,"text":"No saved contact needed"},{"start":22.033333333333335,"end":25.333333333333336,"text":"Reaches the 3 strongest phones nearby first, then widens the search"},{"start":27.433333333333334,"end":29.933333333333334,"text":"The helper must accept"}],"narration_starts":{"N5":1.9000000000000001,"N6":20.433333333333334},"slot_fields":{"vachana_sos":{"duration":12.966667,"listen_at":1.4,"send_at":11.23},"vivek_app":{"duration":21.366667,"accept_at":2.6,"play_at":7.63,"ptt_down":12.76,"ptt_up":16.22,"sent_at":19.77}}},CAPTIONS=[{"start":1.9,"end":5.5,"text":"What if you need help,\nbut don't know who's nearby?"},{"start":5.867,"end":8.467,"text":"I'm lost somewhere near\nthe construction site."},{"start":8.787,"end":9.527,"text":"Please reach me out."},{"start":9.967,"end":10.587,"text":"Help me anyone."},{"start":20.433,"end":23.633,"text":"iTantra searches nearby for help."},{"start":23.633,"end":26.933,"text":"If someone accepts, they can hear\nthe SOS and reply."},{"start":39.013,"end":40.96,"text":"I'm lost somewhere near\nthe construction site."},{"start":40.96,"end":42.868,"text":"Please reach me out.\nHelp me anyone."},{"start":44.093,"end":44.573,"text":"Wait,"},{"start":44.573,"end":45.653,"text":"I'm in the chemistry lab."},{"start":45.653,"end":46.893,"text":"I'll come get you, wait."}],rows=T.segments;
+const T={"fps":30,"duration":56.3,"segments":[{"name":"card_out","start":0.0,"end":3.8,"source":"FOOTAGE:Video/sospart1.mp4"},{"name":"s3_open","start":3.8,"end":6.666666666666667,"source":"FOOTAGE:Video/sospart1.mp4","source_in":0},{"name":"vachana_sos","start":6.666666666666667,"end":19.633333333333333,"camera":"FOOTAGE:Video/sospart1.mp4","camera_in":2.866667},{"name":"sos_sonar","start":19.633333333333333,"end":33.333333333333336},{"name":"sos_dive","start":33.333333333333336,"end":34.833333333333336},{"name":"lab_open","start":34.833333333333336,"end":36.13333333333333,"source":"FOOTAGE:Video/sospart2.mp4","source_in":3.0},{"name":"vivek_app","start":36.13333333333333,"end":56.3,"camera":"FOOTAGE:Video/sospart2.mp4","camera_in":4.3}],"vivek_camera":{"m1_from":7.5,"m1_to":8.8,"m2_from":10.866666666666667,"m2_to":15.933333333333334},"techlines":[],"sos_beats":[{"name":"N5a","start":19.633333333333333,"end":22.53333333333333},{"name":"N5b","start":22.53333333333333,"end":28.93333333333333},{"name":"N6","start":28.93333333333333,"end":33.33333333333333}],"narration_starts":{"N5":0.0,"N5a":19.633333333333333,"N5b":22.53333333333333,"N6":28.93333333333333},"slot_fields":{"vachana_sos":{"duration":12.966667,"listen_at":1.4,"send_at":11.23},"vivek_app":{"duration":21.366667,"accept_at":2.6,"play_at":7.63,"ptt_down":12.76,"ptt_up":16.22,"sent_at":19.77}}},CAPTIONS=[{"start":8.067,"end":10.667,"text":"I'm lost somewhere near\nthe construction site."},{"start":10.987,"end":11.727,"text":"Please reach me out."},{"start":12.167,"end":12.787,"text":"Help me anyone."},{"start":43.913,"end":45.86,"text":"I'm lost somewhere near\nthe construction site."},{"start":45.86,"end":47.768,"text":"Please reach me out.\nHelp me anyone."},{"start":48.993,"end":49.473,"text":"Wait,"},{"start":49.473,"end":50.553,"text":"I'm in the chemistry lab."},{"start":50.553,"end":51.793,"text":"I'll come get you, wait."}],rows=T.segments;
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),ease=gsap.parseEase('power2.inOut');
-const windowPunch=(t,up,upEnd,down,downEnd)=>ease(clamp((t-up)/(upEnd-up)))*(1-ease(clamp((t-down)/(downEnd-down))));
+const sosMap=window.createSOSMap(document.getElementById('seg_sos_sonar'),T);
 function takeover(field,camera,amount){
   const f=ease(clamp(amount));
   field.style.left=(1232*(1-f))+'px';field.style.width=(688+1232*f)+'px';
-  field.querySelector('.screen').style.transform=`scale(${1+.08*f})`;
+  field.querySelector('.screen').style.transform='scale(1)';
   if(camera){camera.style.transform=`translateX(${-1232*f}px)`;camera.style.opacity=1-f;}
 }
 function render(t){
-  document.getElementById('join-darken').style.opacity=ease(clamp((t-(T.duration-.3))/(.3-1/30)));
   document.querySelectorAll('.scene').forEach(el=>el.style.display='none');
   for(const [id,name] of [['vachana-field','vachana_sos'],['vivek-field','vivek_app']]){
     const field=document.getElementById(id),parent=document.getElementById('seg_'+name);
@@ -72,12 +80,7 @@ function render(t){
   const phoneSplit=r.name==='vachana_sos'||r.name==='vivek_app';
   ce.style.left=phoneCentered?'350px':phoneSplit?'550px':'50%';
   ce.style.maxWidth=phoneCentered?'640px':phoneSplit?'1020px':'1560px';
-  if(r.name==='card_out'){
-    const f=ease(clamp(st/1.6)),card=document.getElementById('sos-card');
-    e.querySelector('.card-red').style.opacity=.68*(1-ease(clamp((st-.1)/.7)))+.04*ease(clamp((st-.1)/.7));
-    card.style.transform=`scale(${1-.78*f})`;
-    card.style.opacity=1-clamp((st-.9)/.7);
-  }
+  if(r.name==='s3_open')document.getElementById('sos-card-clear').style.transform=`translateY(${-1080*ease(clamp(st/.75))}px)`;
   if(r.name==='s3_open'&&st>=2.4){
     const f=ease(clamp((st-2.4)/.466667));
     const v=e.querySelector('video');v.style.width=(1920-688*f)+'px';v.style.objectPosition='36.337% center';
@@ -105,13 +108,10 @@ function render(t){
     const visibility=in1?clamp((st-C.m1_from)/.25)*clamp((C.m1_to-st)/.25):
       in2?clamp((st-C.m2_from)/.25)*clamp((C.m2_to-st)/.25):0;
     takeover(field,camera,1-visibility);
-    const banner=windowPunch(st,.6,1.2,T.slot_fields.vivek_app.accept_at+1,T.slot_fields.vivek_app.accept_at+1.6);
-    const reply=windowPunch(st,17.9,18.5,19.0,19.6);
-    const normal=1+.08*ease(clamp(1-visibility));
-    field.querySelector('.screen').style.transformOrigin=banner||reply?'50% 0':'50% 50%';
-    field.querySelector('.screen').style.transform=`scale(${normal+(1.9-normal)*banner+(1.6-normal)*reply})`;
+    field.querySelector('.screen').style.transform='scale(1)';
     field.querySelector('.accept-tap-ring').style.opacity=ease(clamp((st-3.0)/.08))*(1-ease(clamp((st-3.12)/.12)));
   }
+  if(r.name==='sos_sonar')sosMap.render(t);
 }
 const tl=gsap.timeline({paused:true,onUpdate:()=>render(tl.time())});tl.to({}, {duration:T.duration},0);
 window.addEventListener('hf-seek',event=>render(event.detail.time));
