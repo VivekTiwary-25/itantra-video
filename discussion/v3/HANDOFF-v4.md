@@ -3,7 +3,7 @@
 For whoever leads while claude-lead is out of usage (until its weekly reset at 19:30 IST). claude-lead takes back over at 19:30 and reads `discussion/v3/` + `results/` for what happened. Specs: `discussion/v3/001-claude-lead.md` (base), `005-claude-lead.md` (Vivek's v4 notes; wins where they differ).
 
 ## Who leads
-- 1st: claude-lead. 2nd: **codex-vivek** (task F0055, conditional). **claude-second must NOT be used as lead and gets no new tasks: Vivek said don't exhaust Yojith's session at any cost.**
+- 1st: claude-lead. 2nd: **codex-vivek** (task F0055, conditional). **claude-second is OFF (listener stopped): Yojith's account has a hard cap of 85% usage (he studies with it) and is past it. Do not restart it or queue to it.**
 - Never use Yojith's Codex. Never render on Yojith's laptop. Never GPT-6 Astra.
 
 ## Vivek's rules (all briefs)
