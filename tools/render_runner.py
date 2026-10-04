@@ -74,9 +74,41 @@ def run(rid, fm):
     return status, "\n\n".join(log), jpg
 
 
+def narration_check(state):
+    """Vivek's new narration takes land in the lead folder's local/narration_vivek/. When the set of files there
+    changes (and stays unchanged for 2 minutes), run film/narration/prep_v4.py (cleans, transcribes, fills
+    film/common/narration_v4.json, copies to the render machines) and push the manifest + a report."""
+    d = LEAD / "local" / "narration_vivek"
+    files = sorted(f"{p.name}:{p.stat().st_size}" for p in d.glob("*") if p.suffix.lower() in (".wav", ".mp3", ".m4a")) if d.is_dir() else []
+    if files == state.get("narr_files"):
+        return
+    if files != state.get("narr_pending"):
+        state["narr_pending"], state["narr_since"] = files, time.time()
+        STATE.write_text(json.dumps(state))
+        return
+    if time.time() - state.get("narr_since", 0) < 120:
+        return
+    n = len(state.setdefault("narr_runs", [])) + 1
+    rid = f"NARR{n:02d}"
+    code, out = sh([sys.executable, "film/narration/prep_v4.py"], 3600) if (LEAD / "film/narration/prep_v4.py").exists() else (1, "prep_v4.py missing")
+    state["narr_files"] = files
+    state["narr_runs"].append(rid)
+    STATE.write_text(json.dumps(state))
+    man = LEAD / "film" / "common" / "narration_v4.json"
+    push = {f"results/{rid}/REPORT.md": (f"---\nstatus: {'done' if code == 0 else 'failed'}\n---\n# {rid}: narration prep (render runner, vivek-pc)\n\n"
+                                         f"Files: {len(files)}\n\n```\n{clean(out)[-3500:]}\n```\n").encode("utf-8")}
+    if code == 0 and man.exists():
+        push["film/common/narration_v4.json"] = man.read_bytes()
+    push_files_direct(push, f"render runner: {rid} narration prep")
+
+
 def once(clone):
     subprocess.run(["git", "-C", str(clone), "pull", "--ff-only", "-q"], capture_output=True, timeout=120, creationflags=NO_WINDOW)
     state = json.loads(STATE.read_text()) if STATE.exists() else {"done": []}
+    try:
+        narration_check(state)
+    except Exception as e:  # noqa: BLE001
+        print("narration check error:", e, flush=True)
     for f in sorted((clone / "queue" / "render").glob("*.md")):
         rid = f.stem
         if rid in state["done"] or (clone / "results" / rid / "REPORT.md").exists():
