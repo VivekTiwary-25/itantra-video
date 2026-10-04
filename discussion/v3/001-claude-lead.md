@@ -85,6 +85,13 @@ Works now / Coming next (~8 s, 3.20 and 3.21; big and readable; "Coming next" cl
 22. `iTantra` / `Speak. Send. Be heard.` / `Team chmod 777 · Team ID 148903` / `SIH26173 · NIE Mysuru`
 23. Map and sonar pins: `Vachana` / `Yash` / `Vivek` (added 4 Oct, lead)
 
+### Exploded view v2 (Vivek's new brief, 4 Oct 11:00; replaces items 14-19 for the exploded view)
+24. `Microphone` / `Hold to talk`
+25. `Processor` / `Speech to text on the phone, without internet: IndicConformer, Whisper` / `Encryption: Google Tink`
+26. `Bluetooth chip and antenna` / `Hops phone to phone, encrypted at every hop: Bluetooth LE, Noise XX`
+27. `Loudspeaker` / `Reads it aloud: Piper, Meta MMS`
+28. End line: `No new hardware.`
+
 ## 4. Sound and music
 One restrained music bed across the film: quiet under dialogue, ducked under TTS and speech, a little more tension in SOS, rises into the cards, resolves on the closing card. Procedural/offline only. A glass-tick family for the exploded view. Existing cues from T0035 (`RENDERS:sound/`). Final loudness -16 LUFS, true peak <= -1.5 dBTP.
 
