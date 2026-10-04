@@ -208,21 +208,27 @@
     if (!state) return;
     const t = clamp(Number(seconds) || 0, 0, 5);
     const rise = smooth(progress(t, 0, .8));
-    const dive = smooth(progress(t, 3.4, 5));
     const v = xy(V.lat, V.lon), y = xy(Y.lat, Y.lon);
+    // F0050 (spec 005 S2): the rise is a tracking pull-back that travels FROM Vachana's pin TOWARD Yash's. The camera
+    // centre glides from Vachana's pin to the map centre (the midpoint toward Yash) while it zooms out, so the walk
+    // texture, held at the frame centre, moves down-right across the map toward Yash.
     const startZoom = 2.65;
-    const earlyZoom = mix(startZoom, 1, rise);
-    const finalZoom = mix(1, 5.2, dive);
+    const cx = mix(v[0], W / 2, rise), cy = mix(v[1], H / 2, rise);
+    const earlyZoom = Math.pow(startZoom, 1 - rise);
+    // ONE smooth direct zoom onto Yash's pin: a single ease drives both the scale (exponential, so it feels even) and
+    // the pin's glide to the frame centre. No overshoot, no second push.
+    const dive = smooth(progress(t, 3.4, 5));
+    const finalZoom = Math.pow(5.2, dive);
+    const pinX = mix(y[0], W / 2, dive), pinY = mix(y[1], H / 2, dive);
     const zoom = t <= .8 ? earlyZoom : finalZoom;
-    const earlyX = mix(W / 2 - v[0] * startZoom, 0, rise);
-    const earlyY = mix(H / 2 - v[1] * startZoom, 0, rise);
-    const finalX = (W / 2 - y[0] * finalZoom) * dive;
-    const finalY = (H / 2 - y[1] * finalZoom) * dive;
-    state.camera.style.transform = `translate(${(t <= .8 ? earlyX : finalX).toFixed(2)}px, ${(t <= .8 ? earlyY : finalY).toFixed(2)}px) scale(${zoom.toFixed(5)})`;
+    const tx = t <= .8 ? W / 2 - cx * earlyZoom : pinX - y[0] * finalZoom;
+    const ty = t <= .8 ? H / 2 - cy * earlyZoom : pinY - y[1] * finalZoom;
+    state.camera.style.transform = `translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px) scale(${zoom.toFixed(5)})`;
     state.camera.style.opacity = String(smooth(progress(t, 0, .58)) * (1 - smooth(progress(t, 4.05, 5))));
 
     const walkScale = mix(1, .32, rise);
-    state.walk.style.transform = `translate(${((v[0] - W / 2) * rise).toFixed(1)}px, ${((v[1] - H / 2) * rise).toFixed(1)}px) scale(${walkScale.toFixed(4)}) rotateX(${(42 * rise).toFixed(2)}deg)`;
+    const drift = 70 * rise;  // a little extra travel down-right, along the route direction
+    state.walk.style.transform = `translate(${drift.toFixed(1)}px, ${(drift * (y[1] - v[1]) / (y[0] - v[0])).toFixed(1)}px) scale(${walkScale.toFixed(4)}) rotateX(${(42 * rise).toFixed(2)}deg)`;
     state.walk.style.opacity = String(1 - smooth(progress(t, .51, .88)));
     state.walk.style.visibility = t >= .88 ? 'hidden' : 'visible';
 
@@ -237,11 +243,12 @@
     state.distance.style.opacity = String(smooth(progress(t, 1.18, 1.40)) * (1 - smooth(progress(t, 3.82, 4.10))));
     state.distance.style.transform = `translateY(${(16 * (1 - smooth(progress(t, 1.18, 1.40)))).toFixed(1)}px)`;
 
+    // Yash's live clip fades in under the end of the zoom: opacity only, no scale (no secondary push).
     const reveal = smooth(progress(t, 4.02, 5));
     state.yashImage.style.opacity = String(reveal);
-    state.yashImage.style.transform = `scale(${mix(1.16, 1, reveal).toFixed(5)})`;
+    state.yashImage.style.transform = 'none';
     state.yashImage.style.visibility = t <= 4.02 ? 'hidden' : 'visible';
-    state.yashImage.style.clipPath = t === 5 ? 'none' : `circle(${(145 * reveal).toFixed(2)}% at 50% 50%)`;
+    state.yashImage.style.clipPath = 'none';
   }
   global.Overhead = { mount, render };
 })(window);

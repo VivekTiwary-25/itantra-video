@@ -1,37 +1,42 @@
 [
   {
-    "start": 6.482,
-    "end": 9.802,
+    "start": 3.882,
+    "end": 7.202,
     "text": "Hey dude, I'm in the campus\nnear the entry benches,"
   },
   {
-    "start": 9.802,
-    "end": 11.062,
+    "start": 7.202,
+    "end": 8.462,
     "text": "where are you?"
   },
   {
-    "start": 19.08,
-    "end": 20.63,
-    "text": "Let's see how far that message"
+    "start": 16.48,
+    "end": 18.016,
+    "text": "Let's see how far that"
   },
   {
-    "start": 20.63,
-    "end": 22.22,
-    "text": "actually has to travel."
+    "start": 18.016,
+    "end": 19.68,
+    "text": "message actually has to travel."
   },
   {
-    "start": 29.23,
-    "end": 30.77,
+    "start": 26.43,
+    "end": 27.97,
     "text": "It's too hot here."
   },
   {
-    "start": 39.33,
-    "end": 41.169,
+    "start": 31.4,
+    "end": 33.239,
     "text": "Hey dude, I'm in the campus\nnear the entry benches,"
   },
   {
-    "start": 41.169,
-    "end": 42.674,
+    "start": 33.239,
+    "end": 34.744,
     "text": "where are you?"
+  },
+  {
+    "start": 35.18,
+    "end": 37.64,
+    "text": "I'm in the garden.\nI'll come to you."
   }
 ]

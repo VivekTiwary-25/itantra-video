@@ -44,3 +44,7 @@ ffmpeg -i <footage>/Video/normalpart6.mp4 -t 1.2 -an -vf "scale=1920:1080:flags=
 hyperframes.cmd snapshot film/scene2/v3a/overhead --at 0.2,0.6,4.3,4.97 --no-end
 ```
 `preview.html` uses the live clips. Set `const live = false` in it (or add `?stills` when opening it in a browser) to see the old still fallback.
+
+## F0050 motion change (spec 005 S2)
+- **Rise (t 0-0.8):** a tracking pull-back. The camera centre glides from Vachana's pin to the map centre (toward Yash) while the zoom goes 2.65 → 1 (exponential). The walk clip stays at the frame centre, drifting slightly down-right, so the walk travels FROM Vachana TOWARD Yash.
+- **Zoom (t 3.4-5.0):** one smooth direct zoom. A single smoothstep drives both the scale (1 → 5.2, exponential) and Yash's pin gliding to the frame centre. No overshoot, no second push. Yash's live clip fades in by opacity only (no scale, no circle wipe).

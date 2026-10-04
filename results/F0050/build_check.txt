@@ -1,0 +1,9 @@
+duration: 41.037
+intro_src (frame 0 source): 1
+YASH_REPLY: true
+yash_app EDL (source s): [[1.25,2.4],[2.9,3.95],[4.95,5.6],[7.2,11.3],[11.85,16.8],[18.3,19.4667]]
+yash_app events (segment dt): {"banner":0.2,"play":3.28,"tts":3.43,"ptt_down":7.23,"ptt_up":10.43,"sent":12.47}
+EDL cuts checked against freezes: 2.4, 2.9, 3.95, 4.95, 5.6, 7.2, 11.3, 11.85, 16.8, 18.3
+end_state: {"slot":"yash_app","slot_time":19.4334,"position":{"x":735,"y":40,"width":450,"height":1000},"background":"#0a0d12"}
+captions: 8
+N1: 3.2s (placeholder)
