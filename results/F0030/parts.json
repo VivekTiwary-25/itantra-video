@@ -1,0 +1,32 @@
+{
+  "image": "layer_mid.png",
+  "image_size": [1366, 2048],
+  "coordinate_system": "pixels from top-left",
+  "bbox_format": "[x_min, y_min, x_max, y_max]",
+  "parts": {
+    "microphone": {
+      "center": [609, 1780],
+      "bbox": [571, 1742, 647, 1818]
+    },
+    "processor": {
+      "center": [835, 430],
+      "bbox": [700, 315, 970, 545]
+    },
+    "bluetooth_chip": {
+      "center": [1065, 360],
+      "bbox": [1018, 300, 1112, 420]
+    },
+    "antenna": {
+      "center": [1140, 281],
+      "bbox": [954, 246, 1280, 310]
+    },
+    "loudspeaker": {
+      "center": [419, 1609],
+      "bbox": [310, 1522, 540, 1690]
+    },
+    "battery": {
+      "center": [679, 1082],
+      "bbox": [230, 602, 1115, 1554]
+    }
+  }
+}

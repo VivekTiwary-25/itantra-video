@@ -1,0 +1,3 @@
+F0030 is complete. I generated the three transparent phone layers, a stack preview, and a six-part map. The full-size files are in `local/private-out/F0030/` and `RENDERS:exploded_v2/`; 960 px previews and the required notes are in [REPORT.md](<REPO>/results/F0030/REPORT.md).
+
+TLDR: The layers are ready for review. The report notes a small edge-alignment difference and that the 2048 px masters were enlarged from the generator’s 1536 px output.
