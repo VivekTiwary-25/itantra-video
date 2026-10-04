@@ -1,5 +1,5 @@
 {
-  "_note": "Film v3 segment list for film/final/assemble_v3.py (claude-second, F0018; updated F0024, 4 Oct 2026). Order = film order. Paths are RENDERS: (relative to machine.local.json renders_dir). dx = dialogue/narration/TTS stem; 'embedded' means the picture file's own audio track (a mixed track where the build does not write separate stems). sfx = separate effects stem or null. tts_windows are [start, end] in SEGMENT seconds; a negative number counts back from the segment's end. tts_events (optional) is a build log whose 'app TTS' lines override tts_windows when the file exists. expected_duration null = not built yet, any length accepted with a warning. EXPLODED VIEW ON HOLD (Vivek, 4 Oct 10:55): removed from the film; s3 is followed directly by cards (acting lead, F0028).",
+  "_note": "Film v3 segment list for film/final/assemble_v3.py (claude-second, F0018; updated F0024, 4 Oct 2026). Order = film order. Paths are RENDERS: (relative to machine.local.json renders_dir). dx = dialogue/narration/TTS stem; 'embedded' means the picture file's own audio track (a mixed track where the build does not write separate stems). sfx = separate effects stem or null. tts_windows are [start, end] in SEGMENT seconds; a negative number counts back from the segment's end. tts_events (optional) is a build log whose 'app TTS' lines override tts_windows when the file exists. expected_duration null = not built yet, any length accepted with a warning. v4 (F0045): order intro, s2a, s2b, s3, s4, cards; s4 (film/scene4/) replaces the exploded view.",
   "fps": 30,
   "segments": [
     {
@@ -69,17 +69,18 @@
       "expected_duration": 51.4
     },
     {
-      "name": "exploded",
-      "folder": "film/exploded_v2",
-      "status": "exploded v2 photoreal teardown (F0030/F0034 layers, F0031+F0032r1)",
-      "render_cmd": "film/exploded_v2/render.cmd",
-      "video": "RENDERS:exploded_v2/exploded_v2.mp4",
+      "name": "s4",
+      "folder": "film/scene4/",
+      "status": "TODO (F0045): scene 4 recap + bonus (Blender on utkarsh-pc) not in git yet; picture/stems assumed per spec 005 S4 until its REPORT lands",
+      "render_cmd": "film/scene4/render.cmd",
+      "video": "RENDERS:scene4/scene4.mp4",
       "stems": {
-        "dx": null,
-        "sfx": "RENDERS:exploded_v2/ticks.wav"
+        "dx": "embedded",
+        "sfx": null
       },
       "tts_windows": [],
-      "expected_duration": 16.0
+      "tts_events": "RENDERS:scene4/audio_events.txt",
+      "expected_duration": null
     },
     {
       "name": "cards",

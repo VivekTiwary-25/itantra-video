@@ -191,7 +191,7 @@ def section_audio(name, t, s0, s1, cues):
                 + 0.10 * rub
                 + 0.18 * drone(t, ["D2"], trem_hz=0.5, depth=0.35)
                 + 0.05 * noise_band(t, 400, 2000, seed=4, rate=0.11))
-    if name == "exploded":
+    if name in ("exploded", "s4"):  # s4 (v4 recap) uses the glassy, airy exploded-view sound
         # glassy and airy: bright high pad, slow soft glass pings, high air
         ch = [(s0 - 2, s1 + 2, ["A3", "D4", "E4", "A4", "D5"])]
         times = grid(s0 - 1, s1 + 2, 1.5 * beat, offset=0.3)

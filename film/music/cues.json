@@ -5,16 +5,47 @@
   "crossfade_seconds": 2.5,
   "reverb_mix": 0.32,
   "sections": [
-    {"name": "intro",    "start": 0,   "end": 25,  "lufs": -28.0},
-    {"name": "s2a",      "start": 25,  "end": 75,  "lufs": -25.0},
-    {"name": "s2b",      "start": 75,  "end": 110, "lufs": -25.0},
-    {"name": "s3",       "start": 110, "end": 155, "lufs": -24.0},
-    {"name": "exploded", "start": 155, "end": 172, "lufs": -25.0},
-    {"name": "cards",    "start": 172, "end": 186, "lufs": -23.0, "closing_chord_at": 180}
+    {
+      "name": "intro",
+      "start": 0,
+      "end": 25,
+      "lufs": -32.0
+    },
+    {
+      "name": "s2a",
+      "start": 25,
+      "end": 75,
+      "lufs": -29.0
+    },
+    {
+      "name": "s2b",
+      "start": 75,
+      "end": 110,
+      "lufs": -29.0
+    },
+    {
+      "name": "s3",
+      "start": 110,
+      "end": 155,
+      "lufs": -28.0
+    },
+    {
+      "name": "s4",
+      "start": 155,
+      "end": 172,
+      "lufs": -29.0
+    },
+    {
+      "name": "cards",
+      "start": 172,
+      "end": 186,
+      "lufs": -27.0,
+      "closing_chord_at": 180
+    }
   ],
   "end_fade_seconds": 2.5,
   "duck": {
-    "speech_db": -10.0,
+    "speech_db": -14.0,
     "tts_extra_db": -4.0,
     "attack_ms": 150,
     "release_ms": 600,
@@ -22,7 +53,17 @@
     "threshold_dbfs": -45.0
   },
   "tts_windows": [
-    {"start": 66.5, "end": 70.5, "note": "Yash playback; retime to final s2a"},
-    {"start": 149.0, "end": 153.0, "note": "Vivek playback; retime to final s3"}
-  ]
+    {
+      "start": 66.5,
+      "end": 70.5,
+      "note": "Yash playback; retime to final s2a"
+    },
+    {
+      "start": 149.0,
+      "end": 153.0,
+      "note": "Vivek playback; retime to final s3"
+    }
+  ],
+  "speech_windows": [],
+  "_v4_note": "F0045: bed 4 dB lower than v3 (spec 005 G5); duck -14 dB under any speech (envelope of the dialogue stem AND speech_windows from narration placements), a further -4 dB inside tts_windows."
 }

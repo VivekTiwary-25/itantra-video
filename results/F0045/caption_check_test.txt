@@ -1,0 +1,12 @@
+OK      16.48-19.80    s2a   "Hey dude, I'm in the campus\nnear the entry benches,"
+OK      19.80-21.06    s2a   'where are you?'
+DIFF    41.09-42.63    s2a   "It's too hot here."
+       heard:   "Oh, it's too hot here."
+       missing: []   extra: ['oh']
+DIFF    80.00-82.00    s3    'iTantra searches nearby for help.'
+       heard:   ''
+       no speech heard in this window
+OK     104.09-104.57   s3    'Wait,'
+OK     104.57-105.65   s3    "I'm in the chemistry lab."
+
+4/6 captions match word for word; 2 to check

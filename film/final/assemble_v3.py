@@ -263,6 +263,36 @@ def make_stem(segs, kind: str, out: Path) -> None:
            "-c:a", "pcm_f32le", out)
 
 
+SPEECH_LABELS = ("dialogue", "narration", "tts", "app tts", "voice")
+
+
+def speech_windows(seg: dict, resolve) -> list[list[float]]:
+    """Segment-time windows where someone speaks (dialogue, narration, TTS), for the v4 ducking (spec 005 G5).
+    From the build's events log when it exists; otherwise the timeline's narration_starts with each line's
+    duration from film/common/narration_v4.json (placeholders until the real takes land)."""
+    if seg["slate"]:
+        return []
+    s = seg["spec"]
+    rows = []
+    ev = resolve(s["tts_events"]) if s.get("tts_events") else None
+    if ev and ev.is_file():
+        for line in ev.read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*([\d.]+)\s+([\d.]+)\s+(.*)", line)
+            label = m.group(3).split("   next:")[0].strip().lower() if m else ""
+            if label.startswith(SPEECH_LABELS):
+                rows.append([float(m.group(1)), float(m.group(2))])
+    if not rows:
+        tl = REPO / s.get("folder", "").rstrip("/") / "timeline.json"
+        nar = REPO / "film/common/narration_v4.json"
+        lines = json.loads(nar.read_text(encoding="utf-8")).get("lines", {}) if nar.is_file() else {}
+        if tl.is_file():
+            starts = json.loads(tl.read_text(encoding="utf-8")).get("narration_starts", {}) or {}
+            for key, at in starts.items():
+                dur = float((lines.get(key) or {}).get("duration", 3.0))
+                rows.append([float(at), float(at) + dur])
+    return [[max(0.0, a), min(seg["duration"], b)] for a, b in rows if b > 0 and a < seg["duration"]]
+
+
 def music_cues(segs, resolve, total: float) -> dict:
     base = json.loads((REPO / "film/music/cues.json").read_text(encoding="utf-8"))
     targets = {s["name"]: s for s in base.get("sections", [])}
@@ -301,8 +331,13 @@ def music_cues(segs, resolve, total: float) -> dict:
         s["tts"] = tts_windows(s, resolve)
         for a, b in s["tts"]:
             windows.append({"start": round(s["start"] + a, 3), "end": round(s["start"] + b, 3), "note": s["name"]})
-    cues = {k: v for k, v in base.items() if k not in ("sections", "tts_windows")}
-    cues.update(sections=merged, tts_windows=windows)
+    speech = []
+    for s in segs:
+        s["speech"] = speech_windows(s, resolve)
+        for a, b in s["speech"]:
+            speech.append({"start": round(s["start"] + a, 3), "end": round(s["start"] + b, 3), "note": s["name"]})
+    cues = {k: v for k, v in base.items() if k not in ("sections", "tts_windows", "speech_windows")}
+    cues.update(sections=merged, tts_windows=windows, speech_windows=speech)
     merged[-1]["end"] = round(total, 6)
     return cues
 
@@ -360,6 +395,8 @@ def main() -> int:
     ap.add_argument("--reuse-bed", action="store_true", help="reuse the work folder's bed.wav (same cue sheet only)")
     ap.add_argument("--bed-trim-db", type=float, help="fixed bed trim instead of matching the dialogue level")
     ap.add_argument("--no-qc", action="store_true")
+    ap.add_argument("--final-export", action="store_true",
+                    help="after QC passes, write RENDERS:full_film_v4_1440p.mp4 (2560x1440 lanczos upscale of the 1080p master)")
     args = ap.parse_args()
 
     cfg = json.loads((REPO / "machine.local.json").read_text(encoding="utf-8"))
@@ -460,9 +497,9 @@ def main() -> int:
                       "dx": "embedded" if (s["stems"].get("dx") or (None, False))[1] else
                             (rel(s["stems"]["dx"][0]) if s["stems"].get("dx") else None),
                       "sfx": rel(s["stems"]["sfx"][0]) if s["stems"].get("sfx") else None,
-                      "tts_windows": s.get("tts", [])} for s in segs],
+                      "tts_windows": s.get("tts", []), "speech_windows": s.get("speech", [])} for s in segs],
         "music": {"cue_sheet": rel(work / "cues_film.json"), "sections": cues["sections"],
-                  "tts_windows": cues["tts_windows"], "bed": bool(bed), "bed_trim_db": round(trim, 2)},
+                  "tts_windows": cues["tts_windows"], "speech_windows": cues["speech_windows"], "bed": bool(bed), "bed_trim_db": round(trim, 2)},
         "loudness": {"dialogue_stem": dx_loud, "mix_before_master": first, "master_gain_db": round(gain, 3),
                      "master_method": method_audio, "encoded_film": final,
                      "stems": {n: loudness(stems_dir / f"{n}.wav") for n in ("dx", "sfx", "music")}},
@@ -482,7 +519,26 @@ def main() -> int:
                    "--report", root / f"{tag}_qc.json", "--contact", root / f"{tag}_contact.jpg"]
         r = subprocess.run([str(a) for a in qc_args])
         print(f"QC exit code {r.returncode} (report {rel(root / f'{tag}_qc.json')})")
+        qc_ok = r.returncode == 0
+    else:
+        qc_ok = False
+    if args.final_export:
+        if args.draft or not qc_ok:
+            raise RuntimeError("--final-export needs a non-draft run whose QC passed (no --no-qc); 1440p not written")
+        export_1440(film, root / "full_film_v4_1440p.mp4", total_frames)
+        print(f"final export: {rel(root / 'full_film_v4_1440p.mp4')} (the 1080p master stays the reference for checks)")
     return 0
+
+
+def export_1440(master: Path, out: Path, frames: int) -> None:
+    """YouTube export (spec 005 G6): the checked 1080p master upscaled to 2560x1440, same audio stream."""
+    ffmpeg("-i", master, "-map", "0:v:0", "-map", "0:a:0", "-vf", "scale=2560:1440:flags=lanczos,format=yuv420p",
+           "-c:v", "libx264", "-profile:v", "high", "-preset", "slow", "-crf", "16", "-pix_fmt", "yuv420p",
+           "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709",
+           "-c:a", "copy", "-movflags", "+faststart", out)
+    v = probe(out)["video"]
+    if (v["width"], v["height"]) != (2560, 1440) or int(v.get("nb_read_packets", 0)) != frames:
+        raise RuntimeError(f"1440p export check failed: {v['width']}x{v['height']}, {v.get('nb_read_packets')} frames")
 
 
 if __name__ == "__main__":

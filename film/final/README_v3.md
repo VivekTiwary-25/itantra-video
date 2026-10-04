@@ -88,3 +88,21 @@ python film/final/beat_stills.py --film RENDERS:full_film_v3.mp4 --report RENDER
 - **Review:** look at every tile at both sizes. In `joins.jpg`, check that each cut flows as intended; the tool places the exact last and first frames side by side.
 - Frame extraction decodes the film once and selects the requested frame numbers, so the join images are frame-accurate. A missing timeline or a report/film frame-count mismatch stops the run.
 - Needs ffmpeg and Pillow. Takes about 20 s for a 2:35 film.
+
+## 5. v4 additions (F0045)
+- **Order:** intro, s2a, s2b, s3, **s4** (`film/scene4/`, `film/scene4/render.cmd`, `RENDERS:scene4/scene4.mp4`), cards. Exploded is replaced by s4. Fix the s4 entry in `v3_segments.json` (stems, `expected_duration`) from its REPORT once it lands.
+- **Music:** the bed is 4 dB lower and ducks -14 dB under every speech window (-18 dB in TTS windows); details in `film/music/MIX.md`. Speech windows come from each segment's `audio_events.txt` (dialogue / narration / TTS lines), else from its timeline `narration_starts` + `film/common/narration_v4.json` durations. They are listed in the report (`music.speech_windows`).
+- **Final export for YouTube:**
+  ```
+  python film/final/assemble_v3.py --final-export
+  ```
+  After a non-draft assembly whose QC passed, this writes `RENDERS:full_film_v4_1440p.mp4`: the 1080p master upscaled to 2560x1440 (lanczos, H.264 High, CRF 16), with the master's audio copied. All checks stay on the 1080p master. With `--draft` or `--no-qc` it refuses.
+- **Caption check (spec 005 G4), after the assembly:**
+  ```
+  python film/final/caption_check.py                                   # transcribes RENDERS:full_film_v3_stems/dx.wav
+  python film/final/caption_check.py --save-words RENDERS:review/words.json   # keep the transcription
+  python film/final/caption_check.py --words RENDERS:review/words.json        # re-check captions without re-transcribing
+  ```
+  - Transcription uses faster-whisper (`local/models/faster-whisper-medium.en` if present, else the `medium.en` model name).
+  - Each caption in `film/captions/v3/<segment>.json` is compared word for word with the words heard in its window; each heard word belongs to one caption only.
+  - Prints `DIFF` lines with missing / extra words, and "no speech heard" for empty windows. Exit 1 if anything differs.

@@ -4,7 +4,7 @@
 
 - Speech is detected from the dialogue stem's envelope (10 ms RMS, threshold in cues.json `duck.threshold_dbfs`,
   with a short hold so the bed does not pump between words).
-- Under speech the bed drops by `duck.speech_db` (default -10 dB); inside each `tts_windows` entry it drops a further
+- Under speech the bed drops by `duck.speech_db` (default -14 dB in v4; also forced inside `speech_windows`); inside each `tts_windows` entry it drops a further
   `duck.tts_extra_db` (default -4 dB).
 - The gain moves with a 150 ms attack (going down) and 600 ms release (coming back up), applied in dB.
 Default output: RENDERS:music/bed_v3_ducked.wav. Both inputs must be 48 kHz; the dialogue may be mono or stereo and is
@@ -76,7 +76,7 @@ def smooth_db(target_db: np.ndarray, attack_s: float, release_s: float) -> np.nd
 
 def duck(bed: np.ndarray, dialogue: np.ndarray, cues: dict) -> tuple[np.ndarray, dict]:
     d = cues.get("duck", {})
-    speech_db = float(d.get("speech_db", -10.0))
+    speech_db = float(d.get("speech_db", -14.0))
     tts_db = float(d.get("tts_extra_db", -4.0))
     attack = float(d.get("attack_ms", 150)) / 1000
     release = float(d.get("release_ms", 600)) / 1000
@@ -92,14 +92,19 @@ def duck(bed: np.ndarray, dialogue: np.ndarray, cues: dict) -> tuple[np.ndarray,
     frames = int(np.ceil(len(bed) / (FRAME * SR)))
     mask = speech_mask(dialogue, thr, hold)
     mask = np.concatenate([mask, np.zeros(frames - len(mask), bool)])
-    target = np.where(mask, speech_db, 0.0)
     times = np.arange(frames) * FRAME
+    detected = int(mask.sum())
+    # v4: known speech placements (narration, dialogue, TTS from the segments' audio events / timelines) always duck,
+    # even where the envelope is quiet; the envelope still catches anything not listed.
+    for w in cues.get("speech_windows", []) + cues.get("tts_windows", []):
+        mask[(times >= float(w["start"])) & (times < float(w["end"]))] = True
+    target = np.where(mask, speech_db, 0.0)
     for w in cues.get("tts_windows", []):
         target[(times >= float(w["start"])) & (times < float(w["end"]))] += tts_db
     gain_db = smooth_db(target, attack, release)
     # control rate -> sample rate
     gain = 10 ** (np.interp(np.arange(len(bed)) / SR, times, gain_db) / 20)
-    stats = {"speech_seconds": float(mask.sum() * FRAME), "min_gain_db": float(gain_db.min())}
+    stats = {"speech_seconds": float(mask.sum() * FRAME), "detected_seconds": detected * FRAME, "min_gain_db": float(gain_db.min())}
     return bed * gain[:, None], stats
 
 
