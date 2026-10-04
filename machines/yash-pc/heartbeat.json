@@ -1,23 +1,16 @@
 {
   "machine": "yash-pc",
-  "time": "2026-10-04T04:20:36Z",
-  "status": "restarting",
+  "time": "2026-10-04T04:21:00Z",
+  "status": "idle",
   "current_task": null,
   "workers": [
     "codex-f1"
   ],
   "rate_limited_until": null,
   "paused_by_safety_check": null,
-  "listener_pid": 16616,
-  "last_task_usage": {
-    "seen_at": "2026-10-04T04:20:08Z",
-    "input_tokens": 1564351,
-    "cached_input_tokens": 1514368,
-    "cache_write_input_tokens": 0,
-    "output_tokens": 13364,
-    "reasoning_output_tokens": 5251
-  },
+  "listener_pid": 21560,
+  "last_task_usage": null,
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-04T04:20:34Z"
+  "last_push_ok": "2026-10-04T04:20:58Z"
 }
