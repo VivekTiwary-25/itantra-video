@@ -13,7 +13,7 @@ destination.parent.mkdir(parents=True, exist_ok=True)
 
 rate = 48000
 duration = 17
-times = (4.1, 5.85, 7.6, 9.35, 11.1, 12.85)
+times = (2.7, 4.7, 6.7, 8.7, 10.7, 12.7)
 samples = [0.0] * (rate * duration)
 
 for layer, start_time in enumerate(times):

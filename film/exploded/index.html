@@ -12,39 +12,34 @@
   #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; isolation: isolate;
     background: radial-gradient(ellipse 920px 430px at 35% 82%, #102b42 0%, #0b1b2c 38%, transparent 78%),
                 radial-gradient(ellipse 740px 390px at 77% 38%, #0b1828 0%, transparent 85%), #040a13; }
-  #sonar { position: absolute; inset: 0; opacity: .58; pointer-events: none;
-    background: repeating-radial-gradient(circle at 34% 82%, transparent 0 111px, rgba(77,163,255,.1) 112px 113px, transparent 114px 146px); }
-  #sonar::after { content: ''; position: absolute; inset: 0;
-    background: linear-gradient(180deg, transparent 70%, rgba(5,12,22,.7)),
-                linear-gradient(90deg, transparent 49.96%, rgba(129,190,245,.09) 50%, transparent 50.04%); }
+  #sonar { position: absolute; inset: 0; pointer-events: none; }
+  .sonar-ring { position: absolute; width: 350px; height: 350px; border: 2px solid rgba(77,163,255,.32);
+    border-radius: 50%; transform: translate(-50%,-50%); box-shadow: 0 0 32px rgba(77,163,255,.075); }
   #stage { position: absolute; inset: 0; display: block; }
   #wires { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
-  .wire { fill: none; stroke: #4da3ff; stroke-width: 1.5; opacity: 0; filter: drop-shadow(0 0 5px rgba(77,163,255,.65)); }
+  .wire { fill: none; stroke: #4da3ff; stroke-width: 2; opacity: 0; filter: drop-shadow(0 0 5px rgba(77,163,255,.65)); }
   .wire.gold { stroke: #f5c451; filter: drop-shadow(0 0 7px rgba(245,196,81,.7)); }
   .point { fill: #a8d9ff; opacity: 0; filter: drop-shadow(0 0 7px #4da3ff); }
   .point.gold { fill: #ffe4a2; filter: drop-shadow(0 0 7px #f5c451); }
   #labels { position: absolute; inset: 0; pointer-events: none; }
-  .glass-panel.label { position: absolute; left: 1040px; width: 795px; min-height: 126px;
-    border-radius: 19px; padding: 16px 24px 17px 27px; opacity: 0; transform: translateX(16px);
+  .glass-panel.label { position: absolute; left: 1020px; top: 392px; width: 840px; min-height: 190px;
+    border-radius: 22px; padding: 25px 34px 27px; opacity: 0; transform: translateX(16px);
     border-left: 2px solid rgba(77,163,255,.7); box-shadow: 0 15px 34px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.1); }
   .glass-panel.label.gold { border-left-color: rgba(245,196,81,.88); }
-  .label .title { font-size: 31px; line-height: 1.15; font-weight: 635; letter-spacing: -.017em; }
-  .label .secondary { display: block; margin-top: 8px; color: var(--text-dim); font-size: 24px; line-height: 1.18; font-weight: 440; }
-  .label:nth-child(1) { top: 47px; }
-  .label:nth-child(2) { top: 203px; }
-  .label:nth-child(3) { top: 359px; }
-  .label:nth-child(4) { top: 515px; }
-  .label:nth-child(5) { top: 671px; }
-  .label:nth-child(6) { top: 827px; }
-  #packet-lock { position: absolute; width: 30px; height: 30px; color: #eef9ff; opacity: 0; pointer-events: none;
-    filter: drop-shadow(0 0 4px #4da3ff); }
-  #packet-lock svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .label .title { font-size: 40px; line-height: 1.14; font-weight: 635; letter-spacing: -.017em; }
+  .label .secondary { display: block; margin-top: 12px; color: var(--text-dim); font-size: 30px; line-height: 1.2; font-weight: 440; }
+  #packet-lock { position: absolute; width: 72px; height: 36px; border-radius: 20px; display: grid; place-items: center;
+    color: white; opacity: 0; pointer-events: none; border: 1px solid #b9e9ff;
+    background: linear-gradient(180deg,#80d4ff,#1678da); box-shadow: 0 0 16px 5px rgba(77,163,255,.62), 0 0 38px rgba(77,163,255,.45); }
+  #packet-lock::before { content: ''; position: absolute; right: 62px; top: 13px; width: 48px; height: 9px;
+    background: linear-gradient(90deg,transparent,rgba(77,163,255,.7)); filter: blur(5px); }
+  #packet-lock svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   #vignette { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 145px 48px rgba(0,0,0,.48); }
 </style>
 </head>
 <body>
 <main id="root" data-composition-id="exploded" data-start="0" data-duration="17" data-width="1920" data-height="1080" data-fps="30">
-  <div id="sonar"></div>
+  <div id="sonar"><i class="sonar-ring"></i><i class="sonar-ring"></i><i class="sonar-ring"></i><i class="sonar-ring"></i></div>
   <canvas id="stage" width="1920" height="1080"></canvas>
   <svg id="wires" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
   <div id="labels">
@@ -61,7 +56,7 @@
 <script>
 'use strict';
 const W = 1920, H = 1080;
-const ARRIVALS = [4.1, 5.85, 7.6, 9.35, 11.1, 12.85];
+const ARRIVALS = [2.7, 4.7, 6.7, 8.7, 10.7, 12.7];
 const clamp = (v, a=0, b=1) => Math.max(a, Math.min(b, v));
 const ease = v => { v = clamp(v); return v*v*(3-2*v); };
 const scene = new THREE.Scene();
@@ -128,6 +123,84 @@ for (let i=0; i<6; i++) {
   layers.push({g, mat, top, glow});
 }
 
+// Draw each circuit glyph directly on its glass surface. No text is baked into textures.
+function strokePath(c, points) {
+  c.beginPath(); c.moveTo(...points[0]);
+  for (const point of points.slice(1)) c.lineTo(...point);
+  c.stroke();
+}
+function paintLayer(i, progress, time) {
+  const {canvas, context:c, art} = layers[i];
+  c.clearRect(0,0,480,950);
+  c.save(); c.translate(240,720); c.scale(.62,.62); c.translate(-240,-475);
+  const gold=i===3, color=gold?'#ffe09a':'#a9dcff';
+  c.strokeStyle=color; c.fillStyle=color; c.lineWidth=9; c.lineCap='round'; c.lineJoin='round';
+  c.shadowColor=gold?'#f5c451':'#4da3ff'; c.shadowBlur=progress>0?28:12;
+  if (i===1) {
+    // Sound waves become a set of text-shaped strokes when speech reaches this slab.
+    c.strokeStyle='#eef9ff'; c.lineWidth=16;
+    for(let x=70; x<=205; x+=18) {
+      const h=(16+48*Math.abs(Math.sin(x*.13+time*6)))*(1-progress)+8*progress;
+      strokePath(c,[[x,475-h],[x,475+h]]);
+    }
+    c.globalAlpha=progress;
+    [410,457,504,551].forEach((y,n)=>strokePath(c,[[270,y],[405-(n%2)*42,y]]));
+    c.globalAlpha=1;
+    strokePath(c,[[228,475],[250,475]]);
+  } else if (i===2) {
+    c.lineWidth=13;
+    c.beginPath(); c.roundRect(163,442,154,128,18); c.stroke();
+    c.beginPath(); c.arc(240,442-25*(1-progress),54,Math.PI,0); c.stroke();
+    // The shackle drops into the body as the packet arrives.
+    if(progress<1) strokePath(c,[[186,440],[186,423-22*(1-progress)]]);
+    c.beginPath(); c.arc(240,497,10,0,Math.PI*2); c.fill();
+    strokePath(c,[[240,503],[240,527]]);
+  } else if (i===3) {
+    c.lineWidth=11;
+    c.beginPath(); c.arc(240,475,102,0,Math.PI*2); c.stroke();
+    strokePath(c,[[240,305],[240,645],[314,572],[240,475],[314,378],[240,305]]);
+    strokePath(c,[[166,385],[314,572]]); strokePath(c,[[166,565],[314,378]]);
+    for(let n=0;n<3;n++) {
+      c.globalAlpha=(.16+.2*progress)*(1-n*.25);
+      c.beginPath(); c.arc(240,475,145+n*32+12*Math.sin(time*2-n),-.7,.7); c.stroke();
+      c.beginPath(); c.arc(240,475,145+n*32+12*Math.sin(time*2-n),Math.PI-.7,Math.PI+.7); c.stroke();
+    }
+    c.globalAlpha=1;
+  } else if (i===4) {
+    c.lineWidth=12;
+    strokePath(c,[[126,443],[166,443],[212,405],[212,545],[166,507],[126,507],[126,443]]);
+    for(let n=0;n<3;n++) {
+      c.globalAlpha=.45+.55*progress;
+      c.beginPath(); c.arc(211,475,62+n*42,-.82,.82); c.stroke();
+    }
+    c.globalAlpha=1;
+  } else if (i===5) {
+    c.lineWidth=11;
+    c.beginPath(); c.arc(240,505,115,Math.PI,0); c.stroke();
+    strokePath(c,[[125,505],[125,547],[355,547],[355,505]]);
+    c.beginPath(); c.arc(195,465,7,0,Math.PI*2); c.fill();
+    c.beginPath(); c.arc(285,465,7,0,Math.PI*2); c.fill();
+    strokePath(c,[[156,412],[130,372]]); strokePath(c,[[324,412],[350,372]]);
+  }
+  if(progress>0 && progress<1) {
+    const y=300+420*progress;
+    const band=c.createLinearGradient(0,y-75,0,y+75);
+    band.addColorStop(0,'transparent'); band.addColorStop(.5,gold?'rgba(245,196,81,.28)':'rgba(77,163,255,.32)'); band.addColorStop(1,'transparent');
+    c.shadowBlur=0; c.fillStyle=band; c.fillRect(28,y-75,424,150);
+  }
+  c.restore(); art.needsUpdate=true;
+}
+for(let i=1;i<6;i++) {
+  const canvas=document.createElement('canvas'); canvas.width=480; canvas.height=950;
+  const art=new THREE.CanvasTexture(canvas); art.colorSpace=THREE.SRGBColorSpace;
+  const mesh=new THREE.Mesh(new THREE.PlaneGeometry(2.34,4.94),
+    new THREE.MeshBasicMaterial({map:art,transparent:true,opacity:0,depthTest:false,depthWrite:false,side:THREE.DoubleSide}));
+  mesh.renderOrder=10+i;
+  mesh.position.z=.125; layers[i].g.add(mesh);
+  Object.assign(layers[i],{canvas,context:canvas.getContext('2d'),art,mesh,lastPaint:-1});
+  paintLayer(i,0,0);
+}
+
 // The screen texture is made at runtime so the private image never appears in Git.
 const screenCanvas = document.createElement('canvas'); screenCanvas.width=540; screenCanvas.height=1160;
 const ctx = screenCanvas.getContext('2d');
@@ -150,10 +223,15 @@ const cameraDot = new THREE.Mesh(new THREE.CircleGeometry(.052,20), new THREE.Me
 cameraDot.position.set(0,2.45,.26); layers[0].g.add(cameraDot);
 
 const packet = new THREE.Group(); phone.add(packet);
-const capsule = new THREE.Mesh(new THREE.SphereGeometry(.18,24,16), new THREE.MeshBasicMaterial({color:0x92d8ff}));
-capsule.scale.set(1.13,.78,1.45); packet.add(capsule);
-const halo = new THREE.Mesh(new THREE.SphereGeometry(.31,24,16), new THREE.MeshBasicMaterial({color:0x4da3ff, transparent:true, opacity:.13, depthWrite:false}));
-halo.scale.set(1.3,1,1.7); packet.add(halo);
+const capsule = new THREE.Mesh(new THREE.SphereGeometry(.25,24,16), new THREE.MeshBasicMaterial({color:0x86d7ff}));
+capsule.scale.set(1.55,.68,.75); packet.add(capsule);
+const halo = new THREE.Mesh(new THREE.SphereGeometry(.39,24,16), new THREE.MeshBasicMaterial({color:0x4da3ff, transparent:true, opacity:.22,depthWrite:false}));
+halo.scale.set(1.5,.85,1); packet.add(halo);
+for(let n=1;n<=4;n++) {
+  const trail=new THREE.Mesh(new THREE.SphereGeometry(.16,12,8),
+    new THREE.MeshBasicMaterial({color:0x4da3ff,transparent:true,opacity:.19/n,depthWrite:false}));
+  trail.position.set(-.04*n,.025*n,.28*n); trail.scale.set(1.2,.55,.65); packet.add(trail);
+}
 const packetLight = new THREE.PointLight(0x4da3ff, 2.1, 2.2); packet.add(packetLight);
 
 const svg = document.getElementById('wires');
@@ -172,54 +250,68 @@ function screenPoint(local, group=phone) {
 }
 function draw(time) {
   const t=clamp(Number(time)||0,0,17); currentTime=t;
-  const turn=ease((t-.05)/1.85);
-  const reunite=ease((t-14.15)/2.55);
-  const spread=ease((t-2)/1.5)*(1-reunite);
-  phone.rotation.x=-1.16*turn+.78*reunite;
-  phone.rotation.y=-.38*turn;
-  phone.rotation.z=.04*turn;
-  phone.scale.setScalar(1-.18*turn);
+  const turn=ease((t-1.45)/1.85);
+  const reunite=ease((t-14.15)/1.25);
+  const spread=ease((t-2.05)/1.45)*(1-reunite);
+  phone.position.x=-1.6*ease((t-1.8)/1.6)*(1-ease((t-14.25)/.7));
+  phone.rotation.x=-.82*turn*(1-reunite);
+  phone.rotation.y=-.27*turn*(1-reunite);
+  phone.rotation.z=.04*turn*(1-reunite);
+  phone.scale.setScalar(1.02-.20*spread);
   body.visible=spread<.16;
   bodyEdge.visible=body.visible;
   layers.forEach((layer,i)=>{
     layer.g.position.z=(2.5-i)*.93*spread + .015*(2.5-i);
     const arrival=ARRIVALS[i];
-    const awakened=ease((t-arrival)/.23);
+    const awakened=ease((t-arrival)/.4);
     const pulse=Math.exp(-Math.max(0,t-arrival)*5.5)*(t>=arrival?1:0);
     const lit=awakened*(1-reunite);
-    layer.mat.emissiveIntensity=.075+.42*lit+.48*pulse;
-    layer.mat.opacity=.50+.12*lit;
+    layer.mat.emissiveIntensity=.075+.25*lit+.55*pulse;
+    layer.mat.opacity=i===0 ? .79+.08*lit : .43+.09*lit;
     layer.top.material.opacity=.52+.45*lit;
-    layer.glow.material.opacity=.04+.32*lit+.55*pulse;
+    layer.glow.material.opacity=.04+.25*lit+.66*pulse;
+    if(i>0) {
+      layer.mesh.material.opacity=spread*(.38+.55*lit);
+      const progress=ease((t-arrival+.12)/.65);
+      const paintKey=Math.round(progress*30)+(i===3&&lit>.01?Math.round(t*12)*31:0);
+      if(layer.lastPaint!==paintKey) { paintLayer(i,progress,t); layer.lastPaint=paintKey; }
+    }
   });
-  screen.material.opacity=1-.68*spread;
+  screen.material.opacity=1-.08*spread;
   screen.visible=screen.material.opacity>.01;
-  packet.visible=t>=3.7 && t<14.3;
+  packet.visible=t>=2.4 && t<14.1;
   if (packet.visible) {
-    const p=clamp((t-3.7)/(12.85-3.7));
-    packet.position.set(.28,-.06,2.5*.93*spread - p*5*.93*spread+.4);
-    packet.scale.setScalar(.84+.13*Math.sin(t*5));
+    const layerIndex=clamp((t-2.7)/2,0,5);
+    packet.position.set(.2,-.06,(2.5-layerIndex)*.93*spread+.19);
+    packet.scale.setScalar(.92+.05*Math.sin(t*5));
     const pt=screenPoint(new THREE.Vector3(0,0,0),packet);
-    lock.style.left=(pt.x-15)+'px'; lock.style.top=(pt.y-15)+'px';
+    lock.style.left=(pt.x-36)+'px'; lock.style.top=(pt.y-18)+'px';
     lock.style.opacity='1';
   } else lock.style.opacity='0';
   labels.forEach((label,i)=>{
-    const born=ease((t-ARRIVALS[i])/.28);
-    const end=1-ease((t-14)/.75);
-    const old=t>=ARRIVALS[i+2] ? .6 : 1;
-    const visibility=born*end*old;
+    const born=ease((t-ARRIVALS[i])/.24);
+    const end=1-ease((t-14)/.5);
+    const next=i<5?1-ease((t-ARRIVALS[i+1]+.15)/.45):1;
+    const visibility=born*end*next;
     label.style.opacity=visibility.toFixed(3);
     label.style.transform=`translateX(${(1-born)*16}px)`;
     const source=screenPoint(new THREE.Vector3(.9,0,.075),layers[i].g);
-    const targetY=47+i*156+63;
-    const anchorX=1037;
-    const bendX=Math.max(source.x+45, 910);
+    const targetY=500;
+    const anchorX=1018;
+    const bendX=Math.max(source.x+45, 925);
     wires[i].path.setAttribute('d',`M ${source.x.toFixed(1)} ${source.y.toFixed(1)} L ${bendX.toFixed(1)} ${source.y.toFixed(1)} L ${anchorX} ${targetY.toFixed(1)}`);
     wires[i].path.style.opacity=(visibility*.55).toFixed(3);
     wires[i].point.setAttribute('cx',source.x.toFixed(1)); wires[i].point.setAttribute('cy',source.y.toFixed(1));
     wires[i].point.style.opacity=visibility.toFixed(3);
   });
-  document.getElementById('sonar').style.opacity=(.42+.18*Math.sin(t*1.1)+.22*reunite).toFixed(3);
+  const sonarCentre=screenPoint(new THREE.Vector3(0,0,0));
+  document.querySelectorAll('.sonar-ring').forEach((ring,i)=>{
+    const phase=((t*.13+i/4)%1);
+    const diameter=280+phase*940;
+    ring.style.left=sonarCentre.x+'px'; ring.style.top=sonarCentre.y+'px';
+    ring.style.width=diameter+'px'; ring.style.height=diameter+'px';
+    ring.style.opacity=(.8*(1-phase)).toFixed(3);
+  });
   renderer.render(scene,camera);
 }
 const timeline=gsap.timeline({paused:true,onUpdate:()=>draw(timeline.time())});
