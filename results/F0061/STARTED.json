@@ -1,0 +1,10 @@
+{
+  "id": "F0061",
+  "machine": "utkarsh-pc",
+  "worker": "codex-f2",
+  "time": "2026-10-04T16:57:08Z",
+  "model": "gpt-6-sol",
+  "effort": "high",
+  "pid": 28528,
+  "timeout_min": 150
+}
