@@ -5,489 +5,1666 @@
     "N0": {
       "segment": "s2a",
       "beat": "over the Normal card",
-      "duration": 4.2,
+      "duration": 5.73,
       "text": "First, a normal message. It's private, just for someone you trust.",
       "script": "First, a normal message. It's private, just for someone you trust.",
       "file": "RENDERS:narration/v4/N0.wav",
-      "status": "placeholder"
+      "status": "real",
+      "take": "N0.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "First,",
+          "start": 0.0,
+          "end": 0.52
+        },
+        {
+          "word": "a",
+          "start": 0.98,
+          "end": 1.04
+        },
+        {
+          "word": "normal",
+          "start": 1.04,
+          "end": 1.58
+        },
+        {
+          "word": "message.",
+          "start": 1.58,
+          "end": 2.12
+        },
+        {
+          "word": "It's",
+          "start": 2.7,
+          "end": 3.02
+        },
+        {
+          "word": "private",
+          "start": 3.02,
+          "end": 3.42
+        },
+        {
+          "word": "just",
+          "start": 3.42,
+          "end": 4.18
+        },
+        {
+          "word": "for",
+          "start": 4.18,
+          "end": 4.44
+        },
+        {
+          "word": "someone",
+          "start": 4.44,
+          "end": 4.92
+        },
+        {
+          "word": "you",
+          "start": 4.92,
+          "end": 5.14
+        },
+        {
+          "word": "trust.",
+          "start": 5.14,
+          "end": 5.5
+        }
+      ],
+      "asr_text": "First, a normal message. It's private just for someone you trust."
     },
     "N1": {
       "segment": "s2a",
       "beat": "walk",
-      "duration": 3.2,
+      "duration": 3.23,
       "text": "Let's see how far that message actually has to travel.",
       "file": "RENDERS:narration/v4/N1.wav",
       "status": "real",
-      "take": "N1.mp3",
+      "take": "N1.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
         {
           "word": "Let's",
           "start": 0.0,
-          "end": 0.52
+          "end": 0.46
         },
         {
           "word": "see",
-          "start": 0.52,
-          "end": 0.76
+          "start": 0.46,
+          "end": 0.7
         },
         {
           "word": "how",
-          "start": 0.76,
-          "end": 1.1
+          "start": 0.7,
+          "end": 1.24
         },
         {
           "word": "far",
-          "start": 1.1,
-          "end": 1.32
+          "start": 1.24,
+          "end": 1.52
         },
         {
           "word": "that",
-          "start": 1.32,
-          "end": 1.56
+          "start": 1.52,
+          "end": 1.68
         },
         {
           "word": "message",
-          "start": 1.56,
-          "end": 1.88
+          "start": 1.68,
+          "end": 2.02
         },
         {
           "word": "actually",
-          "start": 1.88,
-          "end": 2.28
+          "start": 2.02,
+          "end": 2.48
         },
         {
           "word": "has",
-          "start": 2.28,
-          "end": 2.54
+          "start": 2.48,
+          "end": 2.66
         },
         {
           "word": "to",
-          "start": 2.54,
-          "end": 2.7
+          "start": 2.66,
+          "end": 2.82
         },
         {
           "word": "travel.",
-          "start": 2.7,
-          "end": 3.02
+          "start": 2.82,
+          "end": 3.08
         }
       ]
     },
     "N2": {
       "segment": "s2b",
       "beat": "sonar opening",
-      "duration": 3.32,
+      "duration": 3.81,
       "text": "But how does that happen? Bluetooth doesn't reach that far.",
       "file": "RENDERS:narration/v4/N2.wav",
       "status": "real",
-      "take": "N2.mp3",
+      "take": "N2.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
         {
           "word": "But",
           "start": 0.0,
-          "end": 0.26
+          "end": 0.22
         },
         {
           "word": "how",
-          "start": 0.26,
+          "start": 0.22,
           "end": 0.56
         },
         {
           "word": "does",
           "start": 0.56,
-          "end": 0.8
+          "end": 0.86
         },
         {
           "word": "that",
-          "start": 0.8,
+          "start": 0.86,
           "end": 1.08
         },
         {
-          "word": "happen?",
+          "word": "happen,",
           "start": 1.08,
-          "end": 1.44
+          "end": 1.5
         },
         {
           "word": "Bluetooth",
-          "start": 1.76,
-          "end": 2.1
+          "start": 2.32,
+          "end": 2.58
         },
         {
           "word": "doesn't",
-          "start": 2.1,
-          "end": 2.52
+          "start": 2.58,
+          "end": 3.06
         },
         {
           "word": "reach",
-          "start": 2.52,
-          "end": 2.7
+          "start": 3.06,
+          "end": 3.16
         },
         {
           "word": "that",
-          "start": 2.7,
-          "end": 2.94
+          "start": 3.16,
+          "end": 3.44
         },
         {
           "word": "far.",
-          "start": 2.94,
-          "end": 3.18
+          "start": 3.44,
+          "end": 3.7
         }
-      ]
+      ],
+      "asr_text": "But how does that happen, Bluetooth doesn't reach that far."
     },
     "N2a": {
       "segment": "s2b",
       "beat": "speech to text",
-      "duration": 2.1,
-      "text": "",
+      "duration": 6.0,
+      "text": "When Vachana speaks, her phone turns her voice into text right there. No internet.",
       "file": "RENDERS:narration/v4/N2a.wav",
-      "status": "placeholder",
+      "status": "real",
       "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
+      "dropped": true,
+      "take": "N2a.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "When",
+          "start": 0.0,
+          "end": 0.24
+        },
+        {
+          "word": "Vajna",
+          "start": 0.24,
+          "end": 0.6
+        },
+        {
+          "word": "speaks,",
+          "start": 0.6,
+          "end": 1.02
+        },
+        {
+          "word": "her",
+          "start": 1.48,
+          "end": 1.54
+        },
+        {
+          "word": "phone",
+          "start": 1.54,
+          "end": 1.9
+        },
+        {
+          "word": "turns",
+          "start": 1.9,
+          "end": 2.48
+        },
+        {
+          "word": "her",
+          "start": 2.48,
+          "end": 2.76
+        },
+        {
+          "word": "voice",
+          "start": 2.76,
+          "end": 3.02
+        },
+        {
+          "word": "into",
+          "start": 3.02,
+          "end": 3.4
+        },
+        {
+          "word": "text",
+          "start": 3.4,
+          "end": 3.82
+        },
+        {
+          "word": "right",
+          "start": 3.82,
+          "end": 4.34
+        },
+        {
+          "word": "there.",
+          "start": 4.34,
+          "end": 4.74
+        },
+        {
+          "word": "No",
+          "start": 5.26,
+          "end": 5.42
+        },
+        {
+          "word": "internet.",
+          "start": 5.42,
+          "end": 5.82
+        }
+      ],
+      "asr_text": "When Vajna speaks, her phone turns her voice into text right there. No internet."
     },
     "N2b": {
       "segment": "s2b",
       "beat": "sealed capsule",
-      "duration": 2.1,
-      "text": "",
+      "duration": 6.92,
+      "text": "The text gets locked, so only Yash can open it, and it's tiny, about 1.2 kilobytes.",
       "file": "RENDERS:narration/v4/N2b.wav",
-      "status": "placeholder",
+      "status": "real",
       "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
+      "dropped": true,
+      "take": "N2b.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "The",
+          "start": 0.0,
+          "end": 0.26
+        },
+        {
+          "word": "text",
+          "start": 0.26,
+          "end": 0.58
+        },
+        {
+          "word": "gets",
+          "start": 0.58,
+          "end": 0.86
+        },
+        {
+          "word": "logged,",
+          "start": 0.86,
+          "end": 1.32
+        },
+        {
+          "word": "so",
+          "start": 1.84,
+          "end": 1.88
+        },
+        {
+          "word": "only",
+          "start": 1.88,
+          "end": 2.26
+        },
+        {
+          "word": "Yash",
+          "start": 2.26,
+          "end": 2.58
+        },
+        {
+          "word": "can",
+          "start": 2.58,
+          "end": 2.8
+        },
+        {
+          "word": "open",
+          "start": 2.8,
+          "end": 3.0
+        },
+        {
+          "word": "it,",
+          "start": 3.0,
+          "end": 3.52
+        },
+        {
+          "word": "and",
+          "start": 3.74,
+          "end": 3.98
+        },
+        {
+          "word": "it's",
+          "start": 3.98,
+          "end": 4.44
+        },
+        {
+          "word": "tiny,",
+          "start": 4.44,
+          "end": 4.76
+        },
+        {
+          "word": "about",
+          "start": 5.26,
+          "end": 5.44
+        },
+        {
+          "word": "1",
+          "start": 5.44,
+          "end": 5.76
+        },
+        {
+          "word": ".2",
+          "start": 5.76,
+          "end": 6.18
+        },
+        {
+          "word": "kilobytes.",
+          "start": 6.18,
+          "end": 6.78
+        }
+      ],
+      "asr_text": "The text gets logged, so only Yash can open it, and it's tiny, about 1 .2 kilobytes."
     },
     "N2c": {
       "segment": "s2b",
       "beat": "encrypted hops",
-      "duration": 2.1,
-      "text": "",
+      "duration": 8.11,
+      "text": "Then it jumps from phone to phone over Bluetooth. Each phone passes it on, but none of them can read it.",
       "file": "RENDERS:narration/v4/N2c.wav",
-      "status": "placeholder",
+      "status": "real",
       "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
+      "dropped": true,
+      "take": "N2c.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "Then",
+          "start": 0.0,
+          "end": 0.34
+        },
+        {
+          "word": "it",
+          "start": 0.34,
+          "end": 1.02
+        },
+        {
+          "word": "jumps",
+          "start": 1.02,
+          "end": 1.32
+        },
+        {
+          "word": "from",
+          "start": 1.32,
+          "end": 1.64
+        },
+        {
+          "word": "phone",
+          "start": 1.64,
+          "end": 1.94
+        },
+        {
+          "word": "to",
+          "start": 1.94,
+          "end": 2.14
+        },
+        {
+          "word": "phone",
+          "start": 2.14,
+          "end": 2.64
+        },
+        {
+          "word": "over",
+          "start": 2.64,
+          "end": 3.2
+        },
+        {
+          "word": "bluetooth.",
+          "start": 3.2,
+          "end": 3.76
+        },
+        {
+          "word": "Each",
+          "start": 4.32,
+          "end": 4.54
+        },
+        {
+          "word": "phone",
+          "start": 4.54,
+          "end": 4.84
+        },
+        {
+          "word": "passes",
+          "start": 4.84,
+          "end": 5.26
+        },
+        {
+          "word": "it",
+          "start": 5.26,
+          "end": 5.96
+        },
+        {
+          "word": "but",
+          "start": 5.96,
+          "end": 6.3
+        },
+        {
+          "word": "none",
+          "start": 6.3,
+          "end": 7.0
+        },
+        {
+          "word": "of",
+          "start": 7.0,
+          "end": 7.18
+        },
+        {
+          "word": "them",
+          "start": 7.18,
+          "end": 7.4
+        },
+        {
+          "word": "can",
+          "start": 7.4,
+          "end": 7.58
+        },
+        {
+          "word": "read",
+          "start": 7.58,
+          "end": 7.82
+        },
+        {
+          "word": "it.",
+          "start": 7.82,
+          "end": 8.04
+        }
+      ],
+      "asr_text": "Then it jumps from phone to phone over bluetooth. Each phone passes it but none of them can read it."
     },
     "N2d": {
       "segment": "s2b",
       "beat": "waits and moves",
-      "duration": 2.1,
-      "text": "",
+      "duration": 7.79,
+      "text": "If nobody is in range, it just waits, up to 24 hours, and moves along as people walk.",
       "file": "RENDERS:narration/v4/N2d.wav",
-      "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
-    },
-    "N2e": {
-      "segment": "s2b",
-      "beat": "6 hops",
-      "duration": 2.1,
-      "text": "",
-      "file": "RENDERS:narration/v4/N2e.wav",
-      "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
-    },
-    "N2f": {
-      "segment": "s2b",
-      "beat": "real relay",
-      "duration": 2.1,
-      "text": "",
-      "file": "RENDERS:narration/v4/N2f.wav",
-      "status": "placeholder",
-      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
-    },
-    "N3": {
-      "segment": "s2b",
-      "beat": "arrives",
-      "duration": 1.54,
-      "text": "And that's how it gets there.",
-      "file": "RENDERS:narration/v4/N3.wav",
       "status": "real",
-      "take": "N3.mp3",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true,
+      "take": "N2d.m4a",
       "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
         {
-          "word": "And",
+          "word": "If",
           "start": 0.0,
           "end": 0.28
         },
         {
-          "word": "that's",
+          "word": "nobody",
           "start": 0.28,
-          "end": 0.76
+          "end": 0.72
         },
         {
-          "word": "how",
-          "start": 0.76,
-          "end": 0.88
+          "word": "is",
+          "start": 0.72,
+          "end": 0.98
+        },
+        {
+          "word": "in",
+          "start": 0.98,
+          "end": 1.2
+        },
+        {
+          "word": "range,",
+          "start": 1.2,
+          "end": 1.42
         },
         {
           "word": "it",
-          "start": 0.88,
-          "end": 1.02
+          "start": 1.9,
+          "end": 1.96
+        },
+        {
+          "word": "just",
+          "start": 1.96,
+          "end": 2.24
+        },
+        {
+          "word": "waits",
+          "start": 2.24,
+          "end": 2.72
+        },
+        {
+          "word": "up",
+          "start": 2.72,
+          "end": 3.34
+        },
+        {
+          "word": "to",
+          "start": 3.34,
+          "end": 3.62
+        },
+        {
+          "word": "24",
+          "start": 3.62,
+          "end": 4.2
+        },
+        {
+          "word": "hours",
+          "start": 4.2,
+          "end": 4.82
+        },
+        {
+          "word": "and",
+          "start": 4.82,
+          "end": 5.68
+        },
+        {
+          "word": "moves",
+          "start": 5.68,
+          "end": 6.0
+        },
+        {
+          "word": "along",
+          "start": 6.0,
+          "end": 6.52
+        },
+        {
+          "word": "as",
+          "start": 6.52,
+          "end": 6.94
+        },
+        {
+          "word": "people",
+          "start": 6.94,
+          "end": 7.24
+        },
+        {
+          "word": "walk.",
+          "start": 7.24,
+          "end": 7.64
+        }
+      ],
+      "asr_text": "If nobody is in range, it just waits up to 24 hours and moves along as people walk."
+    },
+    "N2e": {
+      "segment": "s2b",
+      "beat": "6 hops",
+      "duration": 3.44,
+      "text": "We have tested 6 hops on real phones.",
+      "file": "RENDERS:narration/v4/N2e.wav",
+      "status": "real",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true,
+      "take": "N2e.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "We",
+          "start": 0.0,
+          "end": 0.22
+        },
+        {
+          "word": "have",
+          "start": 0.22,
+          "end": 0.42
+        },
+        {
+          "word": "tested",
+          "start": 0.42,
+          "end": 0.86
+        },
+        {
+          "word": "6",
+          "start": 0.86,
+          "end": 1.56
+        },
+        {
+          "word": "hops",
+          "start": 1.56,
+          "end": 2.06
+        },
+        {
+          "word": "on",
+          "start": 2.06,
+          "end": 2.58
+        },
+        {
+          "word": "real",
+          "start": 2.58,
+          "end": 2.78
+        },
+        {
+          "word": "phones.",
+          "start": 2.78,
+          "end": 3.14
+        }
+      ],
+      "asr_text": "We have tested 6 hops on real phones."
+    },
+    "N2f": {
+      "segment": "s2b",
+      "beat": "real relay",
+      "duration": 4.72,
+      "text": "Trisha, Utkarsh and Vaishnavi carry it, but they can't read it.",
+      "file": "RENDERS:narration/v4/N2f.wav",
+      "status": "real",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
+      "dropped": true,
+      "take": "N2f.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "Trisha,",
+          "start": 0.0,
+          "end": 0.58
+        },
+        {
+          "word": "Utkarsh",
+          "start": 0.92,
+          "end": 1.44
+        },
+        {
+          "word": "and",
+          "start": 1.44,
+          "end": 1.84
+        },
+        {
+          "word": "Vashnavi",
+          "start": 1.84,
+          "end": 2.4
+        },
+        {
+          "word": "carry",
+          "start": 2.4,
+          "end": 2.68
+        },
+        {
+          "word": "it,",
+          "start": 2.68,
+          "end": 3.08
+        },
+        {
+          "word": "but",
+          "start": 3.56,
+          "end": 3.66
+        },
+        {
+          "word": "they",
+          "start": 3.66,
+          "end": 3.84
+        },
+        {
+          "word": "can't",
+          "start": 3.84,
+          "end": 4.22
+        },
+        {
+          "word": "read",
+          "start": 4.22,
+          "end": 4.42
+        },
+        {
+          "word": "it.",
+          "start": 4.42,
+          "end": 4.64
+        }
+      ],
+      "asr_text": "Trisha, Utkarsh and Vashnavi carry it, but they can't read it."
+    },
+    "N3": {
+      "segment": "s2b",
+      "beat": "arrives",
+      "duration": 6.11,
+      "text": "Yash's phone unlocks it and reads it aloud. And that's how it gets there.",
+      "file": "RENDERS:narration/v4/N3.wav",
+      "status": "real",
+      "take": "N3.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "jess's",
+          "start": 0.0,
+          "end": 0.68
+        },
+        {
+          "word": "food",
+          "start": 0.68,
+          "end": 0.9
+        },
+        {
+          "word": "unlocks",
+          "start": 0.9,
+          "end": 1.7
+        },
+        {
+          "word": "it",
+          "start": 1.7,
+          "end": 2.28
+        },
+        {
+          "word": "and",
+          "start": 2.28,
+          "end": 2.66
+        },
+        {
+          "word": "reads",
+          "start": 2.66,
+          "end": 3.04
+        },
+        {
+          "word": "it",
+          "start": 3.04,
+          "end": 3.36
+        },
+        {
+          "word": "loud",
+          "start": 3.36,
+          "end": 3.7
+        },
+        {
+          "word": "and",
+          "start": 3.7,
+          "end": 4.58
+        },
+        {
+          "word": "that's",
+          "start": 4.58,
+          "end": 5.14
+        },
+        {
+          "word": "how",
+          "start": 5.14,
+          "end": 5.32
+        },
+        {
+          "word": "it",
+          "start": 5.32,
+          "end": 5.64
         },
         {
           "word": "gets",
-          "start": 1.02,
-          "end": 1.26
+          "start": 5.64,
+          "end": 5.92
         },
         {
-          "word": "there.",
-          "start": 1.26,
-          "end": 1.48
+          "word": "there",
+          "start": 5.92,
+          "end": 6.08
         }
-      ]
+      ],
+      "asr_text": "jess's food unlocks it and reads it loud and that's how it gets there"
     },
     "N5": {
       "segment": "s3",
       "beat": "over SOS card",
-      "duration": 3.5,
+      "duration": 4.44,
       "text": "What if you need help but you don't know who is nearby?",
       "file": "RENDERS:narration/v4/N5.wav",
       "status": "real",
-      "take": "N5.mp3",
-      "cleaning": "prep.py chain + loudnorm -18 LUFS",
+      "take": "N5.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
         {
           "word": "What",
           "start": 0.0,
-          "end": 0.36
+          "end": 0.4
         },
         {
           "word": "if",
-          "start": 0.36,
-          "end": 0.62
+          "start": 0.4,
+          "end": 0.68
         },
         {
           "word": "you",
-          "start": 0.62,
-          "end": 0.92
-        },
-        {
-          "word": "need",
-          "start": 0.92,
+          "start": 0.68,
           "end": 1.14
         },
         {
-          "word": "help",
+          "word": "need",
           "start": 1.14,
-          "end": 1.5
+          "end": 1.42
+        },
+        {
+          "word": "help",
+          "start": 1.42,
+          "end": 1.82
         },
         {
           "word": "but",
-          "start": 1.5,
-          "end": 1.88
+          "start": 1.82,
+          "end": 2.34
         },
         {
           "word": "you",
-          "start": 1.88,
-          "end": 2.02
+          "start": 2.34,
+          "end": 2.46
         },
         {
           "word": "don't",
-          "start": 2.02,
-          "end": 2.4
+          "start": 2.46,
+          "end": 2.86
         },
         {
           "word": "know",
-          "start": 2.4,
-          "end": 2.54
+          "start": 2.86,
+          "end": 3.12
         },
         {
           "word": "who",
-          "start": 2.54,
-          "end": 2.74
+          "start": 3.12,
+          "end": 3.54
         },
         {
           "word": "is",
-          "start": 2.74,
-          "end": 2.96
+          "start": 3.54,
+          "end": 3.76
         },
         {
           "word": "nearby?",
-          "start": 2.96,
-          "end": 3.26
+          "start": 3.76,
+          "end": 4.18
         }
       ]
     },
     "N5a": {
       "segment": "s3",
       "beat": "no saved contact",
-      "duration": 2.1,
-      "text": "",
+      "duration": 6.15,
+      "text": "SOS doesn't need a saved contact. It just calls out to whoever is around.",
       "file": "RENDERS:narration/v4/N5a.wav",
-      "status": "placeholder",
+      "status": "real",
       "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
+      "dropped": true,
+      "take": "N5a.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "SOS",
+          "start": 0.0,
+          "end": 0.54
+        },
+        {
+          "word": "doesn't",
+          "start": 0.54,
+          "end": 1.38
+        },
+        {
+          "word": "need",
+          "start": 1.38,
+          "end": 1.58
+        },
+        {
+          "word": "a",
+          "start": 1.58,
+          "end": 1.72
+        },
+        {
+          "word": "saved",
+          "start": 1.72,
+          "end": 2.04
+        },
+        {
+          "word": "contact,",
+          "start": 2.04,
+          "end": 2.58
+        },
+        {
+          "word": "it",
+          "start": 3.18,
+          "end": 3.24
+        },
+        {
+          "word": "just",
+          "start": 3.24,
+          "end": 3.48
+        },
+        {
+          "word": "calls",
+          "start": 3.48,
+          "end": 3.94
+        },
+        {
+          "word": "out",
+          "start": 3.94,
+          "end": 4.42
+        },
+        {
+          "word": "to",
+          "start": 4.42,
+          "end": 4.94
+        },
+        {
+          "word": "whoever",
+          "start": 4.94,
+          "end": 5.3
+        },
+        {
+          "word": "is",
+          "start": 5.3,
+          "end": 5.62
+        },
+        {
+          "word": "around.",
+          "start": 5.62,
+          "end": 6.0
+        }
+      ],
+      "asr_text": "SOS doesn't need a saved contact, it just calls out to whoever is around."
     },
     "N5b": {
       "segment": "s3",
       "beat": "widening search",
-      "duration": 2.1,
-      "text": "",
+      "duration": 6.6,
+      "text": "It reaches the three strongest phones nearby first, then keeps widening, hop by hop.",
       "file": "RENDERS:narration/v4/N5b.wav",
-      "status": "placeholder",
+      "status": "real",
       "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
+      "dropped": true,
+      "take": "N5b.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "It",
+          "start": 0.0,
+          "end": 0.22
+        },
+        {
+          "word": "reaches",
+          "start": 0.22,
+          "end": 0.68
+        },
+        {
+          "word": "the",
+          "start": 0.68,
+          "end": 1.2
+        },
+        {
+          "word": "three",
+          "start": 1.2,
+          "end": 1.44
+        },
+        {
+          "word": "strongest",
+          "start": 1.44,
+          "end": 2.2
+        },
+        {
+          "word": "phones",
+          "start": 2.2,
+          "end": 2.66
+        },
+        {
+          "word": "nearby",
+          "start": 2.66,
+          "end": 3.06
+        },
+        {
+          "word": "first,",
+          "start": 3.06,
+          "end": 3.7
+        },
+        {
+          "word": "then",
+          "start": 4.08,
+          "end": 4.28
+        },
+        {
+          "word": "keeps",
+          "start": 4.28,
+          "end": 4.66
+        },
+        {
+          "word": "widening,",
+          "start": 4.66,
+          "end": 5.38
+        },
+        {
+          "word": "hop",
+          "start": 5.86,
+          "end": 6.02
+        },
+        {
+          "word": "by",
+          "start": 6.02,
+          "end": 6.26
+        },
+        {
+          "word": "hop.",
+          "start": 6.26,
+          "end": 6.58
+        }
+      ],
+      "asr_text": "It reaches the three strongest phones nearby first, then keeps widening, hop by hop."
     },
     "N6": {
       "segment": "s3",
       "beat": "accept",
-      "duration": 5.89,
-      "text": "iTantra searches nearby for help. If someone accepts, they can hear the SOS and then reply.",
+      "duration": 6.63,
+      "text": "Whoever can help has to accept first, then hear the SOS, and can reply.",
       "file": "RENDERS:narration/v4/N6.wav",
       "status": "real",
-      "take": "N6.mp3",
-      "cleaning": "prep.py chain + loudnorm -18 LUFS",
+      "take": "N6.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
       "words": [
         {
-          "word": "ithantra",
+          "word": "Whoever",
           "start": 0.0,
-          "end": 0.68
-        },
-        {
-          "word": "searches",
-          "start": 0.68,
-          "end": 1.1
-        },
-        {
-          "word": "nearby",
-          "start": 1.1,
-          "end": 1.5
-        },
-        {
-          "word": "for",
-          "start": 1.5,
-          "end": 1.84
-        },
-        {
-          "word": "help",
-          "start": 1.84,
-          "end": 2.18
-        },
-        {
-          "word": "if",
-          "start": 2.18,
-          "end": 2.6
-        },
-        {
-          "word": "someone",
-          "start": 2.6,
-          "end": 2.96
-        },
-        {
-          "word": "accepts",
-          "start": 2.96,
-          "end": 3.46
-        },
-        {
-          "word": "they",
-          "start": 3.46,
-          "end": 3.92
+          "end": 0.34
         },
         {
           "word": "can",
-          "start": 3.92,
+          "start": 0.34,
+          "end": 0.62
+        },
+        {
+          "word": "help",
+          "start": 0.62,
+          "end": 1.08
+        },
+        {
+          "word": "has",
+          "start": 1.08,
+          "end": 1.76
+        },
+        {
+          "word": "to",
+          "start": 1.76,
+          "end": 2.04
+        },
+        {
+          "word": "accept",
+          "start": 2.04,
+          "end": 2.74
+        },
+        {
+          "word": "first",
+          "start": 2.74,
+          "end": 3.38
+        },
+        {
+          "word": "then",
+          "start": 3.38,
           "end": 4.1
         },
         {
           "word": "hear",
           "start": 4.1,
-          "end": 4.3
+          "end": 4.38
         },
         {
           "word": "the",
-          "start": 4.3,
-          "end": 4.5
+          "start": 4.38,
+          "end": 4.64
         },
         {
           "word": "SOS",
-          "start": 4.5,
-          "end": 4.82
+          "start": 4.64,
+          "end": 5.12
         },
         {
           "word": "and",
-          "start": 4.82,
-          "end": 5.18
+          "start": 5.12,
+          "end": 5.88
         },
         {
-          "word": "then",
-          "start": 5.18,
-          "end": 5.32
+          "word": "can",
+          "start": 5.88,
+          "end": 6.16
         },
         {
-          "word": "reply",
-          "start": 5.32,
-          "end": 5.62
+          "word": "reply.",
+          "start": 6.16,
+          "end": 6.48
         }
-      ]
+      ],
+      "asr_text": "Whoever can help has to accept first then hear the SOS and can reply."
     },
     "N7": {
       "segment": "s4",
       "beat": "turntable",
-      "duration": 2.1,
-      "text": "",
+      "duration": 4.29,
+      "text": "Everything you just saw runs on the phone itself.",
       "file": "RENDERS:narration/v4/N7.wav",
-      "status": "placeholder",
+      "status": "real",
       "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
+      "dropped": true,
+      "take": "N7.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "Everything",
+          "start": 0.0,
+          "end": 0.8
+        },
+        {
+          "word": "you",
+          "start": 0.8,
+          "end": 1.1
+        },
+        {
+          "word": "just",
+          "start": 1.1,
+          "end": 1.32
+        },
+        {
+          "word": "saw",
+          "start": 1.32,
+          "end": 1.86
+        },
+        {
+          "word": "runs",
+          "start": 1.86,
+          "end": 2.72
+        },
+        {
+          "word": "on",
+          "start": 2.72,
+          "end": 3.08
+        },
+        {
+          "word": "the",
+          "start": 3.08,
+          "end": 3.2
+        },
+        {
+          "word": "phone",
+          "start": 3.2,
+          "end": 3.54
+        },
+        {
+          "word": "itself.",
+          "start": 3.54,
+          "end": 4.04
+        }
+      ]
     },
     "N7a": {
       "segment": "s4",
       "beat": "one speech model",
-      "duration": 2.1,
-      "text": "",
+      "duration": 10.38,
+      "text": "One speech model covers 9 Indian languages in just 697 MB. Separate models would need about 5.9 GB.",
       "file": "RENDERS:narration/v4/N7a.wav",
-      "status": "placeholder",
+      "status": "real",
       "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
+      "dropped": true,
+      "take": "N7a.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "Once",
+          "start": 0.0,
+          "end": 0.38
+        },
+        {
+          "word": "speech",
+          "start": 0.38,
+          "end": 0.74
+        },
+        {
+          "word": "model",
+          "start": 0.74,
+          "end": 1.14
+        },
+        {
+          "word": "covers",
+          "start": 1.14,
+          "end": 1.66
+        },
+        {
+          "word": "9",
+          "start": 1.66,
+          "end": 2.12
+        },
+        {
+          "word": "Indian",
+          "start": 2.12,
+          "end": 2.5
+        },
+        {
+          "word": "languages",
+          "start": 2.5,
+          "end": 3.06
+        },
+        {
+          "word": "in",
+          "start": 3.06,
+          "end": 3.7
+        },
+        {
+          "word": "just",
+          "start": 3.7,
+          "end": 3.92
+        },
+        {
+          "word": "697MB,",
+          "start": 3.92,
+          "end": 5.76
+        },
+        {
+          "word": "separate",
+          "start": 6.56,
+          "end": 6.96
+        },
+        {
+          "word": "model",
+          "start": 6.96,
+          "end": 7.4
+        },
+        {
+          "word": "would",
+          "start": 7.4,
+          "end": 7.64
+        },
+        {
+          "word": "need",
+          "start": 7.64,
+          "end": 7.92
+        },
+        {
+          "word": "about",
+          "start": 7.92,
+          "end": 8.32
+        },
+        {
+          "word": "5",
+          "start": 8.32,
+          "end": 9.14
+        },
+        {
+          "word": ".9GB.",
+          "start": 9.14,
+          "end": 10.12
+        }
+      ],
+      "asr_text": "Once speech model covers 9 Indian languages in just 697MB, separate model would need about 5 .9GB."
     },
     "N7b": {
       "segment": "s4",
       "beat": "numbers",
-      "duration": 2.1,
-      "text": "",
+      "duration": 7.73,
+      "text": "10 seconds of speech turns into text in about 1.3 seconds on an ordinary mid-range phone.",
       "file": "RENDERS:narration/v4/N7b.wav",
-      "status": "placeholder",
+      "status": "real",
       "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
+      "dropped": true,
+      "take": "N7b.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "10",
+          "start": 0.0,
+          "end": 0.3
+        },
+        {
+          "word": "seconds",
+          "start": 0.3,
+          "end": 0.76
+        },
+        {
+          "word": "of",
+          "start": 0.76,
+          "end": 0.96
+        },
+        {
+          "word": "speech",
+          "start": 0.96,
+          "end": 1.46
+        },
+        {
+          "word": "turns",
+          "start": 1.46,
+          "end": 2.26
+        },
+        {
+          "word": "into",
+          "start": 2.26,
+          "end": 2.6
+        },
+        {
+          "word": "text",
+          "start": 2.6,
+          "end": 2.94
+        },
+        {
+          "word": "in",
+          "start": 2.94,
+          "end": 3.18
+        },
+        {
+          "word": "about",
+          "start": 3.18,
+          "end": 3.56
+        },
+        {
+          "word": "1",
+          "start": 3.56,
+          "end": 4.36
+        },
+        {
+          "word": ".3",
+          "start": 4.36,
+          "end": 4.92
+        },
+        {
+          "word": "seconds",
+          "start": 4.92,
+          "end": 5.36
+        },
+        {
+          "word": "on",
+          "start": 5.36,
+          "end": 6.04
+        },
+        {
+          "word": "an",
+          "start": 6.04,
+          "end": 6.22
+        },
+        {
+          "word": "ordinary",
+          "start": 6.22,
+          "end": 6.72
+        },
+        {
+          "word": "mid",
+          "start": 6.72,
+          "end": 7.08
+        },
+        {
+          "word": "-range",
+          "start": 7.08,
+          "end": 7.26
+        },
+        {
+          "word": "phone.",
+          "start": 7.26,
+          "end": 7.62
+        }
+      ],
+      "asr_text": "10 seconds of speech turns into text in about 1 .3 seconds on an ordinary mid -range phone."
     },
     "N7c": {
       "segment": "s4",
       "beat": "packet between phones",
-      "duration": 2.1,
-      "text": "",
+      "duration": 7.4,
+      "text": "And each message is about 1.2 kilobytes, 60 to 90 times smaller than the raw recording.",
       "file": "RENDERS:narration/v4/N7c.wav",
-      "status": "placeholder",
+      "status": "real",
       "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
+      "dropped": true,
+      "take": "N7c.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "and",
+          "start": 0.0,
+          "end": 0.3
+        },
+        {
+          "word": "each",
+          "start": 0.3,
+          "end": 0.72
+        },
+        {
+          "word": "message",
+          "start": 0.72,
+          "end": 1.48
+        },
+        {
+          "word": "is",
+          "start": 1.48,
+          "end": 1.76
+        },
+        {
+          "word": "about",
+          "start": 1.76,
+          "end": 2.0
+        },
+        {
+          "word": "1",
+          "start": 2.0,
+          "end": 2.5
+        },
+        {
+          "word": ".2",
+          "start": 2.5,
+          "end": 3.06
+        },
+        {
+          "word": "kilobytes",
+          "start": 3.06,
+          "end": 4.04
+        },
+        {
+          "word": "60",
+          "start": 4.04,
+          "end": 4.7
+        },
+        {
+          "word": "to",
+          "start": 4.7,
+          "end": 4.92
+        },
+        {
+          "word": "90",
+          "start": 4.92,
+          "end": 5.28
+        },
+        {
+          "word": "times",
+          "start": 5.28,
+          "end": 5.62
+        },
+        {
+          "word": "smaller",
+          "start": 5.62,
+          "end": 6.1
+        },
+        {
+          "word": "than",
+          "start": 6.1,
+          "end": 6.5
+        },
+        {
+          "word": "the",
+          "start": 6.5,
+          "end": 6.7
+        },
+        {
+          "word": "raw",
+          "start": 6.7,
+          "end": 6.84
+        },
+        {
+          "word": "recording.",
+          "start": 6.84,
+          "end": 7.24
+        }
+      ],
+      "asr_text": "and each message is about 1 .2 kilobytes 60 to 90 times smaller than the raw recording."
     },
     "N7d": {
       "segment": "s4",
       "beat": "no new hardware",
-      "duration": 2.1,
-      "text": "",
+      "duration": 3.92,
+      "text": "No new hardware, just the phone you already have.",
       "file": "RENDERS:narration/v4/N7d.wav",
-      "status": "placeholder",
+      "status": "real",
       "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)",
-      "dropped": true
+      "dropped": true,
+      "take": "N7d.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "No",
+          "start": 0.0,
+          "end": 0.38
+        },
+        {
+          "word": "new",
+          "start": 0.38,
+          "end": 0.7
+        },
+        {
+          "word": "hardware,",
+          "start": 0.7,
+          "end": 1.1
+        },
+        {
+          "word": "just",
+          "start": 1.84,
+          "end": 2.04
+        },
+        {
+          "word": "the",
+          "start": 2.04,
+          "end": 2.3
+        },
+        {
+          "word": "phone",
+          "start": 2.3,
+          "end": 2.58
+        },
+        {
+          "word": "you",
+          "start": 2.58,
+          "end": 2.96
+        },
+        {
+          "word": "already",
+          "start": 2.96,
+          "end": 3.48
+        },
+        {
+          "word": "have.",
+          "start": 3.48,
+          "end": 3.9
+        }
+      ],
+      "asr_text": "No new hardware, just the phone you already have."
     },
     "N8": {
       "segment": "cards",
       "beat": "over Works now / Coming next",
-      "duration": 3.4,
+      "duration": 4.22,
       "text": "Here's what works today, and what we're building next.",
       "script": "Here's what works today, and what we're building next.",
       "file": "RENDERS:narration/v4/N8.wav",
-      "status": "placeholder"
+      "status": "real",
+      "take": "N8.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "Here",
+          "start": 0.0,
+          "end": 0.4
+        },
+        {
+          "word": "is",
+          "start": 0.4,
+          "end": 0.78
+        },
+        {
+          "word": "what",
+          "start": 0.78,
+          "end": 1.28
+        },
+        {
+          "word": "works",
+          "start": 1.28,
+          "end": 1.6
+        },
+        {
+          "word": "today",
+          "start": 1.6,
+          "end": 2.1
+        },
+        {
+          "word": "and",
+          "start": 2.1,
+          "end": 2.78
+        },
+        {
+          "word": "what",
+          "start": 2.78,
+          "end": 3.1
+        },
+        {
+          "word": "we're",
+          "start": 3.1,
+          "end": 3.38
+        },
+        {
+          "word": "building",
+          "start": 3.38,
+          "end": 3.7
+        },
+        {
+          "word": "next.",
+          "start": 3.7,
+          "end": 4.1
+        }
+      ],
+      "asr_text": "Here is what works today and what we're building next."
     },
     "N9": {
       "segment": "cards",
       "beat": "over the closing card",
-      "duration": 2.6,
+      "duration": 3.58,
       "text": "iTantra. Speak. Send. Be heard.",
       "script": "iTantra. Speak. Send. Be heard.",
       "file": "RENDERS:narration/v4/N9.wav",
-      "status": "placeholder"
+      "status": "real",
+      "take": "N9.m4a",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "Aye",
+          "start": 0.0,
+          "end": 0.38
+        },
+        {
+          "word": "Tantra,",
+          "start": 0.38,
+          "end": 0.92
+        },
+        {
+          "word": "speak,",
+          "start": 1.32,
+          "end": 1.68
+        },
+        {
+          "word": "send,",
+          "start": 2.26,
+          "end": 2.52
+        },
+        {
+          "word": "be",
+          "start": 2.96,
+          "end": 3.06
+        },
+        {
+          "word": "heard.",
+          "start": 3.06,
+          "end": 3.42
+        }
+      ],
+      "asr_text": "Aye Tantra, speak, send, be heard."
     }
   }
 }
