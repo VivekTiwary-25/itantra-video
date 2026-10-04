@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<link rel="stylesheet" href="./assets/glass/glass.css">
+<script src="./gsap.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; margin: 0; overflow: hidden; background: #040a13; }
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; isolation: isolate;
+    font-family: SceneSans, "Segoe UI", sans-serif; color: var(--text, #f3f5f8);
+    background: radial-gradient(ellipse 1100px 620px at 50% 58%, #0e2236 0%, #0a1726 42%, transparent 82%), #040a13; }
+  #grid { position: absolute; inset: -200px; opacity: .32; pointer-events: none;
+    background: repeating-radial-gradient(circle at 50% 50%, transparent 0 131px, rgba(77,163,255,.09) 132px 133px, transparent 134px 170px); }
+  #rings { position: absolute; inset: 0; pointer-events: none; }
+  #rings circle { fill: none; stroke: #4da3ff; stroke-width: 1.5; }
+  #vignette { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 180px 60px rgba(0,0,0,.55); }
+
+  .card-wrap { position: absolute; inset: 0; display: grid; place-items: center; will-change: opacity, filter, transform; }
+
+  /* Works now / Coming next */
+  #now.glass-card { width: 1660px; padding: 58px 84px 56px; }
+  .group-label { display: flex; align-items: center; gap: 18px; margin: 0 0 30px;
+    font-size: 38px; font-weight: 700; letter-spacing: .14em; line-height: 1; }
+  .items { list-style: none; margin: 0; padding: 0; }
+  .item { display: flex; align-items: center; gap: 30px; margin: 0 0 30px; font-size: 46px; font-weight: 600;
+    line-height: 1.12; letter-spacing: -.012em; white-space: nowrap; }
+  .item:last-child { margin-bottom: 0; }
+  .check { flex: 0 0 46px; width: 46px; height: 46px; }
+  .check circle { fill: var(--blue, #4da3ff); }
+  .check path { fill: none; stroke: #ffffff; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+  .divider { height: 1px; margin: 46px 0 34px; background: linear-gradient(90deg, rgba(255,255,255,.22), rgba(255,255,255,.04)); }
+  #next .group-label { font-size: 30px; color: rgba(243,245,248,.62); margin-bottom: 22px; }
+  #next .item { font-size: 36px; font-weight: 500; color: rgba(243,245,248,.66); gap: 24px; margin-bottom: 18px; }
+  .ring { flex: 0 0 32px; width: 32px; height: 32px; }
+  .ring circle { fill: none; stroke: rgba(243,245,248,.6); stroke-width: 2.5; }
+
+  /* Closing */
+  #close.glass-card { width: 1240px; padding: 74px 90px 70px; text-align: center; }
+  #close .wordmark { margin: 0; font-size: 124px; font-weight: 700; line-height: 1; letter-spacing: -.035em;
+    text-shadow: 0 0 34px rgba(77,163,255,.28); }
+  #close .tagline { margin: 26px 0 0; font-size: 52px; font-weight: 500; line-height: 1.15; color: rgba(243,245,248,.86); }
+  .close-rule { width: 160px; height: 2px; margin: 50px auto 40px; background: rgba(77,163,255,.7); border-radius: 2px; }
+  #close .team { margin: 0; font-size: 38px; font-weight: 600; line-height: 1.2; }
+  #close .ps { margin: 14px 0 0; font-size: 36px; font-weight: 500; line-height: 1.2; color: rgba(243,245,248,.74); }
+
+  #black { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+<main id="root" data-composition-id="cards_v3" data-start="0" data-duration="14" data-width="1920" data-height="1080" data-fps="30">
+  <div id="grid"></div>
+  <svg id="rings" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+
+  <div class="card-wrap" id="wrap-now" data-layout-allow-overlap data-layout-allow-occlusion>
+    <section class="glass-card" id="now">
+      <div class="group-label">WORKS NOW</div>
+      <ul class="items" id="now-items">
+        <li class="item">Speech to text on the phone, English + 9 Indian languages</li>
+        <li class="item">Encrypted: relays can't read it</li>
+        <li class="item">6 hops over Bluetooth LE, shown on real phones</li>
+        <li class="item">SOS to anyone nearby, no saved contact needed</li>
+      </ul>
+      <div class="divider" id="divider"></div>
+      <div id="next">
+        <div class="group-label">COMING NEXT</div>
+        <ul class="items">
+          <li class="item">Field trials with more phones</li>
+          <li class="item">SOS chat after a helper accepts</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <div class="card-wrap" id="wrap-close" data-layout-allow-overlap data-layout-allow-occlusion>
+    <section class="glass-card" id="close">
+      <h1 class="wordmark">iTantra</h1>
+      <p class="tagline">Speak. Send. Be heard.</p>
+      <div class="close-rule"></div>
+      <p class="team">Team chmod 777 · Team ID 148903</p>
+      <p class="ps">SIH26173 · NIE Mysuru</p>
+    </section>
+  </div>
+
+  <div id="vignette"></div>
+  <div id="black"></div>
+</main>
+<script>
+// Timings (seconds). Everything is a pure function of t: no randomness, no clock.
+const ITEM_TIMES = [0.30, 0.80, 1.30, 1.80];   // WORKS NOW items, one by one (ticks use the same times)
+const NEXT_TIME = 2.05;                         // COMING NEXT group; settled by 2.45
+const FADE = 0.38;
+const SWAP_START = 8.0, SWAP_END = 8.8;         // soft glass transition
+const BLACK_START = 13.0, END = 14.0;
+
+const NS = 'http://www.w3.org/2000/svg';
+const clamp = v => Math.max(0, Math.min(1, v));
+const ease = v => { v = clamp(v); return v * v * (3 - 2 * v); };
+
+function marker(cls) {
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 46 46'); svg.classList.add(cls);
+  const c = document.createElementNS(NS, 'circle');
+  if (cls === 'check') {
+    c.setAttribute('cx', '23'); c.setAttribute('cy', '23'); c.setAttribute('r', '23'); svg.appendChild(c);
+    const p = document.createElementNS(NS, 'path'); p.setAttribute('d', 'M13 23.5 L20 30.5 L33.5 16'); svg.appendChild(p);
+  } else {
+    svg.setAttribute('viewBox', '0 0 32 32');
+    c.setAttribute('cx', '16'); c.setAttribute('cy', '16'); c.setAttribute('r', '14'); svg.appendChild(c);
+  }
+  return svg;
+}
+const nowItems = [...document.querySelectorAll('#now-items .item')];
+nowItems.forEach(li => li.prepend(marker('check')));
+document.querySelectorAll('#next .item').forEach(li => li.prepend(marker('ring')));
+
+const rings = document.getElementById('rings');
+const RING_COUNT = 6, RING_GAP = 190, RING_SPEED = 26, RING_MAX = RING_COUNT * RING_GAP;
+const ringEls = Array.from({length: RING_COUNT}, () => {
+  const c = document.createElementNS(NS, 'circle'); rings.appendChild(c); return c;
+});
+
+const wrapNow = document.getElementById('wrap-now');
+const wrapClose = document.getElementById('wrap-close');
+const nextGroup = document.getElementById('next');
+const divider = document.getElementById('divider');
+const grid = document.getElementById('grid');
+const black = document.getElementById('black');
+
+function draw(t) {
+  // Background: slow drifting sonar field, very subtle.
+  const cx = 960 + 110 * Math.sin(t * 0.13), cy = 600 + 45 * Math.cos(t * 0.11);
+  ringEls.forEach((c, i) => {
+    const r = (t * RING_SPEED + i * RING_GAP) % RING_MAX;
+    c.setAttribute('cx', cx.toFixed(1)); c.setAttribute('cy', cy.toFixed(1)); c.setAttribute('r', r.toFixed(1));
+    c.style.opacity = (0.14 * Math.sin(Math.PI * r / RING_MAX)).toFixed(3);
+  });
+  grid.style.transform = `translate(${(cx - 960) * 0.35}px, ${(cy - 600) * 0.35}px)`;
+
+  // Works now: card in, items one by one, then hold.
+  const cardIn = ease(t / 0.3);
+  nowItems.forEach((li, i) => {
+    const k = ease((t - ITEM_TIMES[i]) / FADE);
+    li.style.opacity = k.toFixed(3);
+    li.style.transform = `translateX(${((1 - k) * 22).toFixed(1)}px)`;
+  });
+  const n = ease((t - NEXT_TIME) / 0.4);
+  nextGroup.style.opacity = n.toFixed(3);
+  divider.style.opacity = n.toFixed(3);
+  nextGroup.style.transform = `translateY(${((1 - n) * 12).toFixed(1)}px)`;
+
+  // Soft glass transition: blur-dissolve out, closing card blurs in.
+  const s = ease((t - SWAP_START) / (SWAP_END - SWAP_START));
+  wrapNow.style.opacity = (cardIn * (1 - s)).toFixed(3);
+  wrapNow.style.filter = s > 0 ? `blur(${(s * 16).toFixed(2)}px)` : 'none';
+  wrapNow.style.transform = `scale(${(1 + 0.025 * s).toFixed(4)})`;
+  wrapClose.style.opacity = s.toFixed(3);
+  wrapClose.style.filter = s < 1 ? `blur(${((1 - s) * 16).toFixed(2)}px)` : 'none';
+  wrapClose.style.transform = `scale(${(0.975 + 0.025 * s + 0.012 * clamp((t - SWAP_END) / (END - SWAP_END))).toFixed(4)})`;
+
+  // Last second fades to black.
+  black.style.opacity = clamp((t - BLACK_START) / (END - BLACK_START)).toFixed(3);
+}
+
+const timeline = gsap.timeline({paused: true, onUpdate: () => draw(timeline.time())});
+timeline.to({}, {duration: 14}, 0);
+window.__timelines = window.__timelines || {};
+window.__timelines.cards_v3 = timeline;
+window.addEventListener('hf-seek', e => draw(e.detail.time));
+draw(0);
+</script>
+</body>
+</html>
