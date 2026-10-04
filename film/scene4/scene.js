@@ -26,6 +26,7 @@ function makePhone(){
 }
 const A=makePhone(),B=makePhone();
 const E=id=>document.getElementById(id);
+if(window.SCENE4_BLENDER){E('phoneCanvas').style.display='none';E('teardown').style.display='none';E('processorGlow').style.left='755px';E('processorGlow').style.top='265px'}
 E('bt').appendChild(Glass.icon('bluetooth'));
 const numbers=[
   {main:'One speech model for 9 Indian languages'},
@@ -39,10 +40,12 @@ function render(t){
   const bridge=ease(t/1.36),lift=ease((t-.72)/.65),open=ease((t-b.open[0])/(b.open[1]-b.open[0]));
   const shut=ease((t-b.close[0])/(b.close[1]-b.close[0]));
   const layers=open*(1-shut),pair=ease((t-b.pair[0])/.75),end=ease((t-b.end[0])/.5);
+  if(window.SCENE4_BLENDER)E('blenderPhone').style.transform=`scale(${1+.045*ease((t-b.open[0])/(b.close[0]-b.open[0]))*(1-shut)})`;
   E('lab').style.opacity=String(1-ease((t-.85)/.5));
   E('lab').style.transform=`scale(${lerp(1,2.12,bridge)})`;
   E('labShade').style.opacity=String(.8*ease((t-.35)/.95));
   E('studio').style.opacity=String(ease((t-.85)/.55));
+  if(window.SCENE4_BLENDER)E('blenderPhone').style.opacity=String(ease((t-.7)/.22));
   E('turntableA').style.opacity=String(ease((t-1.1)/.45)*(1-.34*layers));
   E('turntableA').style.left=(lerp(625,375,pair))+'px';
   E('turntableB').style.opacity=String(pair*(1-end*.25));
@@ -55,9 +58,11 @@ function render(t){
   B.group.visible=pair>.01;B.group.position.set(lerp(9.1,4.3,pair),-.28,0);B.group.scale.setScalar(.85*pair);
   B.group.rotation.set(-.06,-.27+.08*Math.sin(t*.45),.08);
   E('teardown').style.opacity=String(layers);
-  E('layerBack').style.transform=`translate(${260*layers}px,${24*layers}px) rotate(-3deg)`;
-  E('layerMid').style.transform=`translate(${10*layers}px,0px) rotate(-3deg)`;
-  E('layerScreen').style.transform=`translate(${-240*layers}px,${-20*layers}px) rotate(-3deg)`;
+  if(!window.SCENE4_BLENDER){
+    E('layerBack').style.transform=`translate(${260*layers}px,${24*layers}px) rotate(-3deg)`;
+    E('layerMid').style.transform=`translate(${10*layers}px,0px) rotate(-3deg)`;
+    E('layerScreen').style.transform=`translate(${-240*layers}px,${-20*layers}px) rotate(-3deg)`;
+  }
   E('processorGlow').style.opacity=String(layers*(.48+.18*Math.sin(t*2.4)));
   const numStart=b.numbers[0],numEnd=b.numbers[1],per=(numEnd-numStart)/numbers.length;
   const idx=Math.min(numbers.length-1,Math.floor((t-numStart)/per));
@@ -78,7 +83,7 @@ function render(t){
   E('endline').style.opacity=String(vis(t,n.N7d.start,T.duration,.35));
   const cap=CAP.find(c=>t>=c.start&&t<c.end),ce=E('caption');
   ce.style.display=cap?'block':'none';if(cap)ce.textContent=cap.text;
-  renderer.render(scene,camera);
+  if(!window.SCENE4_BLENDER)renderer.render(scene,camera);
 }
 const tl=gsap.timeline({paused:true,onUpdate:()=>render(tl.time())});tl.to({}, {duration:T.duration},0);
 window.__timelines=window.__timelines||{};window.__timelines.scene4=tl;

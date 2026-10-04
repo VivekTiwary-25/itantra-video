@@ -15,6 +15,7 @@
 #turntableA,#turntableB{position:absolute;top:852px;width:670px;height:96px;border-radius:50%;border:1px solid rgba(177,214,240,.18);background:radial-gradient(ellipse,#263746 0,#141f2b 46%,#070d14 72%);box-shadow:0 30px 45px #0009,0 0 22px rgba(117,167,212,.12);opacity:0}
 #turntableA{left:625px} #turntableB{left:1210px;width:490px}
 #phoneCanvas{position:absolute;inset:0;width:1920px;height:1080px}
+#blenderPhone{position:absolute;inset:0;width:1920px;height:1080px;object-fit:fill;pointer-events:none}
 #teardown{position:absolute;inset:0;opacity:0;pointer-events:none}
 .layer{position:absolute;width:620px;height:930px;left:380px;top:64px;object-fit:contain;filter:drop-shadow(0 22px 24px #000a);transform-origin:center}
 #processorGlow{position:absolute;left:650px;top:240px;width:135px;height:100px;border-radius:18px;background:#8bd2ff;filter:blur(30px);mix-blend-mode:screen;opacity:0;pointer-events:none}
@@ -38,9 +39,11 @@
 <video id="lab" src="./assets/lab_bridge.mp4" data-start="0" data-duration="1.333333" data-media-start="0" muted playsinline></video><div id="labShade"></div>
 <div id="studio"><div id="rim"></div><div id="floor"></div><div id="turntableA"></div><div id="turntableB"></div></div>
 <canvas id="phoneCanvas" width="1920" height="1080"></canvas>
-<div id="teardown"><img class="layer" id="layerBack" src="./assets/layer_back.png" alt=""><img class="layer" id="layerMid" src="./assets/layer_mid.png" alt=""><img class="layer" id="layerScreen" src="./assets/layer_screen.png" alt=""><div id="processorGlow"></div></div>
+<div id="teardown"></div>
+<video id="blenderPhone" src="./assets/blender.webm" data-start="0.7" data-duration="19.600000" data-media-start="0" muted playsinline></video>
+<div id="processorGlow"></div>
 <div class="glass-panel" id="numberPanel"><div id="numberMain"></div><div id="numberMinor"></div><div id="bar"><div id="barFill"></div></div></div>
 <div id="packetTrack"></div><div id="packet"></div><div id="bt"></div><div id="waves"><i></i><i></i><i></i></div>
 <div class="glass-panel" id="packetText">~1.2 KB, 60 to 90× smaller than raw voice</div>
 <div id="endline">No new hardware.</div><div class="caption" id="caption"></div><div id="vignette"></div>
-</main><script>window.__timelines=window.__timelines||{};window.__timelines.scene4=null;</script><script src="./scene.js"></script></body></html>
+</main><script>window.SCENE4_BLENDER=true;window.__timelines=window.__timelines||{};window.__timelines.scene4=null;</script><script src="./scene.js"></script></body></html>

@@ -68,7 +68,6 @@ def main():
         cursor += duration + .4
     total = round(cursor + .4, 6)
     page = (HERE / "index.html.tpl").read_text(encoding="utf-8").replace("{{DURATION}}", f"{total:.6f}")
-    (HERE / "index.html").write_text(page, encoding="utf-8", newline="\n")
     beats = {
         "bridge": [0, 1.4],
         "turntable": [starts["N7"]["start"], starts["N7"]["end"] + .4],
@@ -88,10 +87,36 @@ def main():
         text = narration[key].get("text", "").strip()
         if text:
             captions.append({"start": starts[key]["start"], "end": starts[key]["end"], "text": text})
-    cap = ROOT / "film/captions/v3/s4.json"
-    cap.parent.mkdir(parents=True, exist_ok=True)
-    cap.write_text(json.dumps(captions, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     (ASSETS / "captions.js").write_text("window.SCENE4_CAPTIONS=" + json.dumps(captions, ensure_ascii=False) + ";\n", encoding="utf-8")
+    video = OUT / "blender/phone.webm"
+    complete = video.is_file()
+    if complete:
+        source_edges = (.7, 1.4, 4.8, 13.25, 13.6, 20.3)
+        target_edges = (.7, 1.4, beats["open"][0], beats["close"][0], beats["pair"][0], total)
+        if all(abs(a - b) < 1 / FPS for a, b in zip(source_edges, target_edges)):
+            shutil.copyfile(video, ASSETS / "blender.webm")
+        else:
+            filters = []
+            for i in range(5):
+                old_start, old_end = source_edges[i] - .7, source_edges[i + 1] - .7
+                stretch = (target_edges[i + 1] - target_edges[i]) / (source_edges[i + 1] - source_edges[i])
+                filters.append(f"[0:v]trim=start={old_start:.6f}:end={old_end:.6f},setpts=(PTS-STARTPTS)*{stretch:.8f}[s{i}]")
+            filters.append("".join(f"[s{i}]" for i in range(5)) + "concat=n=5:v=1:a=0,fps=30,format=yuva420p[v]")
+            run("ffmpeg", "-v", "error", "-y", "-c:v", "libvpx-vp9", "-i", video,
+                "-filter_complex", ";".join(filters), "-map", "[v]", "-c:v", "libvpx-vp9",
+                "-pix_fmt", "yuva420p", "-auto-alt-ref", "0", "-b:v", "0", "-crf", "29",
+                "-deadline", "good", "-cpu-used", "4", ASSETS / "blender.webm")
+    page = page.replace("{{BLENDER_ENABLED}}", "true" if complete else "false")
+    page = page.replace("{{FALLBACK_LAYERS}}", "" if complete else (
+        '<img class="layer" id="layerBack" src="./assets/layer_back.png" alt="">'
+        '<img class="layer" id="layerMid" src="./assets/layer_mid.png" alt="">'
+        '<img class="layer" id="layerScreen" src="./assets/layer_screen.png" alt="">'))
+    page = page.replace("{{BLENDER_VIDEO}}", (
+        f'<video id="blenderPhone" src="./assets/blender.webm" data-start="0.7" '
+        f'data-duration="{total - .7:.6f}" data-media-start="0" muted playsinline></video>'
+        if complete else ""))
+    (HERE / "index.html").write_text(page, encoding="utf-8", newline="\n")
+    print("phone:", "licensed Blender teardown" if complete else "accepted fallback")
     print(f"staged scene 4: {total:.2f} s; {len(captions)} narration captions")
 
 
