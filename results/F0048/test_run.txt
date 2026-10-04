@@ -1,0 +1,13 @@
+WARNING: faster-whisper/numpy not installed: no transcription (text left empty for the lead)
+WARNING (test only): RNNoise model(s) missing, arnndn dropped from the chain: ['local/models/rnnoise/cb.rnnn', 'local/models/rnnoise/sh.rnnn']
+WARNING (test only): RNNoise model(s) missing, arnndn dropped from the chain: ['local/models/rnnoise/cb.rnnn', 'local/models/rnnoise/sh.rnnn']
+WARNING (test only): RNNoise model(s) missing, arnndn dropped from the chain: ['local/models/rnnoise/cb.rnnn', 'local/models/rnnoise/sh.rnnn']
+
+id      new s   old s  text
+N2a     4.000   4.000  (not transcribed) CLIPPED->fallback
+N5b     5.130   5.130  (not transcribed)
+N7      5.500   5.500  (not transcribed) CLIPPED->fallback
+
+3 line(s) written to local\tmp\f0048\out; manifest manifest.json updated
+--no-copy: render machines not updated
+Rebuild these segments (their narration changed): s2b, s3, s4
