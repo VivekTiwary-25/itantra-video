@@ -1,0 +1,21 @@
+{
+  "fps": 30,
+  "duration": 32.4,
+  "segments": [
+    {"name":"push_in","start":0,"end":1.4},
+    {"name":"sonar_a","start":1.4,"end":8.4},
+    {"name":"relay_1","start":8.4,"end":14.4},
+    {"name":"relay_2","start":14.4,"end":20.4},
+    {"name":"relay_3","start":20.4,"end":26.4},
+    {"name":"sonar_b","start":26.4,"end":32.4},
+    {"name":"to_sos","start":30.9,"end":32.4,"over":"sonar_b"}
+  ],
+  "narration_starts":{"N2":1.4,"N3":30.4},
+  "tech_lines":[
+    {"start":4.45,"end":7.5,"text":"Speech becomes text on the phone"},
+    {"start":9.1,"end":12.7,"text":"Encrypted: relays can't read it"},
+    {"start":26.85,"end":30.15,"text":"Hops phone to phone over Bluetooth LE","small":"6 hops shown on real phones"}
+  ],
+  "start_state":{"field":"#0a0d12","screen_height":1000,"phone_center":[960,540],"slot":"RENDERS:scene2/app/yash_app.mp4","slot_time":11.724,"derivation":"play_at 7.63 + TTS delay 0.15 + TTS duration 3.343673 + 0.6"},
+  "end_state":{"card":"SOS: help from anyone nearby","class":"glass-card full","color":"--red"}
+}
