@@ -9,15 +9,15 @@ iTantra lets Android phones pass a spoken message along with no tower, mobile da
 Team chmod 777 · Team ID 148903 · SIH26173 · NIE Mysuru
 
 ## Chapters
-TODO times: the lead fills them in from the final assembly report (segment starts). YouTube needs the first one at 0:00.
+From the final assembly (5 Oct, 4:16.5 film).
 
 ```
 0:00 Intro
-TODO Normal message
-TODO How it travels
-TODO SOS
-TODO What's inside
-TODO Works now / Coming next
+0:33 Normal message
+1:17 How it travels
+2:25 SOS
+3:24 What's inside
+4:02 Works now / Coming next
 ```
 
 ## Credits
