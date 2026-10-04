@@ -6,145 +6,448 @@
       "segment": "s2a",
       "beat": "walk",
       "duration": 3.2,
-      "text": "",
+      "text": "Let's see how far that message actually has to travel.",
       "file": "RENDERS:narration/v4/N1.wav",
-      "status": "placeholder"
+      "status": "real",
+      "take": "N1.mp3",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "Let's",
+          "start": 0.0,
+          "end": 0.52
+        },
+        {
+          "word": "see",
+          "start": 0.52,
+          "end": 0.76
+        },
+        {
+          "word": "how",
+          "start": 0.76,
+          "end": 1.1
+        },
+        {
+          "word": "far",
+          "start": 1.1,
+          "end": 1.32
+        },
+        {
+          "word": "that",
+          "start": 1.32,
+          "end": 1.56
+        },
+        {
+          "word": "message",
+          "start": 1.56,
+          "end": 1.88
+        },
+        {
+          "word": "actually",
+          "start": 1.88,
+          "end": 2.28
+        },
+        {
+          "word": "has",
+          "start": 2.28,
+          "end": 2.54
+        },
+        {
+          "word": "to",
+          "start": 2.54,
+          "end": 2.7
+        },
+        {
+          "word": "travel.",
+          "start": 2.7,
+          "end": 3.02
+        }
+      ]
     },
     "N2": {
       "segment": "s2b",
       "beat": "sonar opening",
-      "duration": 1.8,
-      "text": "",
+      "duration": 3.32,
+      "text": "But how does that happen? Bluetooth doesn't reach that far.",
       "file": "RENDERS:narration/v4/N2.wav",
-      "status": "placeholder"
+      "status": "real",
+      "take": "N2.mp3",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "But",
+          "start": 0.0,
+          "end": 0.26
+        },
+        {
+          "word": "how",
+          "start": 0.26,
+          "end": 0.56
+        },
+        {
+          "word": "does",
+          "start": 0.56,
+          "end": 0.8
+        },
+        {
+          "word": "that",
+          "start": 0.8,
+          "end": 1.08
+        },
+        {
+          "word": "happen?",
+          "start": 1.08,
+          "end": 1.44
+        },
+        {
+          "word": "Bluetooth",
+          "start": 1.76,
+          "end": 2.1
+        },
+        {
+          "word": "doesn't",
+          "start": 2.1,
+          "end": 2.52
+        },
+        {
+          "word": "reach",
+          "start": 2.52,
+          "end": 2.7
+        },
+        {
+          "word": "that",
+          "start": 2.7,
+          "end": 2.94
+        },
+        {
+          "word": "far.",
+          "start": 2.94,
+          "end": 3.18
+        }
+      ]
     },
     "N2a": {
       "segment": "s2b",
       "beat": "speech to text",
-      "duration": 3.5,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N2a.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     },
     "N2b": {
       "segment": "s2b",
       "beat": "sealed capsule",
-      "duration": 3.5,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N2b.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     },
     "N2c": {
       "segment": "s2b",
       "beat": "encrypted hops",
-      "duration": 3.5,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N2c.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     },
     "N2d": {
       "segment": "s2b",
       "beat": "waits and moves",
-      "duration": 4.0,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N2d.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     },
     "N2e": {
       "segment": "s2b",
       "beat": "6 hops",
-      "duration": 3.0,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N2e.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     },
     "N2f": {
       "segment": "s2b",
       "beat": "real relay",
-      "duration": 4.0,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N2f.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     },
     "N3": {
       "segment": "s2b",
       "beat": "arrives",
-      "duration": 1.6,
-      "text": "",
+      "duration": 1.54,
+      "text": "And that's how it gets there.",
       "file": "RENDERS:narration/v4/N3.wav",
-      "status": "placeholder"
+      "status": "real",
+      "take": "N3.mp3",
+      "cleaning": "CLIPPED take: 30 Sep fallback (chain + limiter + static gain)",
+      "words": [
+        {
+          "word": "And",
+          "start": 0.0,
+          "end": 0.28
+        },
+        {
+          "word": "that's",
+          "start": 0.28,
+          "end": 0.76
+        },
+        {
+          "word": "how",
+          "start": 0.76,
+          "end": 0.88
+        },
+        {
+          "word": "it",
+          "start": 0.88,
+          "end": 1.02
+        },
+        {
+          "word": "gets",
+          "start": 1.02,
+          "end": 1.26
+        },
+        {
+          "word": "there.",
+          "start": 1.26,
+          "end": 1.48
+        }
+      ]
     },
     "N5": {
       "segment": "s3",
       "beat": "over SOS card",
-      "duration": 3.4,
-      "text": "",
+      "duration": 3.5,
+      "text": "What if you need help but you don't know who is nearby?",
       "file": "RENDERS:narration/v4/N5.wav",
-      "status": "placeholder"
+      "status": "real",
+      "take": "N5.mp3",
+      "cleaning": "prep.py chain + loudnorm -18 LUFS",
+      "words": [
+        {
+          "word": "What",
+          "start": 0.0,
+          "end": 0.36
+        },
+        {
+          "word": "if",
+          "start": 0.36,
+          "end": 0.62
+        },
+        {
+          "word": "you",
+          "start": 0.62,
+          "end": 0.92
+        },
+        {
+          "word": "need",
+          "start": 0.92,
+          "end": 1.14
+        },
+        {
+          "word": "help",
+          "start": 1.14,
+          "end": 1.5
+        },
+        {
+          "word": "but",
+          "start": 1.5,
+          "end": 1.88
+        },
+        {
+          "word": "you",
+          "start": 1.88,
+          "end": 2.02
+        },
+        {
+          "word": "don't",
+          "start": 2.02,
+          "end": 2.4
+        },
+        {
+          "word": "know",
+          "start": 2.4,
+          "end": 2.54
+        },
+        {
+          "word": "who",
+          "start": 2.54,
+          "end": 2.74
+        },
+        {
+          "word": "is",
+          "start": 2.74,
+          "end": 2.96
+        },
+        {
+          "word": "nearby?",
+          "start": 2.96,
+          "end": 3.26
+        }
+      ]
     },
     "N5a": {
       "segment": "s3",
       "beat": "no saved contact",
-      "duration": 2.5,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N5a.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     },
     "N5b": {
       "segment": "s3",
       "beat": "widening search",
-      "duration": 6.0,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N5b.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     },
     "N6": {
       "segment": "s3",
       "beat": "accept",
-      "duration": 4.0,
-      "text": "",
+      "duration": 5.89,
+      "text": "iTantra searches nearby for help. If someone accepts, they can hear the SOS and then reply.",
       "file": "RENDERS:narration/v4/N6.wav",
-      "status": "placeholder"
+      "status": "real",
+      "take": "N6.mp3",
+      "cleaning": "prep.py chain + loudnorm -18 LUFS",
+      "words": [
+        {
+          "word": "ithantra",
+          "start": 0.0,
+          "end": 0.68
+        },
+        {
+          "word": "searches",
+          "start": 0.68,
+          "end": 1.1
+        },
+        {
+          "word": "nearby",
+          "start": 1.1,
+          "end": 1.5
+        },
+        {
+          "word": "for",
+          "start": 1.5,
+          "end": 1.84
+        },
+        {
+          "word": "help",
+          "start": 1.84,
+          "end": 2.18
+        },
+        {
+          "word": "if",
+          "start": 2.18,
+          "end": 2.6
+        },
+        {
+          "word": "someone",
+          "start": 2.6,
+          "end": 2.96
+        },
+        {
+          "word": "accepts",
+          "start": 2.96,
+          "end": 3.46
+        },
+        {
+          "word": "they",
+          "start": 3.46,
+          "end": 3.92
+        },
+        {
+          "word": "can",
+          "start": 3.92,
+          "end": 4.1
+        },
+        {
+          "word": "hear",
+          "start": 4.1,
+          "end": 4.3
+        },
+        {
+          "word": "the",
+          "start": 4.3,
+          "end": 4.5
+        },
+        {
+          "word": "SOS",
+          "start": 4.5,
+          "end": 4.82
+        },
+        {
+          "word": "and",
+          "start": 4.82,
+          "end": 5.18
+        },
+        {
+          "word": "then",
+          "start": 5.18,
+          "end": 5.32
+        },
+        {
+          "word": "reply",
+          "start": 5.32,
+          "end": 5.62
+        }
+      ]
     },
     "N7": {
       "segment": "s4",
       "beat": "turntable",
-      "duration": 3.0,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N7.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     },
     "N7a": {
       "segment": "s4",
       "beat": "one speech model",
-      "duration": 4.0,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N7a.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     },
     "N7b": {
       "segment": "s4",
       "beat": "numbers",
-      "duration": 4.0,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N7b.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     },
     "N7c": {
       "segment": "s4",
       "beat": "packet between phones",
-      "duration": 4.0,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N7c.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     },
     "N7d": {
       "segment": "s4",
       "beat": "no new hardware",
-      "duration": 1.5,
+      "duration": 2.1,
       "text": "",
       "file": "RENDERS:narration/v4/N7d.wav",
-      "status": "placeholder"
+      "status": "placeholder",
+      "note": "FINISH MODE: line dropped; silent 2.5 s label hold (2.1 + 0.4)"
     }
   }
 }
