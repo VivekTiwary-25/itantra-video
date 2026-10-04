@@ -1,12 +1,14 @@
 {
   "machine": "yash-pc",
-  "time": "2026-10-04T06:29:48Z",
-  "status": "busy",
-  "current_task": "F0036",
+  "time": "2026-10-04T06:34:33Z",
+  "status": "rate_limited",
+  "current_task": null,
   "workers": [
     "codex-f1"
   ],
-  "rate_limited_until": null,
+  "rate_limited_until": {
+    "codex-f1": "2026-10-04T07:55:59.992393+00:00"
+  },
   "paused_by_safety_check": null,
   "listener_pid": 30024,
   "last_task_usage": {
@@ -19,5 +21,5 @@
   },
   "codex_rate_limits": null,
   "unpushed_commits": 0,
-  "last_push_ok": "2026-10-04T06:29:48Z"
+  "last_push_ok": "2026-10-04T06:34:33Z"
 }
