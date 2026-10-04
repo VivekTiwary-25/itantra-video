@@ -27,9 +27,7 @@ def silence(path, duration):
 def ticks(path):
     duration = TIMELINE["duration"]
     pulse = [0.0] * round(duration * SR)
-    a, b = TIMELINE["beats"]["numbers"]
-    every = (b - a) / 5
-    events = [a + i * every for i in range(5)] + [TIMELINE["narration"]["N7c"]["start"] + .35]
+    events = TIMELINE["number_starts"] + [TIMELINE["narration"]["N7c"]["start"] + .35]
     for when in events:
         start = round(when * SR)
         for j in range(round(.11 * SR)):
@@ -51,7 +49,7 @@ def main():
     for key in ORDER:
         line = LINES[key]
         src = RENDERS / "narration/v4" / f"{key}.wav"
-        if not src.is_file():
+        if line.get("status") == "placeholder" or not src.is_file():
             src = OUT / f"placeholder_{key}.wav"
             silence(src, line["duration"])
             missing.append(key)

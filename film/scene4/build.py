@@ -72,12 +72,16 @@ def main():
         "bridge": [0, 1.4],
         "turntable": [starts["N7"]["start"], starts["N7"]["end"] + .4],
         "open": [starts["N7a"]["start"], starts["N7a"]["start"] + 1.0],
-        "numbers": [starts["N7a"]["start"] + .5, starts["N7b"]["end"] + .3],
+        "numbers": [starts["N7a"]["start"] + .5, starts["N7c"]["start"] - .35],
         "close": [starts["N7c"]["start"] - .35, starts["N7c"]["start"] + .4],
         "pair": [starts["N7c"]["start"], starts["N7c"]["end"] + .4],
         "end": [starts["N7d"]["start"], total],
     }
+    number_starts = [round(beats["numbers"][0] + .22 * i, 6) for i in range(5)]
+    if beats["numbers"][1] - .18 - number_starts[-1] - .18 < 2.5:
+        raise ValueError("scene 4 number labels cannot each hold for 2.5 s with these narration durations")
     timeline = {"fps": FPS, "duration": total, "narration": starts, "beats": beats,
+                "number_starts": number_starts,
                 "lab_source": "FOOTAGE:Video/sospart2.mp4", "lab_source_in": 9.333333,
                 "fallback": "Three.js primitive plus existing image-layer teardown"}
     (HERE / "timeline.json").write_text(json.dumps(timeline, indent=2) + "\n", encoding="utf-8")
@@ -88,24 +92,11 @@ def main():
         if text:
             captions.append({"start": starts[key]["start"], "end": starts[key]["end"], "text": text})
     (ASSETS / "captions.js").write_text("window.SCENE4_CAPTIONS=" + json.dumps(captions, ensure_ascii=False) + ";\n", encoding="utf-8")
-    video = OUT / "blender/phone.webm"
-    complete = video.is_file()
+    video = OUT / "blender_f0064/phone.webm"
+    stamp = OUT / "blender_f0064/phone.json"
+    complete = video.is_file() and stamp.is_file() and json.loads(stamp.read_text())["duration"] == total
     if complete:
-        source_edges = (.7, 1.4, 4.8, 13.25, 13.6, 20.3)
-        target_edges = (.7, 1.4, beats["open"][0], beats["close"][0], beats["pair"][0], total)
-        if all(abs(a - b) < 1 / FPS for a, b in zip(source_edges, target_edges)):
-            shutil.copyfile(video, ASSETS / "blender.webm")
-        else:
-            filters = []
-            for i in range(5):
-                old_start, old_end = source_edges[i] - .7, source_edges[i + 1] - .7
-                stretch = (target_edges[i + 1] - target_edges[i]) / (source_edges[i + 1] - source_edges[i])
-                filters.append(f"[0:v]trim=start={old_start:.6f}:end={old_end:.6f},setpts=(PTS-STARTPTS)*{stretch:.8f}[s{i}]")
-            filters.append("".join(f"[s{i}]" for i in range(5)) + "concat=n=5:v=1:a=0,fps=30,format=yuva420p[v]")
-            run("ffmpeg", "-v", "error", "-y", "-c:v", "libvpx-vp9", "-i", video,
-                "-filter_complex", ";".join(filters), "-map", "[v]", "-c:v", "libvpx-vp9",
-                "-pix_fmt", "yuva420p", "-auto-alt-ref", "0", "-b:v", "0", "-crf", "29",
-                "-deadline", "good", "-cpu-used", "4", ASSETS / "blender.webm")
+        shutil.copyfile(video, ASSETS / "blender.webm")
     page = page.replace("{{BLENDER_ENABLED}}", "true" if complete else "false")
     page = page.replace("{{FALLBACK_LAYERS}}", (
         '<img class="layer" id="layerBack" src="./assets/layer_back.png" alt="">'

@@ -19,9 +19,10 @@
 #teardown{position:absolute;inset:0;opacity:0;pointer-events:none}
 .layer{position:absolute;width:620px;height:930px;left:380px;top:64px;object-fit:contain;filter:drop-shadow(0 22px 24px #000a);transform-origin:center}
 #processorGlow{position:absolute;left:650px;top:240px;width:135px;height:100px;border-radius:18px;background:#8bd2ff;filter:blur(30px);mix-blend-mode:screen;opacity:0;pointer-events:none}
-#numberPanel{position:absolute;left:1190px;top:260px;width:610px;min-height:300px;padding:42px 48px;display:flex;flex-direction:column;justify-content:center;opacity:0;pointer-events:none}
-#numberMain{font-size:48px;font-weight:650;line-height:1.13;letter-spacing:-.02em} #numberMinor{font-size:34px;color:var(--text-dim);margin-top:18px}
-#bar{height:18px;margin-top:30px;border-radius:20px;background:rgba(255,255,255,.12);overflow:hidden;display:none}
+#numberPanel{position:absolute;left:1110px;top:200px;width:740px;padding:30px 38px;display:flex;flex-direction:column;gap:18px;opacity:0;pointer-events:none}
+.numberItem{font-size:37px;font-weight:650;line-height:1.12;letter-spacing:-.02em;opacity:0}
+.numberMinor{font-size:27px;color:var(--text-dim);margin-top:4px}
+#bar{height:12px;margin-top:9px;border-radius:20px;background:rgba(255,255,255,.12);overflow:hidden}
 #barFill{height:100%;width:100%;border-radius:20px;background:linear-gradient(90deg,#4386bd,#9bd9ff);box-shadow:0 0 18px #4da3ff88}
 #packetTrack{position:absolute;left:685px;top:485px;width:570px;height:2px;background:linear-gradient(90deg,transparent,rgba(245,196,81,.32),transparent);opacity:0}
 #packet{position:absolute;left:680px;top:457px;width:55px;height:55px;border:2px solid #f5c451;border-radius:16px;background:rgba(245,196,81,.18);box-shadow:0 0 26px #f5c451aa;opacity:0}
@@ -42,7 +43,13 @@
 <div id="teardown">{{FALLBACK_LAYERS}}</div>
 {{BLENDER_VIDEO}}
 <div id="processorGlow"></div>
-<div class="glass-panel" id="numberPanel"><div id="numberMain"></div><div id="numberMinor"></div><div id="bar"><div id="barFill"></div></div></div>
+<div class="glass-panel" id="numberPanel">
+  <div class="numberItem">One speech model for 9 Indian languages</div>
+  <div class="numberItem">697 MB<div class="numberMinor">~5.9 GB</div><div id="bar"><div id="barFill"></div></div></div>
+  <div class="numberItem">English: 98 MB</div>
+  <div class="numberItem">10 s of speech to text in ~1.3 s</div>
+  <div class="numberItem">Ordinary mid-range phone, ~0.9 GB of memory in use</div>
+</div>
 <div id="packetTrack"></div><div id="packet"></div><div id="bt"></div><div id="waves"><i></i><i></i><i></i></div>
 <div class="glass-panel" id="packetText">~1.2 KB, 60 to 90× smaller than raw voice</div>
 <div id="endline">No new hardware.</div><div class="caption" id="caption"></div><div id="vignette"></div>

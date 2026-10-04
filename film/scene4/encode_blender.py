@@ -8,7 +8,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 RENDERS = Path(json.loads((ROOT / "machine.local.json").read_text())["renders_dir"])
-OUT = RENDERS / "scene4/blender"
+OUT = RENDERS / "scene4/blender_f0064"
 beats = json.loads((HERE / "timeline.json").read_text())["beats"]
 duration = json.loads((HERE / "timeline.json").read_text())["duration"]
 shots = (("lift", .7, 1.4), ("spin", 1.4, beats["open"][0]),
@@ -42,4 +42,5 @@ cmd += ["-filter_complex", f"{inputs}concat=n={len(shots)}:v=1:a=0,format=yuva42
         "-auto-alt-ref", "0", "-b:v", "0", "-crf", "29", "-deadline", "good",
         "-cpu-used", "4", str(OUT / "phone.webm")]
 subprocess.run(cmd, check=True)
-print("RENDERS:scene4/blender/phone.webm")
+(OUT / "phone.json").write_text(json.dumps({"duration": duration}) + "\n")
+print("RENDERS:scene4/blender_f0064/phone.webm")

@@ -1,31 +1,31 @@
 {
   "fps": 30,
-  "duration": 20.3,
+  "duration": 14.3,
   "narration": {
     "N7": {
       "start": 1.4,
-      "duration": 3.0,
-      "end": 4.4
+      "duration": 2.1,
+      "end": 3.5
     },
     "N7a": {
-      "start": 4.8,
-      "duration": 4.0,
-      "end": 8.8
+      "start": 3.9,
+      "duration": 2.1,
+      "end": 6.0
     },
     "N7b": {
-      "start": 9.2,
-      "duration": 4.0,
-      "end": 13.2
+      "start": 6.4,
+      "duration": 2.1,
+      "end": 8.5
     },
     "N7c": {
-      "start": 13.6,
-      "duration": 4.0,
-      "end": 17.6
+      "start": 8.9,
+      "duration": 2.1,
+      "end": 11.0
     },
     "N7d": {
-      "start": 18.0,
-      "duration": 1.5,
-      "end": 19.5
+      "start": 11.4,
+      "duration": 2.1,
+      "end": 13.5
     }
   },
   "beats": {
@@ -35,29 +35,36 @@
     ],
     "turntable": [
       1.4,
-      4.800000000000001
+      3.9
     ],
     "open": [
-      4.8,
-      5.8
+      3.9,
+      4.9
     ],
     "numbers": [
-      5.3,
-      13.5
+      4.4,
+      8.55
     ],
     "close": [
-      13.25,
-      14.0
+      8.55,
+      9.3
     ],
     "pair": [
-      13.6,
-      18.0
+      8.9,
+      11.4
     ],
     "end": [
-      18.0,
-      20.3
+      11.4,
+      14.3
     ]
   },
+  "number_starts": [
+    4.4,
+    4.62,
+    4.84,
+    5.06,
+    5.28
+  ],
   "lab_source": "FOOTAGE:Video/sospart2.mp4",
   "lab_source_in": 9.333333,
   "fallback": "Three.js primitive plus existing image-layer teardown"

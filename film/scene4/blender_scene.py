@@ -14,7 +14,7 @@ from mathutils import Matrix, Vector
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 MACHINE = json.loads((ROOT / "machine.local.json").read_text())
-RENDERS = Path(MACHINE["renders_dir"]) / "scene4" / "blender"
+RENDERS = Path(MACHINE["renders_dir"]) / "scene4" / "blender_f0064"
 TIMELINE = json.loads((HERE / "timeline.json").read_text())
 BEATS = TIMELINE["beats"]
 FPS = 30
@@ -25,7 +25,7 @@ SHOTS = {
     "close": (BEATS["close"][0], BEATS["pair"][0]),
     "pair": (BEATS["pair"][0], TIMELINE["duration"]),
 }
-STILLS = {"lift": 1.1, "spin": 2.7, "processor": 7.1, "close": 13.4, "pair": 16.1}
+STILLS = {"lift": 1.1, "spin": 2.7, "processor": 6.2, "close": 8.7, "pair": 10.2}
 
 
 def smooth(v):
@@ -44,9 +44,7 @@ def material(name, color, metallic=0, emission=None):
         shader = nodes.new("ShaderNodeEmission")
         shader.inputs["Strength"].default_value = 1.1
         tex = nodes.new("ShaderNodeTexImage")
-        home = ROOT / "local/private-in/F0046/home.png"
-        if not home.is_file():
-            home = ROOT / "local/private-in/F0044/home.png"
+        home = ROOT / "local/private-in/F0044/home.png"
         tex.image = bpy.data.images.load(str(home))
         m.node_tree.links.new(tex.outputs["Color"], shader.inputs["Color"])
     else:
@@ -221,7 +219,8 @@ def pose(groups, t):
     pair = smooth((t - BEATS["pair"][0]) / .75)
     a = groups["A"]
     a["root"].location = (-2.7 + .5 * lift - 1.25 * pair, -.2 + .75 * (1 - lift), 0)
-    a["root"].rotation_euler = (math.radians(-5), .18 + .18 * math.sin(max(0, t - 1.4) * .38), -1.13 * (1 - lift) - .12 * lift)
+    yaw = .02 + .14 * max(0, min(t, BEATS["open"][0]) - 1.4) + .025 * max(0, t - BEATS["open"][0])
+    a["root"].rotation_euler = (math.radians(-5), yaw, -1.13 * (1 - lift) - .12 * lift)
     a["root"].scale = (.25 + .75 * lift,) * 3
     for layer, offset in {"screen": -2.15, "board": -.18, "battery": .9, "back": 1.75, "frame": 0}.items():
         a[layer].location = (offset * spread, 0, (.23 if layer == "screen" else 0) * spread)
@@ -230,7 +229,7 @@ def pose(groups, t):
     b = groups["B"]
     b["root"].hide_render = pair < .01
     b["root"].location = (8.5 - 4.4 * pair, -.28, 0)
-    b["root"].rotation_euler = (-.06, -.22 + .06 * math.sin(t * .45), .08)
+    b["root"].rotation_euler = (-.06, -.22 + .04 * max(0, t - BEATS["pair"][0]), .08)
     b["root"].scale = (.84 * pair,) * 3
     for obj in b["back"].children:
         obj.hide_render = True
@@ -251,7 +250,7 @@ def main():
     groups = setup_model()
     setup_stage()
     if mode == "still":
-        out = ROOT / "results/F0052r1/preview"
+        out = ROOT / "results/F0064/preview"
         selected = sys.argv[sys.argv.index("--") + 2] if len(sys.argv) > sys.argv.index("--") + 2 else None
         for shot, t in STILLS.items():
             if selected and shot != selected:

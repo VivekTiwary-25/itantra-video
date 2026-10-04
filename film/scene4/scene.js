@@ -28,13 +28,7 @@ const A=makePhone(),B=makePhone();
 const E=id=>document.getElementById(id);
 if(window.SCENE4_BLENDER){E('phoneCanvas').style.display='none'}
 E('bt').appendChild(Glass.icon('bluetooth'));
-const numbers=[
-  {main:'One speech model for 9 Indian languages'},
-  {main:'697 MB',minor:'~5.9 GB',bar:true},
-  {main:'English: 98 MB'},
-  {main:'10 s of speech to text in ~1.3 s'},
-  {main:'Ordinary mid-range phone, ~0.9 GB of memory in use'}
-];
+const numberItems=[...document.querySelectorAll('.numberItem')];
 function render(t){
   t=clamp(t,0,T.duration);const b=T.beats,n=T.narration;
   const bridge=ease(t/1.36),lift=ease((t-.72)/.65),open=ease((t-b.open[0])/(b.open[1]-b.open[0]));
@@ -55,23 +49,20 @@ function render(t){
   const g=A.group;
   g.position.set(lerp(-2.95,-.35,lift)-2.5*pair,lerp(.80,-.15,lift),0);
   g.scale.setScalar(lerp(.20,1.03,lift)*(1-.03*pair));
-  g.rotation.set(-.10,lerp(-.18,.42,lift)+.13*Math.sin(Math.max(0,t-1.4)*.38),lerp(-1.13,-.12,lift));
+  const yaw=.14*Math.max(0,Math.min(t,b.open[0])-1.4)+.025*Math.max(0,t-b.open[0]);
+  g.rotation.set(-.10,lerp(-.18,.02,lift)+yaw,lerp(-1.13,-.12,lift));
   g.visible=layers<.98;A.display.material.opacity=1-layers;A.display.material.transparent=true;
   // The yaw remains inside +/- 0.55 rad: the generic back stays turned away.
   B.group.visible=pair>.01;B.group.position.set(lerp(9.1,4.3,pair),-.28,0);B.group.scale.setScalar(.85*pair);
-  B.group.rotation.set(-.06,-.27+.08*Math.sin(t*.45),.08);
+  B.group.rotation.set(-.06,-.22+.04*Math.max(0,t-b.pair[0]),.08);
   E('teardown').style.opacity=String(imageWeight);
   E('layerBack').style.transform=`translate(${260*layers}px,${24*layers}px) rotate(-3deg)`;
   E('layerMid').style.transform=`translate(${10*layers}px,0px) rotate(-3deg)`;
   E('layerScreen').style.transform=`translate(${-240*layers}px,${-20*layers}px) rotate(-3deg)`;
   E('processorGlow').style.opacity=String(layers*(.48+.18*Math.sin(t*2.4)));
-  const numStart=b.numbers[0],numEnd=b.numbers[1],per=(numEnd-numStart)/numbers.length;
-  const idx=Math.min(numbers.length-1,Math.floor((t-numStart)/per));
-  const inNumbers=t>=numStart&&t<numEnd;
-  const item=numbers[Math.max(0,idx)],phase=t-(numStart+Math.max(0,idx)*per);
-  E('numberPanel').style.opacity=String(inNumbers?vis(phase,0,per,.23):0);
-  E('numberMain').textContent=item.main;E('numberMinor').textContent=item.minor||'';
-  E('bar').style.display=item.bar?'block':'none';E('barFill').style.width=(item.bar?lerp(100,11.8,ease(phase/per)):100)+'%';
+  E('numberPanel').style.opacity=String(vis(t,b.numbers[0]-.18,b.numbers[1]+.18,.18));
+  numberItems.forEach((item,i)=>item.style.opacity=String(vis(t,T.number_starts[i],b.numbers[1],.18)));
+  E('barFill').style.width=lerp(100,11.8,ease((t-T.number_starts[1])/.65))+'%';
   const p=clamp((t-n.N7c.start)/(n.N7c.duration));
   E('packetTrack').style.opacity=String(vis(t,n.N7c.start,n.N7c.end,.3));
   E('packet').style.opacity=String(vis(p,.12,.84,.15));
