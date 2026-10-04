@@ -89,14 +89,14 @@
       "render_cmd": "python film/cards_v3/cards_sfx.py && film\\cards_v3\\render.cmd",
       "video": "RENDERS:cards_v3/cards_v3.mp4",
       "stems": {
-        "dx": null,
+        "dx": "RENDERS:cards_v3/cards_dx.wav",
         "sfx": "RENDERS:cards_v3/cards_sfx.wav"
       },
       "tts_windows": [],
       "music": {
         "closing_chord_at": 8.0
       },
-      "expected_duration": 14
+      "expected_duration": null
     }
   ]
 }

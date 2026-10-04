@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=1920, height=1080">
 <link rel="stylesheet" href="./assets/glass/glass.css">
 <script src="./gsap.min.js"></script>
+<script src="./assets/timing.js"></script>
 <style>
   * { box-sizing: border-box; }
   html, body { width: 1920px; height: 1080px; margin: 0; overflow: hidden; background: #040a13; }
@@ -17,20 +18,21 @@
   #rings circle { fill: none; stroke: #4da3ff; stroke-width: 1.5; }
   #vignette { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 180px 60px rgba(0,0,0,.55); }
 
-  .card-wrap { position: absolute; inset: 0; display: grid; place-items: center; will-change: opacity, filter, transform; }
+  .card-wrap { position: absolute; inset: 0 0 96px; display: grid; place-items: center; will-change: opacity, filter, transform; }
+  /* inset-bottom 96px lifts both cards 48 px so the caption (bottom 54 px) never touches card text */
 
   /* Works now / Coming next */
-  #now.glass-card { width: 1700px; padding: 62px 88px 58px; }
-  .group-label { display: flex; align-items: center; gap: 18px; margin: 0 0 40px;
+  #now.glass-card { width: 1700px; padding: 50px 88px 46px; }
+  .group-label { display: flex; align-items: center; gap: 18px; margin: 0 0 30px;
     font-size: 40px; font-weight: 700; letter-spacing: .14em; line-height: 1; }
   .items { list-style: none; margin: 0; padding: 0; }
-  .item { display: flex; align-items: center; gap: 30px; margin: 0 0 50px; font-size: 56px; font-weight: 600;
+  .item { display: flex; align-items: center; gap: 30px; margin: 0 0 40px; font-size: 56px; font-weight: 600;
     line-height: 1.15; letter-spacing: -.012em; white-space: nowrap; }
   .item:last-child { margin-bottom: 0; }
   .check { flex: 0 0 28px; width: 28px; height: 28px; }
   .check circle { fill: var(--blue, #4da3ff); }
   .check path { fill: none; stroke: #ffffff; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
-  .divider { height: 1px; margin: 48px 0 34px; background: linear-gradient(90deg, rgba(255,255,255,.22), rgba(255,255,255,.04)); }
+  .divider { height: 1px; margin: 38px 0 28px; background: linear-gradient(90deg, rgba(255,255,255,.22), rgba(255,255,255,.04)); }
   #next .group-label { font-size: 32px; color: rgba(243,245,248,.62); margin-bottom: 22px; }
   #next .item { font-size: 40px; font-weight: 500; color: rgba(243,245,248,.64); gap: 24px; margin-bottom: 18px; }
   .ring { flex: 0 0 30px; width: 30px; height: 30px; }
@@ -45,11 +47,14 @@
   #close .team { margin: 0; font-size: 42px; font-weight: 600; line-height: 1.2; }
   #close .ps { margin: 16px 0 0; font-size: 40px; font-weight: 500; line-height: 1.2; color: rgba(243,245,248,.74); }
 
+  /* Narration caption (glass kit .caption, bottom centre) */
+  #cap { opacity: 0; z-index: 8; white-space: nowrap; }
+
   #black { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
 </style>
 </head>
 <body>
-<main id="root" data-composition-id="cards_v3" data-start="0" data-duration="14" data-width="1920" data-height="1080" data-fps="30">
+<main id="root" data-composition-id="cards_v3" data-start="0" data-duration="13.25" data-width="1920" data-height="1080" data-fps="30">
   <div id="grid"></div>
   <svg id="rings" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
 
@@ -83,16 +88,20 @@
     </section>
   </div>
 
+  <div class="caption" id="cap"></div>
   <div id="vignette"></div>
   <div id="black"></div>
 </main>
 <script>
 // Timings (seconds). Everything is a pure function of t: no randomness, no clock.
-const ITEM_TIMES = [0.30, 0.80, 1.30, 1.80];   // WORKS NOW items, one by one (ticks use the same times)
+// Narration-driven (computed by cards_timing.py from film/common/narration_v4.json, written to assets/timing.js).
+const C = window.CARDS_TIMING;
+const ITEM_TIMES = C.ticks;                     // WORKS NOW items, one by one (ticks use the same times)
 const NEXT_TIME = 2.05;                         // COMING NEXT group; settled by 2.45
 const FADE = 0.38;
-const SWAP_START = 8.0, SWAP_END = 8.35;        // soft glass transition (F0045: 0.35 s, was 0.8 s)
-const BLACK_START = 13.0, END = 14.0;
+const SWAP_START = C.swap_start, SWAP_END = C.swap_end;   // soft glass transition 0.35 s (F0045); hold = max(8 s, N8 + 0.4 s)
+const BLACK_START = C.black_start, END = C.end;           // fade to black after N9 + 1.0 s
+const CAPTIONS = C.captions;                    // [{start, end, text}] in segment seconds (same as film/captions/v3/cards.json)
 
 const NS = 'http://www.w3.org/2000/svg';
 const clamp = v => Math.max(0, Math.min(1, v));
@@ -127,6 +136,7 @@ const nextGroup = document.getElementById('next');
 const divider = document.getElementById('divider');
 const grid = document.getElementById('grid');
 const black = document.getElementById('black');
+const cap = document.getElementById('cap');
 
 function draw(t) {
   // Background: slow drifting sonar field, very subtle.
@@ -159,12 +169,21 @@ function draw(t) {
   wrapClose.style.filter = s < 1 ? `blur(${((1 - s) * 16).toFixed(2)}px)` : 'none';
   wrapClose.style.transform = `scale(${(0.975 + 0.025 * s + 0.012 * clamp((t - SWAP_END) / (END - SWAP_END))).toFixed(4)})`;
 
+  // Narration caption: 0.18 s fade in/out around each cue.
+  let ca = 0, ct = '';
+  for (const c of CAPTIONS) {
+    const k = clamp((t - c.start) / 0.18) * clamp((c.end - t) / 0.18);
+    if (k > ca) { ca = k; ct = c.text; }
+  }
+  if (cap.textContent !== ct && ca > 0) cap.textContent = ct;
+  cap.style.opacity = ca.toFixed(3);
+
   // Last second fades to black.
   black.style.opacity = clamp((t - BLACK_START) / (END - BLACK_START)).toFixed(3);
 }
 
 const timeline = gsap.timeline({paused: true, onUpdate: () => draw(timeline.time())});
-timeline.to({}, {duration: 14}, 0);
+timeline.to({}, {duration: END}, 0);
 window.__timelines = window.__timelines || {};
 window.__timelines.cards_v3 = timeline;
 window.addEventListener('hf-seek', e => draw(e.detail.time));

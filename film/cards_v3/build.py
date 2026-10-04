@@ -5,6 +5,7 @@
 """
 from pathlib import Path
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -14,6 +15,24 @@ REPO = HERE.parents[1]
 GLASS_SRC = REPO / "film/common/glass"
 GLASS = HERE / "assets/glass"
 GLASS.mkdir(parents=True, exist_ok=True)
+
+sys.path.insert(0, str(HERE))
+import cards_timing  # noqa: E402
+
+# Timeline from the narration manifest: assets/timing.js (read by index.html), captions, composition length.
+T = cards_timing.load()
+T["captions"] = [{"start": T[k]["start"], "end": T[k]["end"], "text": T[k]["text"]} for k in ("n8", "n9")]
+(HERE / "assets").mkdir(exist_ok=True)
+(HERE / "assets/timing.js").write_text("window.CARDS_TIMING = " + json.dumps(T) + ";\n", encoding="utf-8")
+cap_path = REPO / "film/captions/v3/cards.json"
+cap_path.write_text(json.dumps(T["captions"], indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+html_path = HERE / "index.html"
+html = html_path.read_text(encoding="utf-8")
+new_html = re.sub(r'data-duration="[0-9.]+"', f'data-duration="{T["end"]}"', html, count=1)
+if new_html != html:
+    html_path.write_text(new_html, encoding="utf-8")
+print(f"cards timeline: N8 {T['n8']['start']}-{T['n8']['end']}, swap {T['swap_start']}-{T['swap_end']}, "
+      f"N9 {T['n9']['start']}-{T['n9']['end']}, black {T['black_start']}, length {T['end']} s")
 
 shutil.copyfile(REPO / "film/vendor/gsap/gsap.min.js", HERE / "gsap.min.js")
 

@@ -1,7 +1,7 @@
 """Render one soft glass tick per WORKS NOW item to RENDERS:cards_v3/cards_sfx.wav.
 
 Same tick family as film/exploded/ticks.py (same partials and envelope), quieter.
-Tick times match ITEM_TIMES in index.html.
+Tick times match ITEM_TIMES in index.html. Length = the cards segment length (cards_timing.py).
 """
 import json
 import math
@@ -9,6 +9,7 @@ import struct
 import wave
 from pathlib import Path
 
+import cards_timing
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 config = json.loads((REPO / "machine.local.json").read_text(encoding="utf-8"))
@@ -16,9 +17,10 @@ destination = Path(config["renders_dir"]) / "cards_v3" / "cards_sfx.wav"
 destination.parent.mkdir(parents=True, exist_ok=True)
 
 rate = 48000
-duration = 14
-times = (0.30, 0.80, 1.30, 1.80)
-samples = [0.0] * (rate * duration)
+timing = cards_timing.load()
+duration = timing["end"]  # segment length (follows the narration manifest)
+times = tuple(timing["ticks"])
+samples = [0.0] * round(rate * duration)
 
 for item, start_time in enumerate(times):
     start = round(start_time * rate)
