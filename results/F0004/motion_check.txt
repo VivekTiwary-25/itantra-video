@@ -1,0 +1,7 @@
+bench: 2.50-2.60s, mean RGB difference 14.91/255
+Vachana split: 7.00-7.10s, mean RGB difference 9.96/255
+Vachana camera exit: 11.90-12.00s, mean RGB difference 30.26/255
+walk: 20.00-20.10s, mean RGB difference 44.95/255
+Yash full: 30.00-30.10s, mean RGB difference 7.21/255
+Yash split: 33.00-33.10s, mean RGB difference 5.03/255
+Yash camera exit: 36.30-36.40s, mean RGB difference 6.32/255

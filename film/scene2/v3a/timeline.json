@@ -1,0 +1,137 @@
+{
+  "fps": 30,
+  "duration": 44.154,
+  "segments": [
+    {
+      "name": "card_out",
+      "start": 0,
+      "end": 1.6
+    },
+    {
+      "name": "bench",
+      "start": 1.6,
+      "end": 5.9,
+      "source": "FOOTAGE:Video/normalpart1.mp4",
+      "source_in": 0,
+      "source_out": 4.3
+    },
+    {
+      "name": "vachana_split_in",
+      "start": 5.9,
+      "end": 6.4,
+      "source": "FOOTAGE:Video/normalpart1.mp4",
+      "source_in": 4.3,
+      "source_out": 4.8
+    },
+    {
+      "name": "vachana_send",
+      "start": 6.4,
+      "end": 18.38,
+      "slot": "vachana_send",
+      "slot_in": 0,
+      "slot_out": 11.98,
+      "camera_source": "FOOTAGE:Video/normalpart1.mp4",
+      "camera_offset": 4.8,
+      "camera_visible_until": 12.43
+    },
+    {
+      "name": "send_fly",
+      "start": 18.38,
+      "end": 19.18,
+      "slot": "vachana_send",
+      "sent_at": 18.38
+    },
+    {
+      "name": "walk",
+      "start": 18.78,
+      "end": 24.78,
+      "source": "FOOTAGE:Video/normalpart2.mp4",
+      "source_ranges": [
+        [
+          25.5,
+          26
+        ],
+        [
+          26,
+          28
+        ],
+        [
+          40,
+          191
+        ],
+        [
+          199,
+          201.55
+        ],
+        [
+          201.55,
+          202.15
+        ]
+      ],
+      "speed_factor": 26.108,
+      "overlap_with_flight": 0.4
+    },
+    {
+      "name": "overhead",
+      "start": 24.78,
+      "end": 29.78,
+      "walk_transition": 0.6
+    },
+    {
+      "name": "yash_before_notification",
+      "start": 29.78,
+      "end": 32.43,
+      "source": "FOOTAGE:Video/normalpart6.mp4",
+      "source_in": 0,
+      "source_out": 2.65
+    },
+    {
+      "name": "yash_app",
+      "start": 32.43,
+      "end": 44.154,
+      "slot": "yash_app",
+      "slot_in": 0,
+      "slot_out": 11.724,
+      "camera_source": "FOOTAGE:Video/normalpart6.mp4",
+      "camera_early": [
+        2.65,
+        7.1
+      ],
+      "camera_reply": null
+    }
+  ],
+  "narration_starts": {
+    "N1": 19.08
+  },
+  "slot_fields": {
+    "vachana_send": {
+      "path": "RENDERS:scene2/app/vachana_send.mp4",
+      "duration": 13.1333333333,
+      "ptt_down": 0.08,
+      "ptt_up": 5.24,
+      "sent_at": 11.98
+    },
+    "yash_app": {
+      "path": "RENDERS:scene2/app/yash_app.mp4",
+      "duration": 20.8666666667,
+      "notification_at": 3,
+      "play_at": 7.63,
+      "ptt_down": 12.13,
+      "ptt_up": 15.33,
+      "sent_at": 18.87,
+      "banner_at": 1.45
+    }
+  },
+  "YASH_REPLY": false,
+  "end_state": {
+    "slot": "yash_app",
+    "slot_time": 11.69,
+    "position": {
+      "x": 735,
+      "y": 40,
+      "width": 450,
+      "height": 1000
+    },
+    "background": "#0a0d12"
+  }
+}
