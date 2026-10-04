@@ -466,6 +466,15 @@ def parse_wait(text: str) -> dt.timedelta:
             total += float(num) * {"d": 86400, "h": 3600, "m": 60, "s": 1}[u]
         if total > 0:
             return dt.timedelta(seconds=min(total, 7 * 86400))
+    # "try again at 1:41 PM" / "resets 1:40pm": a local wall-clock time (the CLIs print it in this PC's time zone)
+    m = re.search(r"(?:try again at|resets?(?: at)?)\s+(\d{1,2})(?::(\d{2}))?\s*([ap]\.?m\.?)", text, re.I)
+    if m:
+        h, mi, ap = int(m.group(1)) % 12, int(m.group(2) or 0), m.group(3)[0].lower()
+        now = dt.datetime.now().astimezone()
+        at = now.replace(hour=h + (12 if ap == "p" else 0), minute=mi, second=0, microsecond=0)
+        if at <= now:
+            at += dt.timedelta(days=1)
+        return min(at - now + dt.timedelta(minutes=1), dt.timedelta(days=7))
     return dt.timedelta(minutes=30)
 
 
