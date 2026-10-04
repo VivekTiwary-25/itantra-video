@@ -52,6 +52,24 @@ TASK_TMP = REPO_ROOT / "local" / "tmp"  # workers get this as TEMP/TMP: inside t
 OFFLINE = False
 
 rate_until: dict[str, dt.datetime] = {}
+RATE_FILE = REPO_ROOT / "local" / "rate-limits.json"  # survives listener restarts (a tools/ pull restarts us)
+
+
+def load_rate_until() -> None:
+    try:
+        data = json.loads(RATE_FILE.read_text(encoding="utf-8"))
+        for w, iso in data.items():
+            rate_until[w] = dt.datetime.fromisoformat(iso)
+    except Exception:  # noqa: BLE001 - missing or bad file means no pauses
+        pass
+
+
+def save_rate_until() -> None:
+    try:
+        RATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        RATE_FILE.write_text(json.dumps({w: t.isoformat() for w, t in rate_until.items()}), encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        pass
 last_usage: dict = {}
 last_codex_rate_limits: dict | None = None
 current_task: str | None = None
@@ -342,6 +360,8 @@ def runnable(f: Path, worker: str, pool: bool) -> bool:
         if fm.get("machine") not in (None, "any", MACHINE):
             return False
         if fm.get("worker") not in (None, "any", worker):
+            return False
+        if worker in (fm.get("avoid_worker") or "").replace(",", " ").split():  # e.g. a redo after this worker's rate limit
             return False
     import importlib.util
     if any(importlib.util.find_spec(m) is None for m in (fm.get("requires") or [])):  # e.g. requires: [pptx]
@@ -823,6 +843,7 @@ def run_task(worker: str, task_file: Path, _healed: bool = False, pool: bool = F
         if RATE_RE.search(blob):
             until = dt.datetime.now(dt.timezone.utc) + parse_wait(blob)
             rate_until[worker] = until
+            save_rate_until()
             log(f"{rid}: rate limit detected. Pausing {worker} until {until.isoformat()}")
             with open(report, "a", encoding="utf-8", newline="\n") as f:
                 f.write(f"\n> Listener note: a rate-limit or quota error was seen. {worker} is paused until {until.isoformat()}. "
@@ -934,6 +955,7 @@ def main() -> None:
     log(f"listener started: machine={MACHINE} workers={MY_WORKERS} offline={OFFLINE} pid={os.getpid()}")
     try:
         clean_tmp()
+        load_rate_until()
         sync()
         recover_orphans()
         write_heartbeat("idle")

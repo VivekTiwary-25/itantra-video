@@ -164,7 +164,7 @@ def move_queued_to_pool(workers: list[str], why: str, reg: dict) -> None:
             log("  push failed; will retry next round")
 
 
-def queue_redo(rid: str, why: str, state: dict) -> None:
+def queue_redo(rid: str, why: str, state: dict, avoid: str = "") -> None:
     """One redo per task, in the lane pool, with redo_of. Only ever once per original task."""
     if rid in state.setdefault("redone", {}) or re.search(r"r\d+$", rid):
         return
@@ -179,6 +179,8 @@ def queue_redo(rid: str, why: str, state: dict) -> None:
     lane = lane_of(fm, w if not w.startswith("lane-") else "", reg) if not w.startswith("lane-") else w[5:]
     new_id = f"{rid}r1"
     body = set_fields(text, id=new_id, worker="any", lane=lane, redo_of=rid, created_by="supervisor")
+    if avoid:  # never hand the redo back to the worker that just hit its limit
+        body = set_fields(body, avoid_worker=avoid)
     body = body.replace(f"results/{rid}/", f"results/{new_id}/")
     body += f"\n\n## Note from the supervisor\nRedo of {rid}: {why}. Read results/{rid}/ first if it exists; continue from there.\n"
     log(f"{rid}: queueing redo {new_id} in lane {lane} ({why})")
@@ -201,8 +203,9 @@ def check_failed_reports(state: dict) -> None:
         text = show(path)
         fm, _ = frontmatter(text)
         if fm.get("status") == "failed" and fm.get("written_by") == "listener":
-            why = "rate limit" if "rate-limit" in text else "worker stopped without a report or was killed"
-            queue_redo(rid, why, state)
+            rl = "rate-limit" in text
+            why = "rate limit" if rl else "worker stopped without a report or was killed"
+            queue_redo(rid, why, state, avoid=fm.get("worker", "") if rl else "")
     state["baseline_done"] = True
 
 
