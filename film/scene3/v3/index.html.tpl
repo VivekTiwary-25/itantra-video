@@ -20,6 +20,7 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12
 .app-field{position:absolute;left:1232px;top:0;width:688px;height:1080px;background:#0a0d12;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .screen{position:relative;height:1000px;max-width:560px;border-radius:32px;border:1px solid rgba(255,255,255,.14);overflow:hidden;background:#101820;box-shadow:0 22px 65px #000a;flex:none}
 .screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#101820}
+.accept-tap-ring{position:absolute;left:8%;top:14.35%;width:17.5%;height:4%;border:3px solid rgba(255,255,255,.95);border-radius:999px;box-shadow:0 0 0 5px rgba(255,255,255,.14);opacity:0;pointer-events:none}
 #techline-layer,#caption-layer{position:absolute;inset:0;pointer-events:none;z-index:20}
 #techline{display:none}
 #caption{display:none}
@@ -32,6 +33,7 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12
 <script>
 const T={{TIMELINE}},CAPTIONS={{CAPTIONS}},rows=T.segments;
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),ease=gsap.parseEase('power2.inOut');
+const windowPunch=(t,up,upEnd,down,downEnd)=>ease(clamp((t-up)/(upEnd-up)))*(1-ease(clamp((t-down)/(downEnd-down))));
 function takeover(field,camera,amount){
   const f=ease(clamp(amount));
   field.style.left=(1232*(1-f))+'px';field.style.width=(688+1232*f)+'px';
@@ -53,8 +55,10 @@ function render(t){
   const r=rows.find(x=>t>=x.start&&t<x.end);if(!r)return;
   const e=document.getElementById('seg_'+r.name);if(!e)return;e.style.display='block';
   const st=t-r.start;
-  const tts=r.name==='vivek_app'&&st>=T.slot_fields.vivek_app.play_at+.15&&st<T.slot_fields.vivek_app.play_at+4.01;
-  ce.style.left=tts?'350px':'50%';ce.style.maxWidth=tts?'640px':'1400px';
+  const phoneCentered=r.name==='vivek_app'&&!(st>=T.vivek_camera.m1_from&&st<T.vivek_camera.m1_to)&&!(st>=T.vivek_camera.m2_from&&st<T.vivek_camera.m2_to);
+  const phoneSplit=r.name==='vachana_sos'||r.name==='vivek_app';
+  ce.style.left=phoneCentered?'350px':phoneSplit?'550px':'50%';
+  ce.style.maxWidth=phoneCentered?'640px':phoneSplit?'1020px':'1560px';
   if(r.name==='card_out'){
     const f=ease(clamp(st/1.6)),card=document.getElementById('sos-card');
     card.style.transform=`scale(${1-.78*f})`;
@@ -87,6 +91,12 @@ function render(t){
     const visibility=in1?clamp((st-C.m1_from)/.25)*clamp((C.m1_to-st)/.25):
       in2?clamp((st-C.m2_from)/.25)*clamp((C.m2_to-st)/.25):0;
     takeover(field,camera,1-visibility);
+    const banner=windowPunch(st,.6,1.2,T.slot_fields.vivek_app.accept_at+1,T.slot_fields.vivek_app.accept_at+1.6);
+    const reply=windowPunch(st,17.9,18.5,19.0,19.6);
+    const normal=1+.08*ease(clamp(1-visibility));
+    field.querySelector('.screen').style.transformOrigin=banner||reply?'50% 0':'50% 50%';
+    field.querySelector('.screen').style.transform=`scale(${normal+(1.9-normal)*banner+(1.6-normal)*reply})`;
+    field.querySelector('.accept-tap-ring').style.opacity=ease(clamp((st-3.0)/.08))*(1-ease(clamp((st-3.12)/.12)));
   }
 }
 const tl=gsap.timeline({paused:true,onUpdate:()=>render(tl.time())});tl.to({}, {duration:T.duration},0);

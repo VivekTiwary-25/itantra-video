@@ -235,7 +235,9 @@ def screen(slot, name, start, seconds, missing):
     # T0040: the slot's first frame sits behind the video, so the phone is never blank while it slides in.
     first = OUT / "plates" / f"{name}_first.jpg"
     still(source, first, 0)
-    return f'<div class="screen" style="width:{width:.2f}px;background:#101820 url({asset(first)}) center/100% 100% no-repeat">{contents}</div>'
+    overflow = ' data-layout-allow-overflow' if name == 'vivek_app' else ''
+    tap = '<div class="accept-tap-ring" aria-hidden="true"></div>' if name == 'vivek_app' else ''
+    return f'<div class="screen"{overflow} style="width:{width:.2f}px;background:#101820 url({asset(first)}) center/100% 100% no-repeat">{contents}{tap}</div>'
 
 
 def write_page(T, slots, sonar, missing):
@@ -250,7 +252,7 @@ def write_page(T, slots, sonar, missing):
     for row in rows:
         name, start, seconds = row["name"], row["start"], row["end"] - row["start"]
         if name == "card_out":
-            layers.append(f'<div class="scene" id="seg_card_out"><video id="video_card_out" class="full card-footage" src="{pic["vachana"]}" data-start="0" data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video><div class="card-red"></div><div class="glass-card full" id="sos-card"><h1>SOS: help from anyone nearby</h1></div></div>')
+            layers.append(f'<div class="scene" id="seg_card_out"><video id="video_card_out" class="full card-footage" src="{pic["vachana"]}" data-start="0" data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video><div class="card-red"></div><div class="glass-card full sos" id="sos-card"><h1>SOS: help from anyone nearby</h1></div></div>')
         elif name in ("s3_open", "lab_open"):
             key = "vachana" if name == "s3_open" else "vivek"
             layers.append(f'<div class="scene" id="seg_{name}"><video id="video_{name}" class="full" src="{pic[key]}" data-start="{start:.6f}" data-duration="{seconds:.6f}" data-media-start="0" muted playsinline></video></div>')
