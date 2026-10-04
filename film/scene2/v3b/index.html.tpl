@@ -3,7 +3,7 @@
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a0d12;color:var(--text);font-family:SceneSans,"Segoe UI",sans-serif}
 #root,#push,#sonar,#mapFX,#card{position:absolute;inset:0;overflow:hidden}#root{background:#0a0d12}
-#push{background:#0a0d12}#phone{position:absolute;left:735px;top:40px;width:450px;height:1000px;transform-origin:center;border-radius:32px;overflow:hidden;background:#0c131b;border:1px solid #ffffff24;box-shadow:0 22px 65px #000a}
+#push{background:#0a0d12}#yStatusMask{position:absolute;z-index:5;left:0;right:0;top:0;height:4.8%;background:#07111c;pointer-events:none}#phone{position:absolute;left:735px;top:40px;width:450px;height:1000px;transform-origin:center;border-radius:32px;overflow:hidden;background:#0c131b;border:1px solid #ffffff24;box-shadow:0 22px 65px #000a}
 #phone video,#phone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}#phone video{z-index:2}#phoneDark{position:absolute;inset:0;z-index:3;background:#050910;opacity:0}
 #sonar{display:none}#sonar>video,#sonar>img{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover}#sonarOpen{z-index:0}#sonar>video{z-index:1}#sonarLoop{z-index:2;opacity:0}#sonarEnd{z-index:3;display:none}
 #mapFX{z-index:4;display:none;pointer-events:none}#mapFX svg{position:absolute;inset:0;width:1920px;height:1080px;overflow:visible}
@@ -32,7 +32,7 @@
 #captions{position:absolute;inset:0;z-index:12;pointer-events:none}#captions .caption{display:none}
 </style></head><body>
 <div id="root" data-composition-id="scene2_v3b" data-start="0" data-duration="{{DURATION}}" data-width="1920" data-height="1080">
- <div id="push"><div id="phone"><img src="assets/yash_slot.jpg" alt=""><video id="yashSlot" class="clip" src="assets/yash_app.mp4" data-start="0" data-duration="1.4" data-media-start="{{SLOT_TIME}}" muted playsinline></video><div id="phoneDark"></div></div></div>
+ <div id="push"><div id="phone"><img src="assets/yash_slot.jpg" alt=""><video id="yashSlot" class="clip" src="assets/yash_app.mp4" data-start="0" data-duration="1.4" data-media-start="{{SLOT_TIME}}" muted playsinline></video><div id="yStatusMask"></div><div id="phoneDark"></div></div></div>
  <div id="sonar"><img id="sonarOpen" src="assets/sonar_open.jpg" alt=""><img id="sonarLoop" src="assets/sonar_loop.jpg" alt=""><img id="sonarEnd" src="assets/sonar_end.jpg" alt="">{{CLIPS}}
   <div id="mapFX">
    <svg viewBox="0 0 1920 1080"><circle id="pulse" class="blue" cx="689" cy="381" r="0"></circle><path id="wave" class="blue" d=""></path><path id="route" class="blue dots" d="M689 381 Q525 410 534 586 Q600 650 644 715 Q790 670 916 749 Q1070 760 1211 822"></path><path id="leader" class="blue" stroke-width="2" d=""></path></svg>
