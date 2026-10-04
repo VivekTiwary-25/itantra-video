@@ -1,37 +1,82 @@
 [
-  {
-    "start": 0.582,
-    "end": 3.082,
-    "text": "I'm Vachana from team chmod 777"
-  },
-  {
-    "start": 3.082,
-    "end": 6.242,
-    "text": "for ISRO's problem statement, SIH26173."
-  },
-  {
-    "start": 6.682,
-    "end": 7.542,
-    "text": "We built iTantra,"
-  },
-  {
-    "start": 7.822,
-    "end": 9.142,
-    "text": "speaker speaks, message"
-  },
-  {
-    "start": 9.142,
-    "end": 10.522,
-    "text": "travels from phone to phone,"
-  },
-  {
-    "start": 10.842,
-    "end": 11.582,
-    "text": "no network needed."
-  },
-  {
-    "start": 11.962,
-    "end": 12.942,
-    "text": "Let's see how it works."
-  }
+ {
+  "start": 0.582,
+  "end": 3.642,
+  "text": "I'm Vachana from team chmod 777 for"
+ },
+ {
+  "start": 3.662,
+  "end": 6.392,
+  "text": "ISRO's problem statement, SIH26173."
+ },
+ {
+  "start": 6.962,
+  "end": 8.332,
+  "text": "But what does that mean?"
+ },
+ {
+  "start": 8.522,
+  "end": 10.242,
+  "text": "Our system, iTantra, lets two"
+ },
+ {
+  "start": 10.262,
+  "end": 11.862,
+  "text": "Android phones communicate even"
+ },
+ {
+  "start": 11.882,
+  "end": 13.832,
+  "text": "when there is no SIM, mobile tower,"
+ },
+ {
+  "start": 13.902,
+  "end": 15.352,
+  "text": "internet router connection."
+ },
+ {
+  "start": 15.682,
+  "end": 16.982,
+  "text": "A speaker talks and our"
+ },
+ {
+  "start": 17.002,
+  "end": 18.082,
+  "text": "on-device speech-to-text"
+ },
+ {
+  "start": 18.102,
+  "end": 20.492,
+  "text": "model converts speech into compact text."
+ },
+ {
+  "start": 20.702,
+  "end": 22.802,
+  "text": "A Bluetooth-based transport and relay"
+ },
+ {
+  "start": 22.822,
+  "end": 24.872,
+  "text": "layer sends the text to another phone."
+ },
+ {
+  "start": 25.262,
+  "end": 26.482,
+  "text": "There, text is converted"
+ },
+ {
+  "start": 26.502,
+  "end": 28.602,
+  "text": "back to audible speech in"
+ },
+ {
+  "start": 28.622,
+  "end": 29.582,
+  "text": "the messenger's language"
+ },
+ {
+  "start": 29.602,
+  "end": 31.192,
+  "text": "by text-to-speech model."
+ }
 ]

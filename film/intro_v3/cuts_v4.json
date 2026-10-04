@@ -1,0 +1,67 @@
+{
+  "film_zero": "first frame of FOOTAGE:Video/20261002_081346_short_intro.mp4",
+  "voice_wav": "RENDERS:intro_v4/voice.wav",
+  "voice_starts_at_film": 0.4619,
+  "pieces": [
+    {
+      "name": "opening",
+      "text": "I'm Vachana from team chmod 777 for ISRO's problem statement, SIH26173.",
+      "audio": "FOOTAGE:Audio/vacchna_short_intro.mp3",
+      "clean_in": 1.24,
+      "clean_out": 7.32,
+      "camera": "FOOTAGE:Video/20261002_081346_short_intro.mp4",
+      "camera_in": 0.462,
+      "camera_out": 6.542,
+      "film_in": 0.462,
+      "film_out": 6.542,
+      "alignment": {
+        "offset_s": -0.7781,
+        "correlation_peak": 0.2543,
+        "correlation_sign": 1,
+        "method": "250-3000 Hz normalized waveform cross-correlation at 8 kHz"
+      }
+    },
+    {
+      "name": "explain",
+      "text": "But what does that mean? Our system, Itantra, lets two Android phones communicate even when there is no SIM, mobile tower, internet router connection. A speaker talks and our on -device speech -to -text model converts speech into compact text. A Bluetooth -based transport and relay layer sends the text to another phone. There, text is converted back to audible speech in the messenger's language by text -to -speech model.",
+      "audio": "FOOTAGE:Audio/vachna_south_campus_intro_part_2_take_1.mp3",
+      "clean_in": 0.38,
+      "clean_out": 24.88,
+      "camera": "FOOTAGE:Video/20261002_072612_long_intro_2.mp4",
+      "camera_in": 0.633,
+      "camera_out": 25.133,
+      "film_in": 6.842,
+      "film_out": 31.342,
+      "alignment": {
+        "camera": "Video/20261002_072612_long_intro_2.mp4",
+        "duration": 30.016,
+        "offset_s": 0.2525,
+        "correlation_peak": 0.54892,
+        "correlation_sign": 1,
+        "method": "250-3000 Hz normalized waveform cross-correlation at 8 kHz"
+      },
+      "camera_candidates": [
+        {
+          "camera": "Video/20261002_073404_long_intro.mp4",
+          "duration": 29.107,
+          "offset_s": -3.2891,
+          "correlation_peak": 0.04229,
+          "correlation_sign": -1,
+          "method": "250-3000 Hz normalized waveform cross-correlation at 8 kHz"
+        },
+        {
+          "camera": "Video/20261002_072612_long_intro_2.mp4",
+          "duration": 30.016,
+          "offset_s": 0.2525,
+          "correlation_peak": 0.54892,
+          "correlation_sign": 1,
+          "method": "250-3000 Hz normalized waveform cross-correlation at 8 kHz"
+        }
+      ]
+    }
+  ],
+  "cut_out_of_take": [
+    "So in short, speech become text and text is sent and text again becomes speech.",
+    "Do you think?"
+  ]
+}
