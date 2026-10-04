@@ -1,6 +1,7 @@
 """Encode the transparent Blender PNG shots for HyperFrames seeking."""
 import json
 import math
+import os
 import subprocess
 from pathlib import Path
 
@@ -14,6 +15,20 @@ shots = (("lift", .7, 1.4), ("spin", 1.4, beats["open"][0]),
          ("processor", beats["open"][0], beats["close"][0]),
          ("close", beats["close"][0], beats["pair"][0]),
          ("pair", beats["pair"][0], duration))
+
+# The source teardown's opening is too sparse to read at phone size. Hold the
+# last closed frame beneath the accepted image-layer opening in the composite.
+hold = OUT / "spin" / f"{math.ceil(beats['open'][0] * 30) - 1:06d}.png"
+processor_start = math.ceil(beats["open"][0] * 30)
+processor_end = math.ceil(beats["close"][0] * 30)
+if not hold.is_file():
+    raise FileNotFoundError(f"missing spin hold: {hold}")
+(OUT / "processor").mkdir(parents=True, exist_ok=True)
+for frame in range(processor_start, processor_end):
+    path = OUT / "processor" / f"{frame:06d}.png"
+    if path.exists():
+        path.unlink()
+    os.link(hold, path)
 
 cmd = ["ffmpeg", "-v", "error", "-y"]
 for name, start, end in shots:

@@ -44,7 +44,10 @@ def material(name, color, metallic=0, emission=None):
         shader = nodes.new("ShaderNodeEmission")
         shader.inputs["Strength"].default_value = 1.1
         tex = nodes.new("ShaderNodeTexImage")
-        tex.image = bpy.data.images.load(str(ROOT / "local/private-in/F0046/home.png"))
+        home = ROOT / "local/private-in/F0046/home.png"
+        if not home.is_file():
+            home = ROOT / "local/private-in/F0044/home.png"
+        tex.image = bpy.data.images.load(str(home))
         m.node_tree.links.new(tex.outputs["Color"], shader.inputs["Color"])
     else:
         shader = nodes.new("ShaderNodeBsdfPrincipled")
@@ -66,8 +69,9 @@ def setup_model():
                           for o in bpy.data.objects[root_name].children_recursive if o.type == "MESH"}.values())
     if not source_meshes:
         raise RuntimeError("teardown body has no meshes")
-    # Remove every source texture, including any baked logo or wordmark. The
-    # front display gets only the private iTantra screenshot.
+    # Keep the glTF's detailed circuit textures on the internal motherboard.
+    # The battery and shell use clean materials because the source atlas also
+    # contains printed branding. The front gets only the iTantra screenshot.
     graphite = material("graphite", (.055, .078, .105), .63)
     metal = material("graphite metal", (.16, .22, .27), .8)
     board = material("board", (.085, .15, .17), .2)
@@ -77,6 +81,22 @@ def setup_model():
                "mat_color_body": graphite, "mat_color_housing": metal,
                "mat_color_plastic": graphite, "mat_glass": graphite,
                "mat_screen": screen, "mat_screen_plastic": graphite}
+    internal = {}
+    for old_name in ("mat_metal", "mat_parts", "mat_plastic_parts"):
+        source = bpy.data.materials.get(old_name)
+        if source:
+            painted = source.copy()
+            painted.name = "opaque circuit " + old_name
+            painted.surface_render_method = "DITHERED"
+            for node in painted.node_tree.nodes:
+                if node.type == "BSDF_PRINCIPLED":
+                    alpha = node.inputs.get("Alpha")
+                    if alpha:
+                        for link in list(alpha.links):
+                            painted.node_tree.links.remove(link)
+                        alpha.default_value = 1.0
+                    node.inputs["Roughness"].default_value = .43
+            internal[old_name] = painted
     # Native axes: X depth/front, Y width, Z height. Rotate into film axes.
     axes = Matrix(((0, 1, 0, 0), (0, 0, 1, -.073), (1, 0, 0, 0), (0, 0, 0, 1)))
     axes = Matrix.Diagonal((40, 40, 40, 1)) @ axes
@@ -96,6 +116,7 @@ def setup_model():
             continue
         if name == "front_panel_mat_glass_0":
             continue
+        source_materials = [slot.material.name if slot.material else "" for slot in original.material_slots]
         if name.startswith("front_panel") or name.startswith("earspeaker"):
             layer = "screen"
         elif name.startswith("motherboard") or name.startswith("cover_"):
@@ -108,13 +129,15 @@ def setup_model():
             layer = "frame"
         for side in ("A", "B"):
             obj = original.copy()
-            obj.data = original.data
+            obj.data = original.data.copy()
             bpy.context.collection.objects.link(obj)
             obj.parent = groups[side][layer]
             obj.matrix_world = axes @ original.matrix_world
-            for slot in obj.material_slots:
-                old = slot.material.name if slot.material else ""
-                slot.material = palette.get(old, graphite)
+            for slot, old in zip(obj.material_slots, source_materials):
+                if name.startswith("motherboard") and old in internal:
+                    slot.material = internal[old]
+                else:
+                    slot.material = palette.get(old, graphite)
             obj.name = f"{side}_{original.name}"
     for original in list(bpy.data.objects):
         if original.type == "MESH" and not original.name.startswith(("A_", "B_")):
@@ -176,7 +199,7 @@ def setup_stage():
         obj.rotation_euler = (Vector((0, 0, 0)) - obj.location).to_track_quat("-Z", "Y").to_euler()
     scene = bpy.context.scene
     scene.render.engine = "BLENDER_EEVEE_NEXT"
-    scene.eevee.taa_render_samples = 16
+    scene.eevee.taa_render_samples = 2
     scene.render.resolution_x = 1920
     scene.render.resolution_y = 1080
     scene.render.resolution_percentage = 100
@@ -228,7 +251,7 @@ def main():
     groups = setup_model()
     setup_stage()
     if mode == "still":
-        out = ROOT / "results/F0052/preview"
+        out = ROOT / "results/F0052r1/preview"
         selected = sys.argv[sys.argv.index("--") + 2] if len(sys.argv) > sys.argv.index("--") + 2 else None
         for shot, t in STILLS.items():
             if selected and shot != selected:
@@ -237,10 +260,15 @@ def main():
     else:
         selected = sys.argv[sys.argv.index("--") + 2] if len(sys.argv) > sys.argv.index("--") + 2 else None
         for shot, (start, end) in SHOTS.items():
-            if selected and shot != selected:
+            if selected == "hybrid" and shot == "processor":
                 continue
+            if selected and shot != selected:
+                if selected != "hybrid":
+                    continue
             for frame in range(math.ceil(start * FPS), math.ceil(end * FPS)):
-                render_at(groups, frame / FPS, RENDERS / shot / f"{frame:06d}.png")
+                path = RENDERS / shot / f"{frame:06d}.png"
+                if not path.is_file():
+                    render_at(groups, frame / FPS, path)
 
 
 if __name__ == "__main__":

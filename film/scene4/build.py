@@ -107,7 +107,7 @@ def main():
                 "-pix_fmt", "yuva420p", "-auto-alt-ref", "0", "-b:v", "0", "-crf", "29",
                 "-deadline", "good", "-cpu-used", "4", ASSETS / "blender.webm")
     page = page.replace("{{BLENDER_ENABLED}}", "true" if complete else "false")
-    page = page.replace("{{FALLBACK_LAYERS}}", "" if complete else (
+    page = page.replace("{{FALLBACK_LAYERS}}", (
         '<img class="layer" id="layerBack" src="./assets/layer_back.png" alt="">'
         '<img class="layer" id="layerMid" src="./assets/layer_mid.png" alt="">'
         '<img class="layer" id="layerScreen" src="./assets/layer_screen.png" alt="">'))

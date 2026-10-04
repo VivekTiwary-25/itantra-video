@@ -1,0 +1,3 @@
+**F0052r1 is done.** Scene 4 uses Blender for the lift, spin, close, and two-phone shots, with the accepted image layers for the processor opening. The 20.30-second 1080p render passed the scene check and frame-count verification.
+
+See [REPORT.md](<REPO>/results/F0052r1/REPORT.md) and the [480-pixel preview sheet](<REPO>/results/F0052r1/preview/contact-sheet-480.jpg). The final video is `RENDERS:scene4/scene4.mp4`.

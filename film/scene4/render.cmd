@@ -1,5 +1,5 @@
 @echo off
-rem Stage local media, render the fallback scene, and mux the narration/ticks.
+rem Stage local media, render scene 4, and mux narration and ticks.
 setlocal
 pushd "%~dp0"
 python build.py || goto :fail
