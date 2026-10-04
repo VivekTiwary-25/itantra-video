@@ -1,0 +1,10 @@
+{
+  "id": "F0047r1",
+  "machine": "yojitth-pc",
+  "worker": "claude-second",
+  "time": "2026-10-04T11:17:39Z",
+  "model": "gpt-6-sol",
+  "effort": "high",
+  "pid": 57752,
+  "timeout_min": 240
+}
