@@ -30,10 +30,10 @@
 .overhead-walk { z-index: 2; box-shadow: 0 25px 100px rgba(0,0,0,.62); backface-visibility: visible; }
 .overhead-yash { z-index: 8; }
 .overhead-map-pin { position: absolute; width: 0; height: 0; z-index: 3; transform: translate(-50%, -50%); }
-.overhead-map-pin .ring { position: absolute; left: -22px; top: -22px; width: 44px; height: 44px; border-radius: 50%; border: 2px solid currentColor; opacity: .35; box-shadow: 0 0 25px currentColor; }
-.overhead-map-pin .dot { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 5px rgba(12,17,22,.76), 0 0 24px currentColor; }
-.overhead-map-pin.vachana { color: #4da3ff; }
-.overhead-map-pin.yash { color: #f3f5f8; }
-.overhead-map-pin .label-pin { position: absolute; top: -58px; left: -122px; min-width: 122px; text-align: center; color: #f3f5f8; }
-.overhead-map-pin.yash .label-pin { left: 34px; top: 16px; min-width: 80px; }
-.overhead-distance { position: absolute; z-index: 5; left: 74px; bottom: 78px; padding: 24px 32px; white-space: nowrap; font-size: 40px; font-weight: 620; line-height: 1.15; }
+.overhead-map-pin .ring { position: absolute; left: -24px; top: -24px; width: 48px; height: 48px; border-radius: 50%; border: 2px solid currentColor; opacity: .3; box-shadow: 0 0 30px currentColor; }
+.overhead-map-pin .dot { position: absolute; left: -11px; top: -11px; width: 22px; height: 22px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 6px rgba(12,17,22,.76), 0 0 27px 8px currentColor; }
+.overhead-map-pin.vachana { color: var(--blue); }
+.overhead-map-pin.yash { color: #fff; }
+.overhead-map-pin .label-pin { position: absolute; top: -76px; right: 24px; font-size: 40px; font-weight: 650; text-align: center; color: var(--text); }
+.overhead-map-pin.yash .label-pin { right: auto; left: 34px; top: 16px; }
+.overhead-distance { position: absolute; z-index: 5; padding: 20px 30px; white-space: nowrap; font-size: 44px; font-weight: 620; line-height: 1.15; }

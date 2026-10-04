@@ -6,7 +6,7 @@
   const METRES_PER_DEG = 111195;
   const MID_LAT = (V.lat + Y.lat) / 2;
   const MID_LON = (V.lon + Y.lon) / 2;
-  const PX_PER_METRE = 3.05;
+  const PX_PER_METRE = 4;
   const S = 'http://www.w3.org/2000/svg';
   let state = null;
 
@@ -19,6 +19,72 @@
     H / 2 - (lat - MID_LAT) * METRES_PER_DEG * PX_PER_METRE
   ];
   const path = points => points.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(' ');
+  const metres = (a, b) => Math.hypot(
+    (a.lon - b.lon) * METRES_PER_DEG * Math.cos(MID_LAT * Math.PI / 180),
+    (a.lat - b.lat) * METRES_PER_DEG
+  );
+  function walkingRoute(osm) {
+    const graph = new Map(), segments = [];
+    const key = p => `${p.lat.toFixed(7)},${p.lon.toFixed(7)}`;
+    const points = new Map();
+    function edge(a, b, length) {
+      if (!graph.has(a)) graph.set(a, []);
+      graph.get(a).push({ to: b, length });
+    }
+    for (const way of osm.elements) {
+      if (!way.tags?.highway || !way.geometry) continue;
+      for (let i = 1; i < way.geometry.length; i++) {
+        const a = way.geometry[i - 1], b = way.geometry[i];
+        const ak = key(a), bk = key(b), length = metres(a, b);
+        points.set(ak, a); points.set(bk, b);
+        edge(ak, bk, length); edge(bk, ak, length);
+        segments.push({ a, b, ak, bk, length });
+      }
+    }
+    function snap(pin) {
+      let best = null;
+      const p = xy(pin.lat, pin.lon);
+      for (const segment of segments) {
+        const a = xy(segment.a.lat, segment.a.lon), b = xy(segment.b.lat, segment.b.lon);
+        const dx = b[0] - a[0], dy = b[1] - a[1];
+        const t = clamp(((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy), 0, 1);
+        const point = { lat: mix(segment.a.lat, segment.b.lat, t), lon: mix(segment.a.lon, segment.b.lon, t) };
+        const distance = metres(pin, point);
+        if (!best || distance < best.distance) best = { segment, point, t, distance };
+      }
+      return best;
+    }
+    function connect(pin, name) {
+      const at = snap(pin), road = `${name}-road`;
+      points.set(name, pin); points.set(road, at.point);
+      edge(name, road, at.distance); edge(road, name, at.distance);
+      for (const [node, fraction] of [[at.segment.ak, at.t], [at.segment.bk, 1 - at.t]]) {
+        const length = at.segment.length * fraction;
+        edge(road, node, length); edge(node, road, length);
+      }
+    }
+    connect(V, 'start'); connect(Y, 'end');
+    const distance = new Map([['start', 0]]), previous = new Map(), open = new Set(['start']);
+    while (open.size) {
+      let current = null;
+      for (const candidate of open) if (current === null || distance.get(candidate) < distance.get(current)) current = candidate;
+      open.delete(current);
+      if (current === 'end') break;
+      for (const next of graph.get(current) || []) {
+        const candidate = distance.get(current) + next.length;
+        if (candidate < (distance.get(next.to) ?? Infinity)) {
+          distance.set(next.to, candidate);
+          previous.set(next.to, current);
+          open.add(next.to);
+        }
+      }
+    }
+    if (!distance.has('end')) throw new Error('No connected OSM highway route between pins');
+    const keys = [];
+    for (let at = 'end'; at; at = previous.get(at)) keys.push(at);
+    keys.reverse();
+    return { points: keys.map(k => points.get(k)), lengthMetres: distance.get('end') };
+  }
   function svgNode(tag, attrs, parent) {
     const n = document.createElementNS(S, tag);
     Object.entries(attrs).forEach(([k, v]) => n.setAttribute(k, String(v)));
@@ -74,10 +140,26 @@
     }
     for (const e of outline.context) drawBuilding(context, e, e.pts.map(convert));
     for (const e of outline.campus) drawBuilding(buildings, e, e.pts.map(convert));
-    const routeD = path([xy(V.lat, V.lon), xy(Y.lat, Y.lon)]);
-    const under = svgNode('path', { d: routeD, class: 'route-under' }, routeLayer);
-    const route = svgNode('path', { d: routeD, class: 'route' }, routeLayer);
-    return { route, under };
+    const walked = walkingRoute(geo.osm);
+    const routePoints = walked.points.map(p => xy(p.lat, p.lon));
+    const routeD = path(routePoints);
+    const mask = svgNode('mask', { id: 'overhead-route-reveal', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: W, height: H }, svg);
+    const reveal = svgNode('path', { d: routeD, fill: 'none', stroke: '#fff', 'stroke-width': 24, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, mask);
+    const under = svgNode('path', { d: routeD, class: 'route-under', mask: 'url(#overhead-route-reveal)' }, routeLayer);
+    const route = svgNode('path', { d: routeD, class: 'route', mask: 'url(#overhead-route-reveal)' }, routeLayer);
+    const length = reveal.getTotalLength();
+    reveal.style.strokeDasharray = `${length} ${length}`;
+    reveal.style.strokeDashoffset = String(length);
+    let remaining = walked.lengthMetres / 2, middle = routePoints[0];
+    for (let i = 1; i < routePoints.length; i++) {
+      const a = walked.points[i - 1], b = walked.points[i], segment = metres(a, b);
+      if (remaining <= segment) {
+        middle = [mix(routePoints[i - 1][0], routePoints[i][0], remaining / segment), mix(routePoints[i - 1][1], routePoints[i][1], remaining / segment)];
+        break;
+      }
+      remaining -= segment;
+    }
+    return { route, under, reveal, length, middle };
   }
   function pin(className, label, at, map) {
     const el = document.createElement('div');
@@ -102,12 +184,17 @@
     const paths = buildMap(svg, geo);
     state.route = paths.route;
     state.routeUnder = paths.under;
+    state.reveal = paths.reveal;
+    state.routeLength = paths.length;
     state.vachana = pin('vachana', 'Vachana', V, camera);
     state.yash = pin('yash', 'Yash', Y, camera);
     state.walk = document.createElement('img'); state.walk.className = 'overhead-walk'; state.walk.src = opts.walkStill; state.walk.alt = '';
     state.distance = document.createElement('div'); state.distance.className = 'glass-panel overhead-distance'; state.distance.textContent = '~300 m, walking distance';
+    state.distance.style.left = `${paths.middle[0] + 44}px`;
+    state.distance.style.top = `${paths.middle[1] - 138}px`;
     state.yashImage = document.createElement('img'); state.yashImage.className = 'overhead-yash'; state.yashImage.src = opts.yashStill; state.yashImage.alt = '';
-    el.append(state.walk, state.distance, state.yashImage);
+    camera.appendChild(state.distance);
+    el.append(state.walk, state.yashImage);
     render(0);
     return state;
   }
@@ -137,10 +224,8 @@
     state.vachana.style.opacity = String(pinIn * (1 - smooth(progress(t, 3.65, 4.1))));
     state.yash.style.opacity = String(smooth(progress(t, 1.04, 1.30)) * (1 - smooth(progress(t, 4.05, 4.6))));
     const lineP = smooth(progress(t, 1.02, 1.8));
-    const clip = `inset(0 ${(100 * (1 - lineP)).toFixed(2)}% 0 0)`;
+    state.reveal.style.strokeDashoffset = String(state.routeLength * (1 - lineP));
     const routeOpacity = String(pinIn * (1 - smooth(progress(t, 3.65, 4.15))));
-    state.route.style.clipPath = clip;
-    state.routeUnder.style.clipPath = clip;
     state.route.style.opacity = routeOpacity;
     state.routeUnder.style.opacity = routeOpacity;
     state.distance.style.opacity = String(smooth(progress(t, 1.18, 1.40)) * (1 - smooth(progress(t, 3.82, 4.10))));
