@@ -1,0 +1,126 @@
+/* iTantra v3 glass kit. Coordinates and type sizes target a 1920x1080 stage. */
+@font-face {
+  font-family: SceneSans;
+  src: local("Segoe UI Variable Display"), local("Segoe UI Variable"), local("Segoe UI");
+  font-weight: 100 900;
+}
+
+:root {
+  --glass-tint: rgba(14, 18, 26, .48);
+  --glass-blur: 28px;
+  --glass-border: rgba(255, 255, 255, .18);
+  --glass-shadow: 0 24px 60px rgba(0, 0, 0, .35);
+  --text: #f3f5f8;
+  --text-dim: rgba(243, 245, 248, .7);
+  --blue: #4da3ff;
+  --red: #ff4d5e;
+  --gold: #f5c451;
+}
+
+.glass-card, .glass-panel, .glass-circle, .techline, .caption, .label-pin {
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  font-family: SceneSans, "Segoe UI", sans-serif;
+}
+
+.glass-card, .glass-panel, .techline, .caption, .label-pin {
+  color: var(--text);
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 27%), var(--glass-tint);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,.08);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+}
+
+.glass-card::after, .glass-panel::after, .glass-circle::after,
+.techline::after, .caption::after, .label-pin::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: url("./noise.png") repeat;
+  opacity: .03;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.glass-card { border-radius: 28px; padding: 56px 64px; }
+.glass-card h1, .glass-card .card-title {
+  margin: 0;
+  font-size: 64px;
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -.025em;
+}
+.glass-card p { margin: 20px 0 0; font-size: 36px; line-height: 1.24; color: var(--text-dim); }
+.glass-card.full {
+  position: absolute;
+  inset: 0;
+  width: 1920px;
+  height: 1080px;
+  border-radius: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,0) 30%), rgba(14,18,26,.86);
+}
+
+.glass-panel { border-radius: 22px; padding: 34px 42px; font-size: 40px; line-height: 1.22; }
+.glass-panel .secondary, .glass-panel small { display: block; margin-top: 14px; font-size: 30px; line-height: 1.25; color: var(--text-dim); }
+
+.glass-circle {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #14181f;
+  background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0) 35%), rgba(255,255,255,.55);
+  border: 1px solid rgba(255,255,255,.6);
+  box-shadow: 0 24px 60px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.38);
+  -webkit-backdrop-filter: blur(30px) saturate(1.2);
+  backdrop-filter: blur(30px) saturate(1.2);
+}
+
+.techline {
+  position: absolute;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 1300px;
+  width: max-content;
+  padding: 12px 26px;
+  border-radius: 999px;
+  font-size: 30px;
+  line-height: 1.2;
+  font-weight: 560;
+  text-align: center;
+  white-space: nowrap;
+}
+.techline small { display: block; margin-top: 3px; font-size: 22px; font-weight: 450; color: var(--text-dim); }
+
+.caption {
+  position: absolute;
+  left: 50%;
+  bottom: 62px;
+  transform: translateX(-50%);
+  max-width: 1400px;
+  width: max-content;
+  padding: 10px 24px 11px;
+  border-radius: 18px;
+  background: rgba(14,18,26,.35);
+  box-shadow: 0 8px 26px rgba(0,0,0,.13);
+  font-size: 38px;
+  line-height: 1.16;
+  font-weight: 590;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0,0,0,.8), 0 1px 2px rgba(0,0,0,.7);
+  white-space: pre-line;
+}
+
+.label-pin { display: inline-block; border-radius: 999px; padding: 8px 18px; font-size: 26px; line-height: 1.2; font-weight: 600; white-space: nowrap; }
+
+/* Helpers created by Glass.phone / Glass.cross. The screen surface is always real supplied media. */
+.glass-phone { --glass-screen-height: 1000px; position: relative; box-sizing: border-box; width: calc(var(--glass-screen-height) * .45 + 28px); height: calc(var(--glass-screen-height) + 28px); border: 14px solid #0b0d12; border-radius: 58px; background: #0b0d12; box-shadow: 0 26px 65px rgba(0,0,0,.48), inset 0 0 0 1px rgba(255,255,255,.12); overflow: hidden; }
+.glass-phone::before { content: ""; position: absolute; inset: -1px; border-radius: inherit; border: 1px solid rgba(255,255,255,.21); pointer-events: none; z-index: 4; }
+.glass-phone-screen { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 43px; }
+.glass-phone-camera { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 17px; height: 17px; border-radius: 50%; background: #050609; box-shadow: 0 0 0 2px rgba(40,45,54,.7); z-index: 3; pointer-events: none; }
+.glass-icon { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.glass-cross-host { position: relative; display: inline-grid; place-items: center; }
+.glass-cross { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
