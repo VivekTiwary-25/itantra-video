@@ -1,0 +1,150 @@
+{
+  "_note": "Film v4 narration (Vivek re-recording all lines). status placeholder = estimated duration, silent wav; the lead replaces with real takes (prep.py) and fills duration + text. Compositions read duration at build time and stretch their beats; never cut a line.",
+  "dir": "RENDERS:narration/v4",
+  "lines": {
+    "N1": {
+      "segment": "s2a",
+      "beat": "walk",
+      "duration": 3.2,
+      "text": "",
+      "file": "RENDERS:narration/v4/N1.wav",
+      "status": "placeholder"
+    },
+    "N2": {
+      "segment": "s2b",
+      "beat": "sonar opening",
+      "duration": 1.8,
+      "text": "",
+      "file": "RENDERS:narration/v4/N2.wav",
+      "status": "placeholder"
+    },
+    "N2a": {
+      "segment": "s2b",
+      "beat": "speech to text",
+      "duration": 3.5,
+      "text": "",
+      "file": "RENDERS:narration/v4/N2a.wav",
+      "status": "placeholder"
+    },
+    "N2b": {
+      "segment": "s2b",
+      "beat": "sealed capsule",
+      "duration": 3.5,
+      "text": "",
+      "file": "RENDERS:narration/v4/N2b.wav",
+      "status": "placeholder"
+    },
+    "N2c": {
+      "segment": "s2b",
+      "beat": "encrypted hops",
+      "duration": 3.5,
+      "text": "",
+      "file": "RENDERS:narration/v4/N2c.wav",
+      "status": "placeholder"
+    },
+    "N2d": {
+      "segment": "s2b",
+      "beat": "waits and moves",
+      "duration": 4.0,
+      "text": "",
+      "file": "RENDERS:narration/v4/N2d.wav",
+      "status": "placeholder"
+    },
+    "N2e": {
+      "segment": "s2b",
+      "beat": "6 hops",
+      "duration": 3.0,
+      "text": "",
+      "file": "RENDERS:narration/v4/N2e.wav",
+      "status": "placeholder"
+    },
+    "N2f": {
+      "segment": "s2b",
+      "beat": "real relay",
+      "duration": 4.0,
+      "text": "",
+      "file": "RENDERS:narration/v4/N2f.wav",
+      "status": "placeholder"
+    },
+    "N3": {
+      "segment": "s2b",
+      "beat": "arrives",
+      "duration": 1.6,
+      "text": "",
+      "file": "RENDERS:narration/v4/N3.wav",
+      "status": "placeholder"
+    },
+    "N5": {
+      "segment": "s3",
+      "beat": "over SOS card",
+      "duration": 3.4,
+      "text": "",
+      "file": "RENDERS:narration/v4/N5.wav",
+      "status": "placeholder"
+    },
+    "N5a": {
+      "segment": "s3",
+      "beat": "no saved contact",
+      "duration": 2.5,
+      "text": "",
+      "file": "RENDERS:narration/v4/N5a.wav",
+      "status": "placeholder"
+    },
+    "N5b": {
+      "segment": "s3",
+      "beat": "widening search",
+      "duration": 6.0,
+      "text": "",
+      "file": "RENDERS:narration/v4/N5b.wav",
+      "status": "placeholder"
+    },
+    "N6": {
+      "segment": "s3",
+      "beat": "accept",
+      "duration": 4.0,
+      "text": "",
+      "file": "RENDERS:narration/v4/N6.wav",
+      "status": "placeholder"
+    },
+    "N7": {
+      "segment": "s4",
+      "beat": "turntable",
+      "duration": 3.0,
+      "text": "",
+      "file": "RENDERS:narration/v4/N7.wav",
+      "status": "placeholder"
+    },
+    "N7a": {
+      "segment": "s4",
+      "beat": "one speech model",
+      "duration": 4.0,
+      "text": "",
+      "file": "RENDERS:narration/v4/N7a.wav",
+      "status": "placeholder"
+    },
+    "N7b": {
+      "segment": "s4",
+      "beat": "numbers",
+      "duration": 4.0,
+      "text": "",
+      "file": "RENDERS:narration/v4/N7b.wav",
+      "status": "placeholder"
+    },
+    "N7c": {
+      "segment": "s4",
+      "beat": "packet between phones",
+      "duration": 4.0,
+      "text": "",
+      "file": "RENDERS:narration/v4/N7c.wav",
+      "status": "placeholder"
+    },
+    "N7d": {
+      "segment": "s4",
+      "beat": "no new hardware",
+      "duration": 1.5,
+      "text": "",
+      "file": "RENDERS:narration/v4/N7d.wav",
+      "status": "placeholder"
+    }
+  }
+}
