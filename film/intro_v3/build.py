@@ -27,7 +27,7 @@ def word_time(words, token, nth=1):
 def build():
     config = json.loads((REPO / "machine.local.json").read_text(encoding="utf-8"))
     source = Path(config["footage_root"]) / "Video" / "20261002_081346_short_intro.mp4"
-    home = REPO / "local/private-in/F0023/home.png"
+    home = REPO / "local/private-in/F0029/home.png"
     voice = Path(config["renders_dir"]) / "intro_v3/voice.wav"
     if not all(p.is_file() for p in (source, home, voice)):
         raise FileNotFoundError("Missing camera, private home screen, or prepared voice.wav")

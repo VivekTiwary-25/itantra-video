@@ -6,33 +6,46 @@
 @font-face{font-family:SceneSans;src:local('Segoe UI Variable Display'),local('Segoe UI Variable'),local('Segoe UI');font-weight:100 900}
 *{box-sizing:border-box}html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0e121a;color:var(--text);font-family:SceneSans,'Segoe UI',sans-serif}
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:#0e121a}
-#camera{position:absolute;width:2208px;height:1242px;left:-288px;top:-81px;object-fit:fill}
-#shade{position:absolute;inset:0;background:linear-gradient(90deg,transparent 40%,rgba(6,9,14,.22));pointer-events:none}
+#camera{position:absolute;width:2950px;height:1660px;left:-1030px;top:-290px;object-fit:fill;transform-origin:50% 50%}
+#shade{position:absolute;inset:0;background:linear-gradient(90deg,transparent 51%,rgba(5,8,13,.13) 61%,rgba(5,8,13,.42) 100%);pointer-events:none}
 .phase{position:absolute;visibility:hidden}
-#panel{left:1130px;top:260px;width:700px;transform:translateX(35px);opacity:0}
-#panel strong{font-size:42px;font-weight:650}
-#wave{left:1130px;top:425px;width:700px;height:178px;padding:32px 38px;border-radius:22px}
-#wave-bars{height:110px;display:flex;align-items:center;justify-content:center;gap:5px}
-#wave-bars i{display:block;width:7px;min-height:3px;border-radius:5px;background:#f3f5f8;box-shadow:0 0 9px rgba(77,163,255,.45)}
-#typed{left:1130px;top:440px;width:700px;height:150px;padding:26px 34px;border-radius:22px;font-size:39px;font-weight:610;line-height:1.15}
-#typed:before{content:'';position:absolute;left:34px;right:34px;top:99px;height:2px;background:rgba(77,163,255,.65)}
-#packet{left:1195px;top:472px;min-width:475px;padding:21px 24px;border-radius:20px;display:flex;align-items:center;gap:16px;font-size:31px;font-weight:600;white-space:nowrap}
-#packet svg{width:34px;height:34px;color:var(--blue);flex:none}
-#phone{left:1390px;top:215px;--glass-screen-height:615px;transform-origin:center center}
-.notification{position:absolute;z-index:2;top:83px;left:22px;right:22px;min-height:76px;display:flex;align-items:center;gap:10px;padding:12px;border-radius:15px;background:rgba(246,248,252,.96);color:#111821;box-shadow:0 12px 24px #0006;font-size:22px;font-weight:650;transform:translateY(-125px)}
-.app-dot{width:29px;height:29px;border-radius:8px;background:#4da3ff;flex:none}
-#circle{left:1087px;top:167px;width:780px;height:780px;display:block}
+#panel,#wave,#typed,#packet{box-shadow:0 30px 80px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.24)}
+#panel{left:1020px;top:238px;width:800px;padding:48px 54px 54px;opacity:0}
+#panel strong{display:block;font-size:76px;font-weight:650;letter-spacing:-.035em;line-height:1.04}
+#panel .secondary{font-size:46px;line-height:1.27;color:var(--text);margin-top:20px;font-weight:530}
+#wave{left:1020px;top:286px;width:820px;height:440px;padding:30px 18px;border-radius:30px}
+#wave-bars{height:376px;display:flex;align-items:center;justify-content:center;gap:2px}
+#wave-bars i{display:block;width:12px;flex:none;min-height:8px;border-radius:10px;background:#f7f9fc;box-shadow:0 0 11px rgba(255,255,255,.45),0 0 30px rgba(255,255,255,.18)}
+#typed{left:1020px;top:338px;width:820px;height:338px;padding:47px 42px 48px;border-radius:30px;font-size:66px;font-weight:650;line-height:1.09;letter-spacing:-.035em}
+#typed:before{content:'';position:absolute;left:42px;right:42px;bottom:42px;height:5px;border-radius:5px;background:rgba(255,255,255,.88);box-shadow:0 0 18px rgba(255,255,255,.38)}
+#typed-words{position:relative;z-index:2;display:flex;align-content:center;align-items:center;flex-wrap:wrap;gap:3px 16px;height:100%}
+#typed-words span{display:inline-block;opacity:0;transform:translateY(8px)}
+#packet{left:1080px;top:492px;width:560px;padding:20px 25px;border-radius:25px;display:flex;align-items:center;gap:14px;font-size:28px;font-weight:640;line-height:1.14}
+#packet svg{width:43px;height:43px;color:var(--text);flex:none;stroke-width:2.4}
+#phone{left:1295px;top:106px;--glass-screen-height:760px;transform-origin:center center}
+.glass-phone{overflow:visible!important;border-color:#101319!important;background:linear-gradient(110deg,#090b10,#282d34 15%,#0b0d12 25%,#090b10 80%,#3a4148 97%,#0c0e13)!important;box-shadow:0 32px 75px rgba(0,0,0,.52),0 54px 35px -42px rgba(0,0,0,.55),inset 2px 0 2px rgba(255,255,255,.28),inset -2px 0 3px rgba(255,255,255,.20)!important;transform-style:preserve-3d}
+.glass-phone-screen{border:1px solid rgba(255,255,255,.14)}
+.glass-phone::after{content:'';position:absolute;z-index:5;top:12%;left:4%;width:34%;height:70%;transform:skewX(-28deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);pointer-events:none}
+.side-button{position:absolute;right:-19px;top:22%;width:5px;height:76px;border-radius:0 4px 4px 0;background:linear-gradient(90deg,#4b535d,#1b2027);box-shadow:1px 1px 2px #0008}
+.side-button.short{top:35%;height:42px}
+.notification{position:absolute;z-index:6;top:80px;left:20px;right:20px;min-height:83px;display:flex;align-items:center;gap:13px;padding:14px 17px;border-radius:18px;background:rgba(246,248,252,.97);color:#111821;box-shadow:0 15px 35px #0009;font-size:26px;font-weight:680;transform:translateY(-130px)}
+.app-dot{width:35px;height:35px;border-radius:11px;background:linear-gradient(145deg,#f7f9fc,#a9b1bc);flex:none;box-shadow:inset 0 1px 0 #fff}
+#circle{left:980px;top:80px;width:880px;height:880px;display:block;box-shadow:0 30px 80px rgba(0,0,0,.35),inset 0 2px 0 rgba(255,255,255,.72)}
 #circle-content{position:relative;width:100%;height:100%}
-#icons{position:absolute;left:28px;right:28px;top:104px;display:flex;align-items:start;justify-content:space-between;gap:10px}
-.icon-tile{position:relative;width:130px;text-align:center;color:#14181f;font-size:26px;font-weight:620;line-height:1.08}
-.icon-drawing{position:relative;display:block;width:66px;height:66px;margin:0 auto 14px}
-.icon-tile.gold{color:#7b5510;text-shadow:0 0 15px rgba(245,196,81,.65)}
-.icon-tile.gold .icon-drawing{filter:drop-shadow(0 0 10px var(--gold))}
-#circle-phone{position:absolute;left:285px;top:290px;--glass-screen-height:420px;transform-origin:center center}
-#circle-phone .notification{top:53px;left:12px;right:12px;min-height:52px;padding:7px;font-size:15px;border-radius:11px;transform:none}
-#circle-phone .app-dot{width:18px;height:18px;border-radius:5px}
+#icons{position:absolute;inset:0}
+.icon-tile{position:absolute;width:136px;text-align:center;color:#14181f;font-size:30px;font-weight:650;line-height:1.02;white-space:normal}
+.icon-tile:nth-child(1){left:82px;top:165px}.icon-tile:nth-child(2){left:194px;top:78px}.icon-tile:nth-child(3){left:372px;top:45px}.icon-tile:nth-child(4){left:550px;top:78px}.icon-tile:nth-child(5){left:662px;top:165px}
+.icon-drawing{position:relative;display:block;width:92px;height:92px;margin:0 auto 14px}
+.icon-drawing .glass-icon{stroke-width:2.35}
+.glass-cross path:nth-child(2){stroke:#14181f!important}
+.icon-tile.gold{color:#5c410e;text-shadow:0 0 13px rgba(245,196,81,.56)}
+.icon-tile.gold .icon-drawing{filter:drop-shadow(0 0 13px var(--gold))}
+#circle-phone{position:absolute;left:311px;top:315px;--glass-screen-height:510px;transform-origin:center center}
+#circle-phone .notification{top:55px;left:12px;right:12px;min-height:57px;padding:8px;font-size:17px;border-radius:11px;transform:none}
+#circle-phone .app-dot{width:21px;height:21px;border-radius:6px}
+#circle-phone .side-button{right:-19px;height:55px}
+#circle-phone .side-button.short{height:30px}
 #full{position:absolute;inset:0;display:grid;place-items:center;text-align:center;visibility:hidden;clip-path:circle(0px at 1477px 557px)}
-#full h1{font-size:64px}
 #caption{position:absolute;bottom:54px;left:50%;z-index:10;visibility:hidden}
 </style></head><body>
 <main id="root" data-composition-id="intro_v3" data-start="0" data-duration="13.8" data-width="1920" data-height="1080" data-fps="30">
@@ -51,35 +64,40 @@
 </main>
 <script>
 const D={{DATA}}, T=D.timings, $=id=>document.getElementById(id), clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
-const ease=gsap.parseEase('power2.inOut');
+const move=gsap.parseEase('power2.inOut'), enter=gsap.parseEase('power3.out');
 const bars=$('wave-bars');for(let i=0;i<56;i++){const b=document.createElement('i');bars.append(b)}
+const smoothed=[];let level=0;for(const sample of D.envelope){const tau=sample>level?.04:.16;level+=(sample-level)*(1-Math.exp(-1/(30*tau)));smoothed.push(level)}
 Glass.phone($('phone'),{src:'./assets/home.png',kind:'img'});
 Glass.phone($('circle-phone'),{src:'./assets/home.png',kind:'img'});
 // Glass.phone replaces children, so the local notification overlays are added afterward.
-for(const id of ['phone','circle-phone']){const host=$(id);const banner=document.createElement('div');banner.className='notification';banner.innerHTML='<span class="app-dot"></span>New notification';host.append(banner)}
+for(const id of ['phone','circle-phone']){const host=$(id);for(const cls of ['side-button','side-button short']){const button=document.createElement('span');button.className=cls;host.append(button)}const banner=document.createElement('div');banner.className='notification';banner.innerHTML='<span class="app-dot"></span>New notification';host.append(banner)}
 $('packet-lock').append(Glass.icon('lock'));
 const names=[['tower','Tower'],['mobile-data','Mobile data'],['wifi','Wi-Fi'],['internet','Internet'],['bluetooth','Bluetooth LE']];
 const tiles=names.map(([name,label])=>{const tile=document.createElement('div');tile.className='icon-tile'+(name==='bluetooth'?' gold':'');const drawing=document.createElement('span');drawing.className='icon-drawing';drawing.append(Glass.icon(name));tile.append(drawing);const text=document.createElement('span');text.textContent=label;tile.append(text);$('icons').append(tile);return drawing});
-const typed=D.words.slice(16,22);
+const typed=D.words.slice(16,22).map(w=>{const span=document.createElement('span');span.textContent=w.w;$('typed-words').append(span);return {time:w.s-.7781,el:span}});
 function show(el,on){el.style.visibility=on?'visible':'hidden'}
 function render(t){
   const camera=t<T.camera_end;show($('camera'),camera);show($('shade'),camera);
+  if(camera)$('camera').style.transform=`scale(${1+.04*t/T.camera_end})`;
+  const drift=8*t/D.duration;
   const panel=t>=T.panel&&t<T.built+.18;show($('panel'),panel);
-  if(panel){const p=ease(clamp((t-T.panel)/.42));$('panel').style.opacity=p*(1-clamp((t-T.built)/.18));$('panel').style.transform=`translateX(${35*(1-p)}px)`}
-  const wave=t>=T.built&&t<T.message+.15;show($('wave'),wave);
-  if(wave){let current=t+.7781-1.24;const vals=D.envelope;for(let i=0;i<56;i++){const index=Math.round(current*30)+(i-28);const amp=clamp((vals[Math.max(0,Math.min(vals.length-1,index))]||0)/.36);bars.children[i].style.height=(4+96*amp)+'px'}$('wave').style.opacity=ease(clamp((t-T.built)/.25))*(1-clamp((t-T.message)/.15))}
+  if(panel){const p=enter(clamp((t-T.panel)/.62));$('panel').style.opacity=p*(1-clamp((t-T.built)/.18));$('panel').style.transform=`translateX(${60*(1-p)+drift}px)`}
+  const wave=t>=T.built&&t<T.message+.22;show($('wave'),wave);
+  if(wave){const current=t+.7781-1.24,flat=move(clamp((t-T.message)/.22));for(let i=0;i<56;i++){const index=Math.max(0,Math.min(smoothed.length-1,Math.round(current*30)+(i-28)));const amp=Math.pow(clamp(smoothed[index]/.33),.8);bars.children[i].style.height=(8+352*amp*(1-flat))+'px'}const p=enter(clamp((t-T.built)/.62));$('wave').style.opacity=p*(1-clamp((t-T.message-.11)/.11));$('wave').style.transform=`translateX(${60*(1-p)+drift}px)`}
   const typing=t>=T.message&&t<T.phone2+.12;show($('typed'),typing);
-  if(typing){$('typed-words').textContent=typed.filter(w=>w.s-.7781<=t).map(w=>w.w).join(' ');$('typed').style.opacity=1}
+  if(typing){const p=enter(clamp((t-T.message)/.52));$('typed').style.opacity=p;$('typed').style.transform=`translateX(${28*(1-p)+drift}px)`;for(const w of typed){const q=enter(clamp((t-w.time)/.18));w.el.style.opacity=q;w.el.style.transform=`translateY(${8*(1-q)}px)`}}
   const packet=t>=T.phone2+.12&&t<T.phone2+.52;show($('packet'),packet);
-  if(packet){const p=ease(clamp((t-T.phone2-.12)/.4));$('packet').style.transform=`translate(${p*175}px,${-p*165-65*Math.sin(Math.PI*p)}px) scale(${1-.72*p})`;$('packet').style.opacity=1-clamp((p-.72)/.28)}
-  const phone=t>=T.phone2+.27&&t<T.no+.15;show($('phone'),phone);
-  if(phone){$('phone').style.opacity=ease(clamp((t-T.phone2-.27)/.2))*(1-clamp((t-T.no)/.15));$('phone').querySelector('.notification').style.transform=`translateY(${(-120+120*ease(clamp((t-T.phone2-.39)/.18)))}px)`}
-  const circle=t>=T.no-.05&&t<T.full;show($('circle'),circle);
-  if(circle){$('circle').style.opacity=ease(clamp((t-T.no+.05)/.23));$('circle').style.transform=`scale(${.86+.14*ease(clamp((t-T.no+.05)/.35))})`}
+  if(packet){const p=move(clamp((t-T.phone2-.12)/.4));$('packet').style.transform=`translate(${drift+270*p}px,${-185*p-75*Math.sin(Math.PI*p)}px) scale(${1-.65*p}) rotate(${7*p}deg)`;$('packet').style.opacity=1-clamp((p-.72)/.28)}
+  const phone=t>=T.phone2+.27&&t<T.no+.38;show($('phone'),phone);
+  if(phone){const p=enter(clamp((t-T.phone2-.27)/.55)),fade=1-move(clamp((t-T.no-.05)/.33));$('phone').style.opacity=p*fade;$('phone').style.transform=`perspective(1100px) translateX(${drift+52*(1-p)}px) rotateY(${-6+6*p}deg) scale(${.91+.09*p})`;const b=clamp((t-(T.phone2+.27))/.45),drop=b<.78?enter(b/.78)*7:7*(1-move((b-.78)/.22));$('phone').querySelector('.notification').style.transform=`translateY(${-130*(1-enter(b))+drop}px)`}
+  show($('phone').querySelector('.notification'),phone&&t<T.no+.08);
+  const circle=t>=T.no-.05&&t<T.full-.3;show($('circle'),circle);
+  show($('circle-phone').querySelector('.notification'),circle&&t>=T.no+.08);
+  if(circle){const p=enter(clamp((t-T.no+.05)/.55));$('circle').style.opacity=p;$('circle').style.transform=`translateX(${drift}px) scale(${.93+.07*p})`;const settle=move(clamp((t-T.no+.05)/.48));$('circle-phone').style.transform=`perspective(1000px) translateY(${-220*(1-settle)}px) rotateY(${6-6*settle}deg) scale(${1.4-.4*settle})`;$('circle-phone').style.opacity=settle;tiles[4].parentElement.style.filter=`drop-shadow(0 0 ${12+8*Math.sin(t*9)**2}px rgba(245,196,81,.55))`}
   const crossStarts=[T.no,T.network,T.needed,T.needed+.18];
-  tiles.forEach((drawing,i)=>{if(i<4)Glass.cross(drawing,clamp((t-crossStarts[i])/.17))});
+  tiles.forEach((drawing,i)=>{if(i<4)Glass.cross(drawing,clamp((t-crossStarts[i])/.35))});
   const full=t>=T.lets;show($('full'),full);
-  if(full){const p=ease(clamp((t-T.lets)/1.2));$('full').style.clipPath=p>=1?'none':`circle(${350+2100*p}px at 1477px 557px)`;$('full').querySelector('h1').style.opacity=clamp((t-(T.full-.31))/.24)}
+  if(full){const p=move(clamp((t-T.lets)/1.2));$('full').style.clipPath=p>=1?'none':`circle(${350+2100*p}px at 1420px 520px)`;$('full').querySelector('h1').style.opacity=clamp((t-(T.full-.31))/.24)}
   const cap=D.captions.find(c=>t>=c.start&&t<c.end);show($('caption'),!!cap&&t<T.full);if(cap)$('caption').textContent=cap.text;
 }
 const tl=gsap.timeline({paused:true,onUpdate:()=>render(tl.time())});tl.to({},{duration:D.duration},0);
