@@ -13,7 +13,7 @@
         "sfx": null
       },
       "tts_windows": [],
-      "expected_duration": 13.8
+      "expected_duration": null
     },
     {
       "name": "s2a",
@@ -32,7 +32,7 @@
         ]
       ],
       "_tts_note": "F0004: TTS 40.210-43.554 with YASH_REPLY=false; replaced by the \"TTS\" line in audio_events.txt when it exists",
-      "expected_duration": 43.274,
+      "expected_duration": null,
       "tts_events": "RENDERS:scene2/v3a/audio_events.txt"
     },
     {
@@ -46,7 +46,7 @@
         "sfx": null
       },
       "tts_windows": [],
-      "expected_duration": 32.4
+      "expected_duration": null
     },
     {
       "name": "s3",
@@ -66,7 +66,7 @@
       ],
       "tts_events": "RENDERS:scene3/v3/audio_events.txt",
       "_tts_note": "vivek_app starts at 31.233; TTS at play_at 7.63 + 0.15; the end assumes ~3.34 s and is replaced by the real 'app TTS' line in audio_events.txt when it exists",
-      "expected_duration": 51.4
+      "expected_duration": null
     },
     {
       "name": "s4",
