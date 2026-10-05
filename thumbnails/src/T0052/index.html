@@ -5,28 +5,29 @@
 @font-face{font-family:SceneSans;src:local('Segoe UI Variable Display'),local('Segoe UI Variable'),local('Segoe UI');font-weight:100 900}
 *{box-sizing:border-box}html,body{width:1280px;height:720px;margin:0;overflow:hidden;background:#000;color:#f3f5f8;font-family:SceneSans,'Segoe UI',sans-serif}
 #root{position:relative;width:1280px;height:720px;overflow:hidden;background:#000}
-#map{position:absolute;left:425px;top:80px;width:1152px;height:648px;overflow:hidden}
-#map-stage{position:absolute;width:1920px;height:1080px;transform:scale(.6);transform-origin:0 0}
-.sos #map{top:180px}
+#map{position:absolute;left:455px;top:330px;width:1152px;height:390px;overflow:hidden}
+#map-stage{position:absolute;top:-160px;width:1920px;height:1080px;transform:scale(.6);transform-origin:0 0}
+.sos #map-stage{top:-60px}
 canvas,#map-art{position:absolute;inset:0;width:1920px;height:1080px}
-#map-shade{position:absolute;inset:0;background:linear-gradient(180deg,#000 0%,#000c 28%,transparent 48%);pointer-events:none}
-#person{position:absolute;left:28px;top:155px;height:615px;width:auto;mask-image:linear-gradient(180deg,#000 0%,#000 78%,transparent 100%)}
-.sos #person{left:34px;top:185px;height:580px}
-.title{position:absolute;left:454px;top:40px;font-size:154px;line-height:1.12;font-weight:650;letter-spacing:-.04em}
-.line{position:absolute;left:461px;top:218px;font-size:60px;line-height:1.1;font-weight:550;letter-spacing:-.026em;white-space:nowrap}
-#signal{position:absolute;left:54px;top:48px;width:94px;height:82px;opacity:.7}
+#map-shade{position:absolute;left:455px;top:330px;right:0;height:60px;background:linear-gradient(180deg,#000,transparent);pointer-events:none}
+#photo{position:absolute;left:0;top:0;width:600px;height:720px;overflow:hidden}
+#person{width:600px;height:720px;display:block}
+#photo-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.12) 0px,rgba(0,0,0,.12) 340px,#000 600px);pointer-events:none}
+.title{position:absolute;left:604px;top:40px;font-size:154px;line-height:1.12;font-weight:650;letter-spacing:-.04em}
+.line{position:absolute;left:611px;top:218px;font-size:60px;line-height:1.1;font-weight:550;letter-spacing:-.026em;white-space:nowrap}
+#signal{position:absolute;left:1140px;top:48px;width:94px;height:82px;opacity:.7}
 .phone{fill:#07111b;stroke:#87b6e4;stroke-width:3}.phone-screen{fill:#10243a;stroke:#4da3ff;stroke-width:1.5}
 .route{fill:none;stroke:#4da3ff;stroke-width:3;stroke-dasharray:5 14;opacity:.65}
 .pulse{fill:none;stroke:#ff4d5e;stroke-width:3;filter:drop-shadow(0 0 12px #ff4d5e);opacity:.65}
 </style></head>
 <body data-mode="1"><div id="root" data-composition-id="thumb52" data-start="0" data-duration="1" data-width="1280" data-height="720" data-fps="30">
 <div id="map"><div id="map-stage"><canvas id="campus" width="1920" height="1080"></canvas><svg id="map-art" viewBox="0 0 1920 1080" aria-hidden="true"></svg></div></div>
-<div id="map-shade"></div><img id="person" src="./relay-person.png" alt="">
+<div id="map-shade"></div><div id="photo"><img id="person" src="./relay-frame.png" alt=""><div id="photo-shade"></div></div>
 <svg id="signal" viewBox="0 0 94 82" fill="none" stroke="#f3f5f8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 65V55h12v10M30 65V43h12v22M51 65V30h12v35M72 65V17h12v48M7 13l78 61"/></svg>
 <div class="title">iTantra</div><div class="line">Speak. Send. Be heard.</div>
 </div><script>
 const mode=Number(document.body.dataset.mode), sos=mode===3;
-if(sos){document.body.classList.add('sos');document.getElementById('person').src='./sos-person.png'}
+if(sos){document.body.classList.add('sos');document.getElementById('person').src='./sos-frame.png'}
 document.querySelector('.line').textContent=mode===1?'Speak. Send. Be heard.':'No network. Still heard.';
 const renderer=Sonar(document.getElementById('campus'),GEO);
 // The film's actual campus and camera; left offset makes room for the person.
