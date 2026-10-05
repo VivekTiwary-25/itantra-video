@@ -25,7 +25,8 @@
 #walker{position:absolute;left:642px;top:713px;width:18px;height:18px;border-radius:50%;background:var(--blue);box-shadow:0 0 20px var(--blue);display:none}
 #hop{left:1000px;top:715px;font-size:52px;min-width:90px;text-align:center}
 #relayName{position:absolute;z-index:7;display:none;white-space:nowrap;font-size:44px;padding:12px 24px}
-#relayMask{display:none!important}#relayMask{position:absolute;z-index:6;display:none;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 30%),rgba(14,18,26,.72);backdrop-filter:blur(36px) saturate(1.4);-webkit-backdrop-filter:blur(36px) saturate(1.4);border:1px solid rgba(255,255,255,.09);border-radius:18px;box-shadow:0 0 22px 16px rgba(14,18,26,.22)}
+#relayMask{position:absolute;z-index:6;display:none;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 30%),rgba(14,18,26,.72);backdrop-filter:blur(36px) saturate(1.4);-webkit-backdrop-filter:blur(36px) saturate(1.4);border:1px solid rgba(255,255,255,.09);border-radius:18px;box-shadow:0 0 22px 16px rgba(14,18,26,.22)}
+#relayTxt{position:absolute;top:50%;transform:translateY(-50%);left:30px;right:30px;font-size:32px;line-height:1.3;color:var(--text);white-space:nowrap}#relayTxt.right{text-align:right}#relayTxt .l1{font-weight:600;letter-spacing:.005em}#relayTxt .l2{font-weight:450;color:#DCE4EC}
 #frost{position:absolute;inset:0;z-index:8;background:#0e121a99;backdrop-filter:blur(0);opacity:0;pointer-events:none}
 #card{z-index:9;display:grid;place-items:center;text-align:center;opacity:0;pointer-events:none}
 #card .glass-card.full{display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -41,7 +42,7 @@
    <div class="relayLock" id="lock1"></div><div class="relayLock" id="lock2"></div><div class="relayLock" id="lock3"></div>
    <div id="timer"></div><div id="walker"></div><div id="hop" class="label-pin pill"></div>
   </div>
-  <div id="relayMask"></div><div id="relayName" class="label-pin"></div><div id="frost"></div>
+  <div id="relayMask"><div id="relayTxt"><div class="l1"></div><div class="l2"></div></div></div><div id="relayName" class="label-pin"></div><div id="frost"></div>
  </div>
  <div id="card"><div class="glass-card full"><h1 class="card-title"><span style="color:var(--red)">SOS</span></h1><p>help from anyone nearby, no saved contact needed</p></div></div>
  <div id="captions"></div>{{SOUNDS}}
@@ -52,6 +53,8 @@ const id=x=>document.getElementById(x),clamp=x=>Math.max(0,Math.min(1,x)),smooth
 const capEls=C.map(c=>{const e=document.createElement('div');e.className='caption';e.textContent=c.text;id('captions').appendChild(e);return e});
 const pins={relay_1:[534,586],relay_2:[644,715],relay_3:[916,749]};
 const people={relay_1:[850,195],relay_2:[590,190],relay_3:[400,190]};
+// v2 (Vivek, 5 Oct): the glass box carries the relay plates' own caption (film/scene2/sonar/cues.py)
+const relayText={relay_1:['Her phone passes the message on.','She just keeps walking.',0],relay_2:['His phone relays it in the background.','His call carries on.',0],relay_3:['Her phone hands it forward.','She keeps going.',1]};
 const relayNames={relay_1:'Trisha',relay_2:'Utkarsh',relay_3:'Vaishnavi'};
 const maskBoxes={relay_1:[1240,378,660,124],relay_2:[115,288,640,130],relay_3:[0,580,505,130]};
 function show(el,yes){el.style.display=yes?'block':'none'}
@@ -115,7 +118,7 @@ function render(t){
  const rn=id('relayName'),seg=['relay_1','relay_2','relay_3'].find(n=>t>=by[n].start&&t<by[n].end);show(rn,!!seg);
  if(seg){const u=t-by[seg].start,p=pins[seg],q=people[seg],f=smooth((u-.45)/.7);rn.textContent=relayNames[seg];rn.style.left=(p[0]+(q[0]-p[0])*f)+'px';rn.style.top=(p[1]-65+(q[1]-(p[1]-65))*f)+'px';rn.style.opacity=(smooth(u/.25)*smooth((6-u)/.35)).toFixed(3)}
  const mask=id('relayMask'),maskOn=seg&&t-by[seg].start>=2.85&&t-by[seg].start<5.55;show(mask,maskOn);
- if(maskOn){const [x,y,w,h]=maskBoxes[seg],u=t-by[seg].start;Object.assign(mask.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px',opacity:(smooth((u-2.85)/.25)*smooth((5.55-u)/.25)).toFixed(3)})}
+ if(maskOn){const [x,y,w,h]=maskBoxes[seg],u=t-by[seg].start;Object.assign(mask.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px',opacity:(smooth((u-2.85)/.25)*smooth((5.55-u)/.25)).toFixed(3)});const rt=id('relayTxt'),[t1,t2,r]=relayText[seg];rt.querySelector('.l1').textContent=t1;rt.querySelector('.l2').textContent=t2;rt.className=r?'right':''}
  const out=smooth((t-by.to_sos.start)/1.5);
  id('frost').style.opacity=out.toFixed(3);id('frost').style.backdropFilter=`blur(${Math.round(32*out)}px) saturate(1.4)`;
  id('card').style.opacity=smooth((t-by.to_sos.start)/Math.min(.5,by.to_sos.end-by.to_sos.start)).toFixed(3);

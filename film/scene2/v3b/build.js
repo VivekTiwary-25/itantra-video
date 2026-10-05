@@ -76,8 +76,6 @@ function main(){
     run('ffmpeg',['-v','error','-y','-ss',time,'-i',path.join(ASSETS,'sonar_a.mp4'),'-frames:v','1','-q:v','2',path.join(ASSETS,name+'.jpg')]);
   run('ffmpeg',['-v','error','-y','-ss',5.2,'-i',path.join(ASSETS,'sonar_b.mp4'),'-frames:v','1','-q:v','2',path.join(ASSETS,'sonar_end.jpg')]);
   for(const id of names)sound(id,path.join(RENDERS,'narration','v4',id+'.wav'),Number(lines[id].duration));
-  // Utkarsh's own call audio (camera audio of FOOTAGE:Video/normalpart4.mp4, src 0.7-3.8 s, cleaned, soft fades) under his live relay footage
-  sound('utk_call',path.join(RENDERS,'scene2','v3b','utk_call.wav'),3.1);
   const C=names.filter(id=>lines[id].text).map(id=>({start:T.narration_starts[id],end:round(T.narration_starts[id]+Number(lines[id].duration)),text:lines[id].text}));
   fs.writeFileSync(path.join(HERE,'timeline.json'),JSON.stringify(T,null,2)+'\n');
   fs.writeFileSync(path.join(REPO,'film/captions/v3/s2b.json'),JSON.stringify(C,null,2)+'\n');
@@ -86,7 +84,6 @@ function main(){
   const clips=order.map(n=>{const s=T.segments.find(x=>x.name===n),offset=n==='sonar_a'?Math.max(0,round(lens[n]-(s.end-s.start))):0;return `<video id="${n}" class="clip" src="assets/${n}.mp4" data-start="${s.start}" data-duration="${Math.min(lens[n],round(s.end-s.start))}" data-media-start="${offset}" muted playsinline></video>`}).join('\n');
   const sounds=[
     ...names.map(n=>({id:n,start:T.narration_starts[n],duration:Number(lines[n].duration),file:n+'.wav'})),
-    {id:'utk_call',start:round(T.segments.find(x=>x.name==='relay_2').start+0.5),duration:3.1,file:'utk_call.wav'},
     ...order.map(n=>{const s=T.segments.find(x=>x.name===n);return {id:n+'_sfx',start:s.start,duration:Math.min(lens[n],round(s.end-s.start)),offset:n==='sonar_a'?Math.max(0,round(lens[n]-(s.end-s.start))):0,file:n+'_sfx.wav'}})
   ].map(x=>`<audio id="audio_${x.id}" class="clip" src="assets/${x.file}" data-start="${x.start}" data-duration="${x.duration}" data-media-start="${x.offset||0}"></audio>`).join('\n');
   fs.writeFileSync(path.join(HERE,'index.html'),tpl.replaceAll('{{TIMELINE}}',JSON.stringify(T)).replaceAll('{{CAPTIONS}}',JSON.stringify(C)).replaceAll('{{SLOT_TIME}}',String(slotTime)).replaceAll('{{DURATION}}',String(T.duration)).replaceAll('{{CLIPS}}',clips).replaceAll('{{SOUNDS}}',sounds));

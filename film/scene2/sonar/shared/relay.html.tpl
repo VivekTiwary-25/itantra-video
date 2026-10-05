@@ -31,8 +31,6 @@
   #sonarL { position: absolute; inset: 0; }
   #flare { position: absolute; left: -300px; top: -300px; width: 600px; height: 600px; border-radius: 50%; opacity: 0;
     background: radial-gradient(closest-side, rgba(255,255,255,0.95), rgba(190,228,255,0.55) 35%, rgba(46,168,255,0.18) 65%, rgba(46,168,255,0) 100%); }
-  /* v4 (Vivek, 5 Oct): no callout box/line/caption on the relay plates; the narration carries it. Glow stays. */
-  #call, #txtPos, #shade { display: none !important; }
 </style>
 </head>
 <body>
